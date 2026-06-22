@@ -87,9 +87,10 @@ def crawl_link_by_date(driver, target_date_str, debug=False):
 
         post_links = [post.get_attribute("href") for post in post_elements]
         if debug:
-            print(f"Đã cào được {len(post_links)} link bài báo trên trang hiện tại (trang {page}):")
+            print(f"Các link bài báo trên trang {page}:")
             for link in post_links:
                 print(link)
+            print(f"Đã cào được {len(post_links)} link bài báo trên trang hiện tại (trang {page}).")
 
         page += 1
         all_post_links.extend(post_links)
@@ -139,6 +140,7 @@ current_file = Path(__file__).resolve()
 PROJECT_DIR = current_file.parent.parent
 
 def main(debug=False, headless=False, start_date="01-06-2026", end_date="01-06-2026", output_file_dir="data_pipelines/vietstock_links.txt"):
+    begin_time = time.time()
     # Tạo tên file kết quả có chứa khoảng ngày cào được
     base_output = PROJECT_DIR / output_file_dir
 
@@ -154,6 +156,8 @@ def main(debug=False, headless=False, start_date="01-06-2026", end_date="01-06-2
     output_dir      = base_output.with_name(new_filename)
     output_dir.parent.mkdir(parents=True, exist_ok=True)
 
+    print(f"Đang tiến hành cào link bài báo từ ngày {start_date} đến ngày {end_date}...")
+
     if debug:
         print(f"[DEBUG] File kết quả thực tế sẽ được lưu tại: {output_dir.as_posix()}")
 
@@ -166,8 +170,7 @@ def main(debug=False, headless=False, start_date="01-06-2026", end_date="01-06-2
             # 1. Chuyển đổi định dạng sang YYYY-MM-DD trước khi truyền vào hàm cào
             date_ymd_str = current_date.strftime("%Y-%m-%d")
             
-            if debug:
-                print(f"\n[DEBUG] Đang tiến hành cào dữ liệu cho ngày: {current_date.strftime('%d-%m-%Y')} (Định dạng truyền vào hàm: {date_ymd_str})...")
+            print(f"\n[LOG] Đang tiến hành cào dữ liệu cho ngày: {current_date.strftime('%d-%m-%Y')}")
             
             # 2. Truyền ngày đã được format chuẩn YYYY-MM-DD vào đây
             date_post_links = crawl_link_by_date(driver, date_ymd_str, debug=debug)    
@@ -175,8 +178,9 @@ def main(debug=False, headless=False, start_date="01-06-2026", end_date="01-06-2
             if debug:
                 print(f"Các link bài báo được đăng vào ngày {current_date.strftime('%d-%m-%Y')}:")
                 for link in date_post_links:
-                    print(link)     
-                print(f"Tổng số link bài báo cào được cho ngày {current_date.strftime('%d-%m-%Y')}: {len(date_post_links)}")
+                    print(link)   
+              
+            print(f"[LOG] Tổng số link bài báo cào được cho ngày {current_date.strftime('%d-%m-%Y')}: {len(date_post_links)}")
 
             # Ghi toàn bộ link cào được trong ngày vào file
             for link in date_post_links:
@@ -185,9 +189,14 @@ def main(debug=False, headless=False, start_date="01-06-2026", end_date="01-06-2
             # Tăng thêm 1 ngày
             current_date += timedelta(days=1)
 
+    print(f"\n[LOG] Đã lưu kết quả tại: {output_dir.as_posix()}")
+
     if debug:
-        print(f"\n[DEBUG] Đã lưu kết quả tại: {output_dir.as_posix()}")
         time.sleep(10)  
+
+    end_time = time.time()
+    elapsed_time = end_time - begin_time
+    print("Thời gian thực hiện: {:.2f} giây".format(elapsed_time))
                           
     driver.quit()
 
