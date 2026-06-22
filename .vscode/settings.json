@@ -1,5 +1,5 @@
 {
-    // Cấu hình Python Path để code chạy trên các hệ điều hành khác nhau
+    // Cấu hình Interpreter Path để code chạy trên các hệ điều hành khác nhau
     "files.associations": {
         "*.py": "python"
     },
@@ -13,5 +13,5 @@
     },
     "[linux]": {
         "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python"
-    }
+    },
 }
