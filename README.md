@@ -44,15 +44,15 @@
     # Script cào dữ liệu thật (chạy dưới nền, có thể chạy trên Colab, Kaggle,...)
     # Nếu sử dụng Window
     python ./data_pipelines/vietstock_crawl_link.py `
-    --start 01-06-2026 `
-    --end 05-06-2026 `
-    --output data/vietstock_links.txt
+        --start 01-06-2026 `
+        --end 05-06-2026 `
+        --output data/vietstock_links.txt
 
     # Nếu sử dụng Linux
     python3 ./data_pipelines/vietstock_crawl_link.py \
-    --start 01-06-2026 \
-    --end 05-06-2026 \
-    --output data/vietstock_links.txt \
+        --start 01-06-2026 \
+        --end 05-06-2026 \
+        --output data/vietstock_links.txt 
     ```
 
 
