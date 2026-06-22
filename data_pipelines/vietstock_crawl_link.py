@@ -7,17 +7,20 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 
 crawl_url = "https://vietstock.vn/doanh-nghiep.htm"
 
 def access_webpage(url, debug=False, headless=True):
     options = webdriver.ChromeOptions()
+
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-gpu")  
+    options.add_argument("--window-size=1920,1080")
     
     # Nếu KHÔNG debug, chạy ngầm (không có màn hình hiển thị)
-    if debug and headless:
+    if headless:
         options.add_argument("--headless=new") 
-        options.add_argument("--disable-gpu")  
-        options.add_argument("--window-size=1920,1080")
     
     driver = webdriver.Chrome(options=options)
     driver.get(url)
@@ -59,7 +62,7 @@ def search_by_date(driver, target_date_str, debug=False):
 
     # Click ra ngoài để đóng calendar và chờ trang load xong
     time.sleep(1)
-    driver.find_element(By.TAG_NAME, "body").click()
+    ActionChains(driver).send_keys(Keys.ESCAPE).perform()
     time.sleep(5)
 
     if debug:
