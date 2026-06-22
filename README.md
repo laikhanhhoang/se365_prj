@@ -39,6 +39,7 @@
     ```bash
     # Script crawl test
     python data_pipelines/vietstock_crawl_link.py --debug --head
+    # Output ra giống file data_pipelines/vietstock_links_20260601_20260601_CHUAN.txt là ổn
 
     # Script cào dữ liệu thật (chạy dưới nền, có thể chạy trên Colab, Kaggle,...)
     # Nếu sử dụng Window
