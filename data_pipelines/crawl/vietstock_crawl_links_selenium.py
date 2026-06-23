@@ -66,12 +66,17 @@ def search_by_date(driver: webdriver.Chrome, target_date_str: str, debug: bool =
         print(f"Chuỗi sẽ nhập vào ô search: {daterange_string}")
 
     # Tìm ô input <input type="text" name="daterange" aria-label="search" class="form-control" placeholder="Xem theo ngày">
-    input_date = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((
-            By.XPATH,
-            "//input[@name='daterange' and contains(@aria-label, 'search')]"
-        ))
-    )
+    try:
+        input_date = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((
+                By.XPATH,
+                "//input[@name='daterange' and contains(@aria-label, 'search')]"
+            ))
+        )
+        print(f"[LOG] Tìm thấy ô input tìm kiếm theo ngày.")
+    except Exception as e:
+        print(f"[LOG] Không tìm thấy ô input tìm kiếm. Lỗi: {e}")
+        return
 
     # Click và xóa nội dung cũ trong ô input
     driver.execute_script("arguments[0].click();", input_date)
@@ -115,12 +120,17 @@ def crawl_link_by_date(driver: webdriver.Chrome, target_date_str: str, debug: bo
     all_post_links = []
     while True:
         # Cào link các bài báo trên page hiện tại
-        post_elements = WebDriverWait(driver, 10).until(
-            EC.presence_of_all_elements_located((
-                By.XPATH,
-                "//div[@id='channel-container']//div[contains(@class, 'single_post_text')]//h4/a"
-            ))
-        )
+        try:
+            post_elements = WebDriverWait(driver, 10).until(
+                EC.presence_of_all_elements_located((
+                    By.XPATH,
+                    "//div[@id='channel-container']//div[contains(@class, 'single_post_text')]//h4/a"
+                ))
+            )
+        except Exception as e:
+            if debug:
+                print(f"[LOG] Không tìm thấy bài báo trên trang {page}. Lỗi: {e}")
+            break
 
         post_links = [post.get_attribute("href") for post in post_elements]
         if debug:
@@ -214,7 +224,7 @@ def main(
         print(f"[DEBUG] File kết quả thực tế sẽ được lưu tại: {output_dir.as_posix()}")
 
     # Mở trình duyệt và truy cập vào trang web
-    driver = init_driver(crawl_url, headless=headless)
+    driver = init_driver("https://vietstock.vn/doanh-nghiep.htm", headless=headless)
 
     # Mở file ghi dữ liệu
     with open(output_dir, "w", encoding="utf-8") as f:

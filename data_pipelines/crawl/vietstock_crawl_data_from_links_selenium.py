@@ -5,6 +5,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import TimeoutException, InvalidSessionIdException
 
 
 current_file = Path(__file__).resolve()
@@ -29,6 +30,7 @@ def init_driver(
 
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-gpu")
+    options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--window-size=1920,1080")
 
     # Nếu KHÔNG debug, chạy ngầm (không có màn hình hiển thị)
@@ -36,6 +38,7 @@ def init_driver(
         options.add_argument("--headless=new")
 
     driver = webdriver.Chrome(options=options)
+    driver.set_page_load_timeout(30)
     driver.get(url)
     time.sleep(2)  # Đợi 2 giây để trang web tải xong
 
@@ -120,8 +123,9 @@ def parse_article(
 
 
 def crawl_link(
-    link: str, 
-    debug: bool = False, headless: bool = True) -> tuple[str | None, str | None, str | None]:
+    driver: webdriver.Chrome,
+    link: str,
+    debug: bool = False) -> tuple[str | None, str | None, str | None]:
     """
     Crawl một link Vietstock và trả về nội dung bài viết.
 
@@ -129,19 +133,21 @@ def crawl_link(
     - str | None: title, head, body — tiêu đề, mở đầu, nội dung
 
     Input:
+    - webdriver.Chrome: driver — driver đã được khởi tạo sẵn
     - str: link — URL bài viết Vietstock
     - bool: debug — in log khi True
-    - bool: headless — chạy ẩn không hiển thị cửa sổ
     """
     # beginf
 
     print("[LOG] Đang crawl link:", link)
 
-    driver = init_driver(link, headless=headless)
     try:
-        title, head, body = parse_article(driver, debug=debug)
-    finally:
-        driver.quit()
+        driver.get(link)
+    except TimeoutException:
+        print(f"[WARN] Page load timed out, thử tiếp tục với nội dung đã tải: {link}")
+        driver.execute_script("window.stop();")
+    time.sleep(2)
+    title, head, body = parse_article(driver, debug=debug)
 
     if debug:
         print(f"Title: {title}")
@@ -156,7 +162,7 @@ def crawl_link(
 
 
 def crawl_links(
-    links: list[str], 
+    links: list[str],
     debug: bool = False, headless: bool = True) -> list[dict]:
     """
     Crawl danh sách links và trả về kết quả.
@@ -173,11 +179,30 @@ def crawl_links(
 
     results = []
     total = len(links)
-    for i, link in enumerate(links):
-        if i % 5 == 0:
-            print(f"[LOG] Hiện tại đến link thứ {i + 1}/{total}")
-        title, head, body = crawl_link(link, debug=debug, headless=headless)
-        results.append({"link": link, "title": title, "head": head, "body": body})
+    driver = init_driver(links[0], headless=headless)
+    try:
+        for i, link in enumerate(links):
+            if i % 5 == 0:
+                print(f"[LOG] Hiện tại đến link thứ {i + 1}/{total}")
+            if i > 0 and i % 100 == 0:
+                print(f"[LOG] Đã cào {i} links, nghỉ 2 phút...")
+                time.sleep(120)
+            try:
+                title, head, body = crawl_link(driver, link, debug=debug)
+            except InvalidSessionIdException:
+                print(f"[WARN] Browser bị crash, đang khởi động lại driver...")
+                try:
+                    driver.quit()
+                except Exception:
+                    pass
+                driver = init_driver(link, headless=headless)
+                title, head, body = crawl_link(driver, link, debug=debug)
+            results.append({"link": link, "title": title, "head": head, "body": body})
+    finally:
+        try:
+            driver.quit()
+        except Exception:
+            pass
     return results
     # endf
 

@@ -8,20 +8,20 @@
 
 **Chạy thử (debug, hiện trình duyệt, 1 ngày):**
 ```bash
-python data_pipelines/crawl/vietstock_crawl_links.py --debug --head
+python data_pipelines/crawl/vietstock_crawl_links_selenium.py --debug --head
 ```
 Output mẫu đúng: xem file `data_pipelines/crawl/vietstock_links_20260601_20260601_CHUAN.txt`
 
 **Chạy thật (headless, nhiều ngày):**
 ```bash
 # Windows (PowerShell)
-python data_pipelines/crawl/vietstock_crawl_links.py `
+python data_pipelines/crawl/vietstock_crawl_links_selenium.py `
     --start 01-06-2026 `
     --end   05-06-2026 `
     --output data_pipelines/crawl/vietstock_links_<start>_<end>.txt
 
 # Linux / macOS
-python3 data_pipelines/crawl/vietstock_crawl_links.py \
+python3 data_pipelines/crawl/vietstock_crawl_links_selenium.py \
     --start 01-06-2026 \
     --end   05-06-2026 \
     --output data_pipelines/crawl/vietstock_links_<start>_<end>.txt
@@ -43,18 +43,18 @@ python3 data_pipelines/crawl/vietstock_crawl_links.py \
 
 **Chạy thử (debug, hiện trình duyệt, dùng file mẫu):**
 ```bash
-python data_pipelines/crawl/vietstock_crawl_data_from_links.py --debug --head
+python data_pipelines/crawl/vietstock_crawl_data_from_links_selenium.py --debug --head
 ```
 Output mẫu đúng: xem file `data_pipelines/crawl/vietstock_crawled_data_20260601_20260601_CHUAN.jsonl`
 
 **Chạy thật (headless, dùng file link đã cào ở bước 1):**
 ```bash
 # Windows (PowerShell)
-python data_pipelines/crawl/vietstock_crawl_data_from_links.py `
+python data_pipelines/crawl/vietstock_crawl_data_from_links_selenium.py `
     --links_file data_pipelines/crawl/vietstock_links_<start>_<end>.txt
 
 # Linux / macOS
-python3 data_pipelines/crawl/vietstock_crawl_data_from_links.py \
+python3 data_pipelines/crawl/vietstock_crawl_data_from_links_selenium.py \
     --links_file data_pipelines/crawl/vietstock_links_<start>_<end>.txt
 ```
 
