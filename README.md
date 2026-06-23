@@ -1,11 +1,11 @@
 # Đồ án cuối kì SE365
 
-## Giới thiệu
+# Giới thiệu
 - Tên đề tài: Trích xuất sự kiện tài chính từ báo chí và diễn đàn tài chính bằng NLP/LLM.
 - Mô tả: Trong thực tế, báo cáo tài chính của doanh nghiệp chỉ được công bố theo quý hoặc theo năm, nên thông tin thường có độ trễ. Tuy nhiên, mỗi ngày trên các trang báo tài chính, diễn đàn đầu tư, mạng xã hội hoặc thông báo doanh nghiệp lại xuất hiện rất nhiều thông tin mới liên quan đến hoạt động của công ty. Các chuyên gia tài chính khi đọc các bài viết này có thể nhanh chóng nhận ra những sự kiện doanh nghiệp quan trọng (corporate events) có khả năng ảnh hưởng đến giá cổ phiếu hoặc triển vọng kinh doanh của công ty. Ví dụ: Công ty ra mắt sản phẩm mới, Doanh nghiệp ký hợp đồng lớn, Sáp nhập hoặc mua lại công ty khác (M&A), Công ty đầu tư vào lĩnh vực mới, Rút vốn khỏi dự án, Tăng vốn điều lệ, Phát hành cổ phiếu hoặc trái phiếu, Thay đổi ban lãnh đạo, Mở rộng nhà máy, mở rộng thị trường, Bị điều tra, kiện tụng hoặc gặp khủng hoảng, Công bố hợp tác chiến lược, Được cấp phép hoặc trúng thầu dự án lớn,...Những thông tin này thường xuất hiện sớm trên báo chí hoặc diễn đàn trước khi phản ánh đầy đủ trong báo cáo tài chính. Mục tiêu của đề tài là xây dựng hệ thống có khả năng: Thu thập văn bản tài chính từ báo điện tử, diễn đàn hoặc mạng xã hội, xây dựng mô hình deep learning Tự động phát hiện và rút trích các sự kiện tài chính quan trọng, sau đó Chuẩn hóa thông tin thành dạng có cấu trúc phục vụ phân tích đầu tư.
 ---
-## Dataset
-### Schema
+# Dataset
+## Schema
 
 | Loại sự kiện | Các trường trích xuất |
 | :--- | :--- |
@@ -31,13 +31,15 @@
 | **19. Phá sản / Thanh lý** | `ten_to_chuc` · `loai_hanh_dong` (phá sản/tái cơ cấu/thanh lý tự nguyện) · `nganh_nghe` · `toa_an_thu_ly` · `ngay_cong_bo` · `ngay_phan_quyet` |
 
 
-## Hướng dẫn chạy
+# Hướng dẫn chạy
 
-> Chi tiết tham số và lệnh debug từng bước xem tại [data_pipelines/_HOW_TO_RUN.md](data_pipelines/_HOW_TO_RUN.md)
 
-### 1. Cào dữ liệu
 
-#### 1.1. Vietstock
+## 1. Cào dữ liệu
+
+> Chi tiết tham số và lệnh debug xem tại [data_pipelines/_HOW_TO_RUN.md](data_pipelines/_HOW_TO_RUN.md)
+
+### 1.1. Vietstock
 
 - **Cào link:**
 
@@ -68,6 +70,6 @@
     ```
 
 
-## Tài liệu tham khảo
+# Tài liệu tham khảo
 - [DCFEE: A Document-level Chinese Financial Event Extraction System
 based on Automatically Labeled Training Data](https://aclanthology.org/P18-4009.pdf) - [Source Github](https://github.com/tongzhou21/DocFEE)
