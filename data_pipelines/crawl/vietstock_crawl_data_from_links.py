@@ -8,28 +8,57 @@ from selenium.webdriver.common.by import By
 
 
 current_file = Path(__file__).resolve()
-PROJECT_DIR = current_file.parent.parent
+PROJECT_DIR = current_file.parent.parent.parent
 
-def access_webpage(url, debug=False, headless=True):
+
+def init_driver(
+    url: str, 
+    headless: bool = True) -> webdriver.Chrome:
+    """
+    Khởi tạo Chrome WebDriver và điều hướng đến URL.
+
+    Output:
+    - webdriver.Chrome: driver — đối tượng trình duyệt đã điều hướng
+
+    Input:
+    - str: url — địa chỉ trang web cần mở
+    - bool: headless — chạy ẩn không hiển thị cửa sổ
+    """
+    # beginf
     options = webdriver.ChromeOptions()
 
     options.add_argument("--no-sandbox")
-    options.add_argument("--disable-gpu")  
+    options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
-    
+
     # Nếu KHÔNG debug, chạy ngầm (không có màn hình hiển thị)
     if headless:
-        options.add_argument("--headless=new") 
-    
+        options.add_argument("--headless=new")
+
     driver = webdriver.Chrome(options=options)
     driver.get(url)
     time.sleep(2)  # Đợi 2 giây để trang web tải xong
-    return driver
 
-def crawl_from_driver(driver, debug=False):
+    return driver
+    # endf
+
+
+def parse_article(
+    driver: webdriver.Chrome, 
+    debug: bool = False) -> tuple[str | None, str | None, str | None]:
     """
-    return title, head, body
+    Trích xuất nội dung bài viết từ driver.
+
+    
+    Output:
+    - str | None: title, head, body — tiêu đề, mở đầu, nội dung
+
+    Input:
+    - webdriver.Chrome: driver — trình duyệt đang mở trang bài viết
+    - bool: debug — in log khi True
     """
+    # beginf
+
     # Tìm div có id="vst_detail"
     try:
         post_element = WebDriverWait(driver, 10).until(
@@ -38,7 +67,7 @@ def crawl_from_driver(driver, debug=False):
                 "//div[contains(@id, 'vst_detail')]"
             ))
         )
-        if debug: 
+        if debug:
             print(f"[LOG] Tìm thấy {len(post_element)} div có id chứa 'vst_detail'")
     except Exception as e:
         if debug:
@@ -64,7 +93,6 @@ def crawl_from_driver(driver, debug=False):
             print(f"[LOG] Lỗi khi lấy title: {e}")
         title = None
 
-    
     # Lấy head từ p trong all_p có class "pHead", nếu không có thì gán None
     try:
         head_els = [p for p in all_p if "pHead" in p.get_attribute("class")]
@@ -86,23 +114,35 @@ def crawl_from_driver(driver, debug=False):
         if debug:
             print(f"[LOG] Lỗi khi lấy body: {e}")
         body = None
-    
-    return title, head, body
 
-def crawl_from_link(
-    link,
-    debug=False,
-    headless=True   
-):
+    return title, head, body
+    # endf
+
+
+def crawl_link(
+    link: str, 
+    debug: bool = False, headless: bool = True) -> tuple[str | None, str | None, str | None]:
     """
-    Crawl data from Vietstock website using the provided link.
-    Output: title, head, body
+    Crawl một link Vietstock và trả về nội dung bài viết.
+
+    Output:
+    - str | None: title, head, body — tiêu đề, mở đầu, nội dung
+
+    Input:
+    - str: link — URL bài viết Vietstock
+    - bool: debug — in log khi True
+    - bool: headless — chạy ẩn không hiển thị cửa sổ
     """
+    # beginf
+
     print("[LOG] Đang crawl link:", link)
 
-    driver = access_webpage(link, debug=debug, headless=headless)
+    driver = init_driver(link, headless=headless)
+    try:
+        title, head, body = parse_article(driver, debug=debug)
+    finally:
+        driver.quit()
 
-    title, head, body = crawl_from_driver(driver, debug=debug)
     if debug:
         print(f"Title: {title}")
         print(f"Head: {head}")
@@ -112,40 +152,81 @@ def crawl_from_link(
         print(f"[LOG] Crawl data thành công từ link {link}")
 
     return title, head, body
+    # endf
+
+
+def crawl_links(
+    links: list[str], 
+    debug: bool = False, headless: bool = True) -> list[dict]:
+    """
+    Crawl danh sách links và trả về kết quả.
+
+    Output:
+    - list[dict]: results — mỗi dict gồm link, title, head, body
+
+    Input:
+    - list[str]: links — danh sách URL bài viết Vietstock
+    - bool: debug — in log khi True
+    - bool: headless — chạy ẩn không hiển thị cửa sổ
+    """
+    # beginf
+
+    results = []
+    total = len(links)
+    for i, link in enumerate(links):
+        if i % 5 == 0:
+            print(f"[LOG] Hiện tại đến link thứ {i + 1}/{total}")
+        title, head, body = crawl_link(link, debug=debug, headless=headless)
+        results.append({"link": link, "title": title, "head": head, "body": body})
+    return results
+    # endf
+
 
 def main(
-    debug=False,
-    headless=True,
-    links_file="data_pipelines/vietstock_links_test.txt",
-):
+    debug: bool = False,
+    headless: bool = True,
+    links_file: str = "data_pipelines/crawl/vietstock_links_test.txt",
+) -> None:
+    """
+    Đọc file links, crawl và lưu kết quả vào .jsonl.
+
+    Output:
+    - None — ghi kết quả vào file .jsonl cùng thư mục
+
+    Input:
+    - str: links_file — đường dẫn tương đối từ PROJECT_DIR
+    - bool: debug — in log khi True
+    - bool: headless — chạy ẩn không hiển thị cửa sổ
+    """
+    # beginf
     begin_time = time.time()
 
+    # Truy cập file links_file từ PROJECT_DIR
     input_file_path = PROJECT_DIR / links_file
     if not input_file_path.exists():
         print(f"[ERROR] File {input_file_path} không tồn tại. Vui lòng kiểm tra lại.")
         return
     else:
         print(f"[LOG] Đang đọc file link từ: {input_file_path.as_posix()}")
-    
-    # Thay chữ links trong input_file_path bằng crawled_data để tạo tên file output định dạng .jsonl
+
+    # Tạo file output định dạng .jsonl bằng cách thay thế "links" bằng "crawled_data" trong tên file input
     output_file_path = input_file_path.parent / (input_file_path.stem.replace("links", "crawled_data") + ".jsonl")
     output_file_path.parent.mkdir(parents=True, exist_ok=True)
     print(f"[LOG] File kết quả sẽ được lưu tại: {output_file_path.as_posix()}")
 
     with open(input_file_path, "r", encoding="utf-8") as f:
-        lines = f.readlines()
-        print(f"[LOG] Tổng số link cần crawl: {len(lines)}")
+        elements = [line.strip().split(",") for line in f.readlines()]
+    print(f"[LOG] Tổng số link cần crawl: {len(elements)}")
+
+    record_ids = [el[0] for el in elements]
+    links = [el[-1] for el in elements]
+
+    # Gọi hàm crawl_links để lấy kết quả
+    results = crawl_links(links, debug=debug, headless=headless)
 
     with open(output_file_path, "w", encoding="utf-8") as out_f:
-        for i, line in enumerate(lines):
-            if i % 10 == 0:
-                print(f"[LOG] Hiện tại đến link thứ {i + 1}/{len(lines)}")
-
-            element = line.strip().split(",")
-            id = element[0]
-            link = element[-1]
-            title, head, body = crawl_from_link(link, debug=debug, headless=headless)
-            record = {"id": id, "link": link, "title": title, "head": head, "body": body}
+        for record_id, result in zip(record_ids, results):
+            record = {"id": record_id, **result}
             out_f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
     end_time = time.time()
@@ -154,6 +235,8 @@ def main(
     print(f"[LOG] Đã lưu kết quả vào: {output_file_path.as_posix()}")
     print(f"[LOG] Thời gian thực hiện: {elapsed_time:.2f} giây")
     return
+    # endf
+
 
 if __name__ == "__main__":
     import argparse
@@ -161,7 +244,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Vietstock Crawler")
     parser.add_argument("--debug", action="store_true", help="Bật chế độ debug in ra log")
     parser.add_argument("--head", action="store_true", help="Hiển thị trình duyệt")
-    parser.add_argument("--links_file", type=str, default="data_pipelines/vietstock_links_20260601_20260601_CHUAN.txt", help="Đường dẫn file chứa các link cần crawl tương đối từ PROJECT_DIR")
+    parser.add_argument("--links_file", type=str, default="data_pipelines/crawl/vietstock_links_20260601_20260601_CHUAN.txt", help="Đường dẫn file chứa các link cần crawl tương đối từ PROJECT_DIR")
 
     args = parser.parse_args()
 
