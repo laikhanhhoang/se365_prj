@@ -9,7 +9,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 
-crawl_url = "https://vietstock.vn/doanh-nghiep.htm"
 
 def access_webpage(url, debug=False, headless=True):
     options = webdriver.ChromeOptions()
@@ -183,8 +182,8 @@ def main(debug=False, headless=False, start_date="01-06-2026", end_date="01-06-2
             print(f"[LOG] Tổng số link bài báo cào được cho ngày {current_date.strftime('%d-%m-%Y')}: {len(date_post_links)}")
 
             # Ghi toàn bộ link cào được trong ngày vào file
-            for link in date_post_links:
-                f.write(f"{link}\n")
+            for i, link in enumerate(date_post_links):
+                f.write(f"vietstock_{current_date.strftime('%Y%m%d')}_{i:02d},{link}\n")
 
             # Tăng thêm 1 ngày
             current_date += timedelta(days=1)
@@ -210,7 +209,7 @@ if __name__ == "__main__":
     
     # Nhận tham số từ terminal theo kiểu người dùng Việt Nam (DD-MM-YYYY)
     parser.add_argument("--start", type=str, default="01-06-2026", help="Ngày bắt đầu (DD-MM-YYYY)")
-    parser.add_argument("--end", type=str, default="01-06-2026", help="Ngày kết thúc (DD-MM-YYYY)")
+    parser.add_argument("--end", type=str, default="", help="Ngày kết thúc (DD-MM-YYYY)")
     parser.add_argument("--output", type=str, default="data_pipelines/vietstock_links.txt", help="Đường dẫn file kết quả tương đối từ PROJECT_DIR")
     
     args = parser.parse_args()
@@ -220,7 +219,7 @@ if __name__ == "__main__":
 
     main(
         start_date=args.start, 
-        end_date=args.end, 
+        end_date=args.start if not args.end else args.end, 
         debug=args.debug, 
         headless=not args.head,
         output_file_dir=args.output
