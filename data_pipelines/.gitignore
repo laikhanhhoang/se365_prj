@@ -1,2 +1,4 @@
-*.txt
-!vietstock_links_20260601_20260601_CHUAN.txt
+**/*.txt
+**/*.jsonl
+
+!*_CHUAN.*

@@ -32,27 +32,39 @@
 
 
 ## Hướng dẫn chạy
+
+> Chi tiết tham số và lệnh debug từng bước xem tại [data_pipelines/_HOW_TO_RUN.md](data_pipelines/_HOW_TO_RUN.md)
+
 ### 1. Cào dữ liệu
 
-- Cào link từ Vietstock:
+#### 1.1. Vietstock
+
+- **Cào link:**
 
     ```bash
-    # Script crawl test
-    python data_pipelines/vietstock_crawl_link.py --debug --head
-    # Output ra giống file data_pipelines/vietstock_links_20260601_20260601_CHUAN.txt là ổn
-
-    # Script cào dữ liệu thật (chạy dưới nền, có thể chạy trên Colab, Kaggle,...)
-    # Nếu sử dụng Window
-    python ./data_pipelines/vietstock_crawl_link.py `
+    # Windows (PowerShell)
+    python data_pipelines/crawl/vietstock_crawl_links.py `
         --start 01-06-2026 `
-        --end 05-06-2026 `
-        --output data/vietstock_links.txt
+        --end   05-06-2026 `
+        --output data_pipelines/crawl/vietstock_links_01062026_05062026.txt
 
-    # Nếu sử dụng Linux
-    python3 ./data_pipelines/vietstock_crawl_link.py \
+    # Linux / macOS
+    python3 data_pipelines/crawl/vietstock_crawl_links.py \
         --start 01-06-2026 \
-        --end 05-06-2026 \
-        --output data/vietstock_links.txt 
+        --end   05-06-2026 \
+        --output data_pipelines/crawl/vietstock_links_01062026_05062026.txt
+    ```
+
+- **Cào data từ link:**
+
+    ```bash
+    # Windows (PowerShell)
+    python data_pipelines/crawl/vietstock_crawl_data_from_links.py `
+        --links_file data_pipelines/crawl/vietstock_links_01062026_05062026.txt
+
+    # Linux / macOS
+    python3 data_pipelines/crawl/vietstock_crawl_data_from_links.py \
+        --links_file data_pipelines/crawl/vietstock_links_01062026_05062026.txt
     ```
 
 
