@@ -69,6 +69,11 @@ async def search_by_date(page: Page, target_date_str: str, debug: bool = False) 
     if debug:
         print(f"Chuỗi sẽ nhập vào ô search: {daterange_string}")
 
+    # Xóa cookie consent overlay khỏi DOM trước khi thao tác
+    await page.evaluate("""
+        document.querySelectorAll('.fc-consent-root, .fc-dialog-overlay').forEach(el => el.remove())
+    """)
+
     try:
         input_date = page.locator("input[name='daterange'][aria-label*='search']")
         await input_date.wait_for(timeout=10000)
@@ -77,7 +82,8 @@ async def search_by_date(page: Page, target_date_str: str, debug: bool = False) 
         print(f"[LOG] Không tìm thấy ô input tìm kiếm. Lỗi: {e}")
         return
 
-    await input_date.click()
+    # Dùng JS click để tránh bị overlay chặn
+    await page.evaluate("document.querySelector(\"input[name='daterange'][aria-label*='search']\").click()")
     await page.keyboard.press("Control+a")
     await page.keyboard.press("Backspace")
     await input_date.type(daterange_string)

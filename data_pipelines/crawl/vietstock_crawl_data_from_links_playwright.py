@@ -177,6 +177,9 @@ async def crawl_links(
         for i, link in enumerate(links):
             if i % 5 == 0:
                 print(f"[LOG] Hiện tại đến link thứ {i + 1}/{total}")
+            if i > 0 and i % 100 == 0:
+                print(f"[LOG] Đã cào {i} links, nghỉ 2 phút...")
+                await asyncio.sleep(120)
             title, head, body = await crawl_link(page, link, debug=debug)
             results.append({"link": link, "title": title, "head": head, "body": body})
     finally:
