@@ -1,0 +1,127 @@
+{ "combine": "data/processing/filter/config1/vietstock_filter_2023_2026.jsonl",
+  "in_out": [
+    ["data/raw/vietstock/vietstock_crawled_data_20230101_20230430.jsonl", "data/processing/filter/config1/vietstock_filter_20230101_20230430.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20230501_20230831.jsonl", "data/processing/filter/config1/vietstock_filter_20230501_20230831.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20230901_20231231.jsonl", "data/processing/filter/config1/vietstock_filter_20230901_20231231.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20240101_20240131.jsonl", "data/processing/filter/config1/vietstock_filter_20240101_20240131.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20240201_20240229.jsonl", "data/processing/filter/config1/vietstock_filter_20240201_20240229.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20240301_20240331.jsonl", "data/processing/filter/config1/vietstock_filter_20240301_20240331.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20240401_20240430.jsonl", "data/processing/filter/config1/vietstock_filter_20240401_20240430.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20240501_20240630.jsonl", "data/processing/filter/config1/vietstock_filter_20240501_20240630.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20240701_20240831.jsonl", "data/processing/filter/config1/vietstock_filter_20240701_20240831.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20240901_20241031.jsonl", "data/processing/filter/config1/vietstock_filter_20240901_20241031.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20241101_20241231.jsonl", "data/processing/filter/config1/vietstock_filter_20241101_20241231.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20250101_20250131.jsonl", "data/processing/filter/config1/vietstock_filter_20250101_20250131.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20250201_20250228.jsonl", "data/processing/filter/config1/vietstock_filter_20250201_20250228.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20250301_20250331.jsonl", "data/processing/filter/config1/vietstock_filter_20250301_20250331.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20250401_20250430.jsonl", "data/processing/filter/config1/vietstock_filter_20250401_20250430.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20250501_20250531.jsonl", "data/processing/filter/config1/vietstock_filter_20250501_20250531.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20250601_20250630.jsonl", "data/processing/filter/config1/vietstock_filter_20250601_20250630.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20250701_20250731.jsonl", "data/processing/filter/config1/vietstock_filter_20250701_20250731.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20250801_20251231.jsonl", "data/processing/filter/config1/vietstock_filter_20250801_20251231.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20260101_20260131.jsonl", "data/processing/filter/config1/vietstock_filter_20260101_20260131.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20260201_20260228.jsonl", "data/processing/filter/config1/vietstock_filter_20260201_20260228.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20260301_20260331.jsonl", "data/processing/filter/config1/vietstock_filter_20260301_20260331.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20260401_20260430.jsonl", "data/processing/filter/config1/vietstock_filter_20260401_20260430.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20260501_20260531.jsonl", "data/processing/filter/config1/vietstock_filter_20260501_20260531.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20260601_20260620.jsonl", "data/processing/filter/config1/vietstock_filter_20260601_20260620.jsonl"]
+  ],
+  "event_name": {
+    "01": "Chi trả cổ tức",
+    "02": "Phát hành thêm cổ phiếu",
+    "03": "Chia tách cổ phiếu",
+    "04": "Gộp cổ phiếu",
+    "05": "Niêm yết",
+    "06": "Hủy niêm yết",
+    "07": "Chuyển sàn",
+    "08": "Phát hành trái phiếu",
+    "09": "Cổ đông thay đổi tỷ lệ sở hữu",
+    "10": "Cổ đông cầm cố cổ phiếu",
+    "11": "Cổ đông phong tỏa cổ phiếu",
+    "12": "Thay đổi nhân sự chủ chốt",
+    "13": "Lãnh đạo cấp cao qua đời",
+    "14": "M&A",
+    "15": "Đầu tư",
+    "16": "Hợp đồng lớn",
+    "17": "Tổn thất tài sản nghiêm trọng",
+    "18": "Bồi thường lớn cho bên ngoài",
+    "19": "Vấn đề pháp lý với tổ chức",
+    "20": "Vấn đề pháp lý với cá nhân",
+    "21": "Phá sản"
+  },
+  "keyword": {
+    "01": [
+      "cổ tức", "trả cổ tức", "chi trả cổ tức", "cổ tức bằng tiền", "cổ tức bằng cổ phiếu"
+    ],
+    "02": [
+      "phát hành thêm cổ phiếu", "chào bán cổ phiếu", "phát hành ra công chúng", "ESOP"
+    ],
+    "03": [
+      "chia tách cổ phiếu", "tách cổ phiếu"
+    ],
+    "04": [
+      "gộp cổ phiếu"
+    ],
+    "05": [
+      "chính thức niêm yết", "lên sàn", "đăng ký niêm yết", "được niêm yết", "niêm yết cổ phiếu", "đưa vào giao dịch", "niêm yết lần đầu"
+    ],
+    "06": [
+      "hủy niêm yết", "hủy đăng ký giao dịch", "rời sàn"
+    ],
+    "07": [
+      "chuyển sàn", "chuyển sang sàn"
+    ],
+    "08": [
+      "phát hành trái phiếu", "chào bán trái phiếu"
+    ],
+    "09": [
+      "đăng ký mua cổ phiếu", "đăng ký bán cổ phiếu", "mua thêm cổ phần",
+      "bán bớt cổ phần", "thay đổi tỷ lệ sở hữu", 
+      "cổ đông lớn đăng ký"
+    ],
+    "10": [
+      "cầm cố cổ phiếu", "thế chấp cổ phiếu", "cầm cố cổ phần"
+    ],
+    "11": [
+      "phong tỏa cổ phiếu", "phong tỏa cổ phần", "bị phong tỏa cổ phiếu"
+    ],
+    "12": [
+      "bổ nhiệm", "miễn nhiệm", "từ nhiệm", "thôi chức",
+      "thay đổi nhân sự", "thay đổi lãnh đạo",
+      "bầu lại HĐQT", "bầu lại ban kiểm soát"
+    ],
+    "13": [
+      "qua đời", "qua đời đột ngột", "lãnh đạo qua đời"
+    ],
+    "14": [
+      "mua lại", "sáp nhập", "thâu tóm",
+      "nhà đầu tư chiến lược mua", "mua cổ phần chi phối"
+    ],
+    "15": [
+      "rót vốn", "góp vốn", "hợp tác đầu tư", "đầu tư vào",
+      "mua phần vốn góp", "đầu tư chiến lược"
+    ],
+    "16": [
+      "trúng thầu", 
+      "ký kết hợp đồng", "ký hợp đồng",  "hợp đồng hợp tác",
+      "ký kết thỏa thuận", "ký thỏa thuận"
+    ],
+    "17": [
+      "thiệt hại", "mất mát", "cháy nổ", "hỏa hoạn"
+    ],
+    "18": [
+      "bồi thường", "đền bù thiệt hại"
+    ],
+    "19": [
+      "bị xử phạt", "bị thanh tra", "bị kiện", "vi phạm hành chính",
+      "bị cưỡng chế", "tranh chấp pháp lý"
+    ],
+    "20": [
+      "bị khởi tố", "bị bắt", "bị tạm giam", "bị điều tra",
+      "bị tuyên phạt", "bị kết tội"
+    ],
+    "21": [
+      "phá sản", "vỡ nợ"
+    ]
+  }
+}
