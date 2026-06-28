@@ -1,11 +1,11 @@
-{ "combine": "data/processing/filter/vietstock_filter_2023_2026.jsonl",
+{ "combine": "data/processing/filter/config_test/vietstock_filter_2023_2026.jsonl",
   "in_out": [
-    ["data/raw/vietstock/vietstock_crawled_data_20230101_20230430.jsonl", "data/processing/filter/vietstock_filter_20230101_20230430.jsonl"],
-    ["data/raw/vietstock/vietstock_crawled_data_20230501_20230831.jsonl", "data/processing/filter/vietstock_filter_20230501_20230831.jsonl"],
-    ["data/raw/vietstock/vietstock_crawled_data_20230901_20231231.jsonl", "data/processing/filter/vietstock_filter_20230901_20231231.jsonl"],
-    ["data/raw/vietstock/vietstock_crawled_data_20240101_20240131.jsonl", "data/processing/filter/vietstock_filter_20240101_20240131.jsonl"],
-    ["data/raw/vietstock/vietstock_crawled_data_20240201_20240229.jsonl", "data/processing/filter/vietstock_filter_20240201_20240229.jsonl"],
-    ["data/raw/vietstock/vietstock_crawled_data_20240301_20240331.jsonl", "data/processing/filter/vietstock_filter_20240301_20240331.jsonl"]
+    ["data/raw/vietstock/vietstock_crawled_data_20230101_20230430.jsonl", "data/processing/filter/config_test/vietstock_filter_20230101_20230430.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20230501_20230831.jsonl", "data/processing/filter/config_test/vietstock_filter_20230501_20230831.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20230901_20231231.jsonl", "data/processing/filter/config_test/vietstock_filter_20230901_20231231.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20240101_20240131.jsonl", "data/processing/filter/config_test/vietstock_filter_20240101_20240131.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20240201_20240229.jsonl", "data/processing/filter/config_test/vietstock_filter_20240201_20240229.jsonl"],
+    ["data/raw/vietstock/vietstock_crawled_data_20240301_20240331.jsonl", "data/processing/filter/config_test/vietstock_filter_20240301_20240331.jsonl"]
   ],
   "event_name": {
     "01": "Chi trả cổ tức",
