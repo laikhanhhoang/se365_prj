@@ -1,3 +1,5 @@
 crawl/*.txt
 crawl/*.jsonl
 !crawl/*_CHUAN.*
+
+.env
