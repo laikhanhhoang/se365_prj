@@ -102,13 +102,13 @@ async def crawl_link_by_date(page: Page, target_date_str: str, debug: bool = Fal
     """
     Cào tất cả link bài báo Vietstock trong một ngày.
 
-    Output:
-    - list[str]: all_post_links — danh sách URL bài báo trong ngày
+    - Output:
+        - list[str]: all_post_links — danh sách URL bài báo trong ngày
 
     Input:
-    - Page: page — trang Playwright đang mở Vietstock
-    - str: target_date_str — ngày cần cào, dạng YYYY-MM-DD
-    - bool: debug — in log khi True
+        - Page: page — trang Playwright đang mở Vietstock
+        - str: target_date_str — ngày cần cào, dạng YYYY-MM-DD
+        - bool: debug — in log khi True
     """
     # beginf
     if debug:

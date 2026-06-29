@@ -24,8 +24,10 @@ def init_driver(
     Input:
     - str: url — địa chỉ trang web cần mở
     - bool: headless — chạy ẩn không hiển thị cửa sổ
+    
     """
     # beginf
+
     options = webdriver.ChromeOptions()
 
     options.add_argument("--no-sandbox")

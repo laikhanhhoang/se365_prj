@@ -1,13 +1,18 @@
-import sys, os, json, time
+# Import Third-party libs
+import sys, os, json, time, logging
 from pathlib import Path
 from openai import OpenAI, RateLimitError
 from dotenv import load_dotenv
 
+logging.basicConfig(level=logging.WARNING)
+
+# Import from this project
 sys.path.append(str(Path(__file__).parent.parent))
-from utils.prj_dir import prj_dir_str
+
+from utils.dir_processor import get_project_abs_dir_str_from_env
 
 
-PRJ_ABS_DIR = prj_dir_str()
+PRJ_ABS_DIR = get_project_abs_dir_str_from_env(".env")  # Đường dẫn tuyệt đối của thư mục dự án
 
 
 # ─── IO ───────────────────────────────────────────────────────────────────────
@@ -22,7 +27,6 @@ def save_jsonl(records: list[dict], path: str) -> None:
     with open(path, "w", encoding="utf-8") as f:
         for r in records:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
-
 
 # ─── Core logic ───────────────────────────────────────────────────────────────
 
@@ -133,6 +137,7 @@ def main(
         output_file = (Path(PRJ_ABS_DIR) / in_out_file[1]).resolve().as_posix()
 
         print(f"\n[Processing] {Path(input_file).name}")
+        begin_time = time.time()
         label_file(
             input_file      = input_file,
             output_file     = output_file,
@@ -141,14 +146,21 @@ def main(
             system_prompt   = system_prompt,
             prompt_template = prompt_template,
         )
+        end_time = time.time()
+        print(f"[Done] {Path(input_file).name} in {end_time - begin_time:.2f} seconds")
 
 
 if __name__ == "__main__":
+    import logging
     import argparse
+
+    print(PRJ_ABS_DIR)
+
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--env",    help="Path to the .env file")
     parser.add_argument("--config", help="Path to the config file")
     args = parser.parse_args()
+    
+    # main(env_path=args.env, config_path=args.config)
 
-    main(env_path=args.env, config_path=args.config)
