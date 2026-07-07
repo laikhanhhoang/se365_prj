@@ -3,7 +3,7 @@ Bạn là chuyên gia tài chính và có nhiều kinh nghiệm trong việc đ�
 Hãy trích xuất các sự kiện tài chính xuất hiện trong văn bản được cung cấp. Việc trích ra các sự kiện và các thành phần tương ứng cần được xem xét kĩ càng ngữ nghĩa theo ngữ cảnh.
 
 Vui lòng sử dụng văn bản gốc để trích xuất sự kiện. 
-Mỗi sự kiện trích xuất được cần được trả về dưới dạng từ điển JSON. Với các trường không xuất hiện hoặc không được đề cập trong bài báo, hãy điền giá trị "NULL", không tự suy diễn hoặc bịa thông tin.
+Mỗi sự kiện trích xuất được cần được trả về dưới dạng từ điển JSON. Với các trường không xuất hiện hoặc không được đề cập trong bài báo, hãy điền giá trị "null", không tự suy diễn hoặc bịa thông tin.
 Đồng thời, bổ sung trường "confidence" nhận một trong các giá trị high/medium/low tương ứng với sự kiện được xác nhận đã xảy ra/sự kiện là kế hoạch, dự kiến do người viết dự báo, chưa xảy ra hoặc chưa được phê duyệt chính thức/sự kiện chỉ là lời đồn hoặc do model suy luận từ ngữ cảnh, không được nêu trực tiếp.
 Nếu không có sự kiện nào thuộc về các loại sự kiện được đề cập, trả về list rỗng.
 Nếu trong bài có nhiều cá nhân/tổ chức khác nhau cùng liên quan đến 1 loại sự kiện (VD: nhiều cá nhân trong cùng một vụ án) và mỗi cá nhân/tổ chức đều có đủ thông tin rõ ràng để điền các trường, hãy trích xuất riêng từng cá nhân/tổ chức thành một sự kiện độc lập, không chỉ trích xuất nhân vật/tổ chức chính được nhắc ở tiêu đề.
@@ -183,7 +183,7 @@ Tiêu đề: SeABank chính thức bổ nhiệm ông Loic Faussier làm Tổng G
 
 OUTPUT:
 [
-{"event_type": "Thay đổi nhân sự chủ chốt", "ten_to_chuc": "Ngân hàng TMCP Đông Nam Á (SeABank, SSB)", "ten_nhan_su": "Loic Faussier", "trang_thai": bổ nhiệm, "chuc_vu": "Tổng Giám đốc", "nguoi_thay_the": NULL, "confidence": "high"}
+{"event_type": "Thay đổi nhân sự chủ chốt", "ten_to_chuc": "Ngân hàng TMCP Đông Nam Á (SeABank, SSB)", "ten_nhan_su": "Loic Faussier", "trang_thai": bổ nhiệm, "chuc_vu": "Tổng Giám đốc", "nguoi_thay_the": null, "confidence": "high"}
 ]
 
 
@@ -192,14 +192,14 @@ Tiêu đề: Ông Đỗ Thành Nhân kháng cáo, cho rằng mình bị lợi d�
 
 OUTPUT:
 [
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Đỗ Thành Nhân", "ten_to_chuc": "Công ty Cổ phần Louis Holdings", "chuc_vu": "cựu Chủ tịch HĐQT", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": kháng cáo, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"},
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Phạm Thanh Tùng", "ten_to_chuc": "Công ty Chứng khoán Trí Việt", "chuc_vu": "cựu Chủ tịch HĐQT", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"},
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Đỗ Đức Nam", "ten_to_chuc": "Công ty CP Chứng khoán Trí Việt", "chuc_vu": "cựu Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"},
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Lê Thị Thu Hương", "ten_to_chuc": "Công ty CP Chứng khoán Trí Việt", "chuc_vu": "nguyên Phó Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"},
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Lê Thị Thùy Liên", "ten_to_chuc": "Công ty CP Chứng khoán Trí Việt", "chuc_vu": "nhân viên dịch vụ tài chính", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"},
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Trịnh Thị Thùy Linh", "ten_to_chuc": "Công ty Louis Holdings", "chuc_vu": "cựu Giám đốc hành chính", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"},
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Vũ Ngọc Long", "ten_to_chuc": "Công ty Louis Holdings", "chuc_vu": "nguyên Phó Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"},
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Ngô Thục Vũ", "ten_to_chuc": "Công ty CP Louis Capital", "chuc_vu": "nguyên Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"}
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Đỗ Thành Nhân", "ten_to_chuc": "Công ty Cổ phần Louis Holdings", "chuc_vu": "cựu Chủ tịch HĐQT", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": kháng cáo, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"},
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Phạm Thanh Tùng", "ten_to_chuc": "Công ty Chứng khoán Trí Việt", "chuc_vu": "cựu Chủ tịch HĐQT", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"},
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Đỗ Đức Nam", "ten_to_chuc": "Công ty CP Chứng khoán Trí Việt", "chuc_vu": "cựu Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"},
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Lê Thị Thu Hương", "ten_to_chuc": "Công ty CP Chứng khoán Trí Việt", "chuc_vu": "nguyên Phó Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"},
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Lê Thị Thùy Liên", "ten_to_chuc": "Công ty CP Chứng khoán Trí Việt", "chuc_vu": "nhân viên dịch vụ tài chính", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"},
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Trịnh Thị Thùy Linh", "ten_to_chuc": "Công ty Louis Holdings", "chuc_vu": "cựu Giám đốc hành chính", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"},
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Vũ Ngọc Long", "ten_to_chuc": "Công ty Louis Holdings", "chuc_vu": "nguyên Phó Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"},
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Ngô Thục Vũ", "ten_to_chuc": "Công ty CP Louis Capital", "chuc_vu": "nguyên Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"}
 ]
 
 
@@ -208,16 +208,16 @@ Tiêu đề: IPO 2022: “Nhỏ giọt”\nNội dung:Theo thống kê, thị tr
 
 OUTPUT:
 [
-{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tôn Đông Á", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": NULL, "so_luong": "12.4 triệu cp", "gia_phat_hanh": "40,000 đồng/cp", "tong_gia_tri": "496 tỷ đồng", "ngay_chot_quyen": NULL, "confidence": "high"},
-{"event_type": "Niêm yết", "ten_to_chuc": "CTCP Tôn Đông Á", "ma_co_phieu": NULL, "san_giao_dich": "HOSE", "so_luong_co_phieu": NULL, "ngay_hieu_luc": NULL, "confidence": "medium"},
-{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tập đoàn Nova Consumer", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": NULL, "so_luong": "10.9 triệu cp", "gia_phat_hanh": "44,000 đồng/cp", "tong_gia_tri": "479 tỷ đồng", "ngay_chot_quyen": NULL, "confidence": "high"},
-{"event_type": "Đầu tư", "ten_to_chuc": "CTCP Tập đoàn Nova Consumer", "ten_cong_ty_dau_tu_vao": "Công ty TNHH Thực phẩm Mặt trời mọc", "ty_le_so_huu": NULL, "gia_tri_dau_tu": "465 tỷ đồng", "muc_dich": "mua lại vốn góp và góp vốn để mở rộng kinh doanh", "ngay_thuc_hien": NULL, "confidence": "medium"},
-{"event_type": "Niêm yết", "ten_to_chuc": "CTCP Tập đoàn Nova Consumer", "ma_co_phieu": "NCG", "san_giao_dich": "HOSE", "so_luong_co_phieu": NULL, "ngay_hieu_luc": NULL, "confidence": "low"},
-{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tập đoàn Green+", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": NULL, "so_luong": "9.59 triệu cp", "gia_phat_hanh": "16,000 đồng/cp", "tong_gia_tri": "153.6 tỷ đồng", "ngay_chot_quyen": NULL, "confidence": "high"},
-{"event_type": "Niêm yết", "ten_to_chuc": "CTCP Tập đoàn Green+", "ma_co_phieu": NULL, "san_giao_dich": "HNX", "so_luong_co_phieu": NULL, "ngay_hieu_luc": NULL, "confidence": "medium"},
-{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Nhựa Picomat", "phuong_thuc_phat_hanh": "đấu giá công khai", "loai_co_phieu": NULL, "so_luong": "gần 2.7 triệu cp", "gia_phat_hanh": "10,934 đồng/cp", "tong_gia_tri": "29.4 tỷ đồng", "ngay_chot_quyen": NULL, "confidence": "high"},
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tôn Đông Á", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": null, "so_luong": "12.4 triệu cp", "gia_phat_hanh": "40,000 đồng/cp", "tong_gia_tri": "496 tỷ đồng", "ngay_chot_quyen": null, "confidence": "high"},
+{"event_type": "Niêm yết", "ten_to_chuc": "CTCP Tôn Đông Á", "ma_co_phieu": null, "san_giao_dich": "HOSE", "so_luong_co_phieu": null, "ngay_hieu_luc": null, "confidence": "medium"},
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tập đoàn Nova Consumer", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": null, "so_luong": "10.9 triệu cp", "gia_phat_hanh": "44,000 đồng/cp", "tong_gia_tri": "479 tỷ đồng", "ngay_chot_quyen": null, "confidence": "high"},
+{"event_type": "Đầu tư", "ten_to_chuc": "CTCP Tập đoàn Nova Consumer", "ten_cong_ty_dau_tu_vao": "Công ty TNHH Thực phẩm Mặt trời mọc", "ty_le_so_huu": null, "gia_tri_dau_tu": "465 tỷ đồng", "muc_dich": "mua lại vốn góp và góp vốn để mở rộng kinh doanh", "ngay_thuc_hien": null, "confidence": "medium"},
+{"event_type": "Niêm yết", "ten_to_chuc": "CTCP Tập đoàn Nova Consumer", "ma_co_phieu": "NCG", "san_giao_dich": "HOSE", "so_luong_co_phieu": null, "ngay_hieu_luc": null, "confidence": "low"},
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tập đoàn Green+", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": null, "so_luong": "9.59 triệu cp", "gia_phat_hanh": "16,000 đồng/cp", "tong_gia_tri": "153.6 tỷ đồng", "ngay_chot_quyen": null, "confidence": "high"},
+{"event_type": "Niêm yết", "ten_to_chuc": "CTCP Tập đoàn Green+", "ma_co_phieu": null, "san_giao_dich": "HNX", "so_luong_co_phieu": null, "ngay_hieu_luc": null, "confidence": "medium"},
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Nhựa Picomat", "phuong_thuc_phat_hanh": "đấu giá công khai", "loai_co_phieu": null, "so_luong": "gần 2.7 triệu cp", "gia_phat_hanh": "10,934 đồng/cp", "tong_gia_tri": "29.4 tỷ đồng", "ngay_chot_quyen": null, "confidence": "high"},
 {"event_type": "Niêm yết", "ten_to_chuc": "CTCP Nhựa Picomat", "ma_co_phieu": "PCH", "san_giao_dich": "HNX", "so_luong_co_phieu": "20 triệu cp", "ngay_hieu_luc": "28/07/2022", "confidence": "high"},
-{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "Công ty TNHH MTV Xây dựng Công trình Tân Cảng", "phuong_thuc_phat_hanh": "đấu giá công khai", "loai_co_phieu": NULL, "so_luong": "8,200 cp", "gia_phat_hanh": "15,502 đồng/cp", "tong_gia_tri": "127 triệu đồng", "ngay_chot_quyen": NULL, "confidence": "high"},
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "Công ty TNHH MTV Xây dựng Công trình Tân Cảng", "phuong_thuc_phat_hanh": "đấu giá công khai", "loai_co_phieu": null, "so_luong": "8,200 cp", "gia_phat_hanh": "15,502 đồng/cp", "tong_gia_tri": "127 triệu đồng", "ngay_chot_quyen": null, "confidence": "high"},
 {"event_type": "Niêm yết", "ten_to_chuc": "Công ty TNHH MTV Xây dựng Công trình Tân Cảng", "ma_co_phieu": "XDC", "san_giao_dich": "UPCoM", "so_luong_co_phieu": "8,200 cp", "ngay_hieu_luc": "01/12/2022", "confidence": "high"}
 ]
 

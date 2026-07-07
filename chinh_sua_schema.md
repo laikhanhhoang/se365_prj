@@ -329,3 +329,26 @@ F1        = 2 * P * R / (P + R)
 - **Token F1** cho các trường text dài (`evidence`, `ly_do`)
 
 **Metric tổng hợp giai đoạn đầu:** Event type F1 + Field exact match rate (trên các event đã detect đúng).
+
+---
+
+# Process output
+
+## 1. Parse `label_raw` thành JSON có cấu trúc
+
+**Vấn đề:** `label_raw` (kết quả thô trả về từ model) chưa phải JSON hợp lệ ngay lập tức, vì 2 lý do:
+- Bọc trong markdown code fence (```` ```json ... ``` ````).
+- Dùng `NULL` (chữ hoa, không quote) thay vì `null` chuẩn JSON — do các ví dụ few-shot trong prompt.txt cũng viết `NULL` kiểu đó nên model bắt chước theo.
+
+**Đề xuất — các bước xử lý (đã chốt):**
+1. `strip()` chuỗi `label_raw`.
+2. Xóa markdown code fence **nếu có**, chấp nhận cả 2 dạng ` ```json ` và ` ``` ` trần (không có "json" theo sau):
+   - Nếu chuỗi bắt đầu bằng ` ``` ` → tìm dấu xuống dòng đầu tiên ngay sau đó (kết thúc dòng mở fence), cắt bỏ từ đầu chuỗi đến hết dòng đó.
+   - Nếu chuỗi kết thúc bằng ` ``` ` → cắt bỏ phần đó ở cuối.
+3. `strip()` lần nữa để dọn khoảng trắng/newline thừa còn sót lại sau khi cắt fence.
+4. Chuẩn hóa mọi biến thể viết hoa/thường của `null` (`Null`, `NUll`, `NULL`...) về `null` chuẩn JSON — dùng `re.sub(r'\bnull\b', 'null', text, flags=re.IGNORECASE)`.
+5. Parse bằng `json.loads()`, bọc try/except — sample nào parse lỗi thì log cảnh báo và đánh dấu cần review thủ công, không để crash cả pipeline đang chạy hàng nghìn sample.
+
+**Hướng khắc phục tận gốc (không loại trừ với parser ở trên):** sửa lại 4 ví dụ few-shot trong prompt.txt, đổi `NULL` → `null` để model học đúng chuẩn JSON ngay từ đầu, giảm bớt việc phải "vá" ở bước parse.
+
+> **Đã xác nhận qua thực tế:** so sánh 2 sample (`vietstock_20260601_02` và `vietstock_20260601_06`) cho thấy model **không nhất quán** khi bọc markdown code fence — sample 02 có bọc ` ```json `, sample 06 thì không, dù cùng 1 lần chạy. Parser bắt buộc phải xử lý được cả 2 trường hợp (có fence hoặc không), không được giả định luôn có fence. Lỗi `NULL` không quote thì xuất hiện nhất quán ở cả 2 sample.

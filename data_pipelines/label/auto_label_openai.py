@@ -76,7 +76,7 @@ def _get_response_from_openai_api(
     temperature: float,
     prompt:      str,
     max_retries: int = 3,
-) -> str:
+) -> tuple[str, int]:
     """
     - Summary: Gọi OpenAI API, retry exponential backoff khi lỗi.
     - Args:
@@ -86,7 +86,7 @@ def _get_response_from_openai_api(
         - prompt:      Nội dung prompt gửi lên API.
         - max_retries: Số lần retry tối đa.
     - Output:
-        - str: Phản hồi từ model đã được strip.
+        - tuple[str, int]: Phản hồi từ model đã được strip, và tổng số token đã dùng.
     """
     for attempt in range(max_retries):
         try:
@@ -95,7 +95,7 @@ def _get_response_from_openai_api(
                 messages    = [{"role": "user", "content": prompt}],
                 temperature = temperature,
             )
-            return resp.choices[0].message.content.strip()
+            return resp.choices[0].message.content.strip(), resp.usage.total_tokens
         except Exception as e:
             if attempt < max_retries - 1:
                 wait = 2 ** attempt
@@ -118,7 +118,8 @@ def _process_file(
         1. Tải id đã xử lý (_get_existing_ids()).
         2. Tải records từ input (_get_records()).
         3. Build prompt và gọi API (_build_prompt(), _get_response_from_openai_api()).
-        4. Ghi label_raw vào output.
+        4. Ghi label_raw vào output, in tiến độ và token từng sample.
+        5. In tổng thời gian và tổng token đã dùng cho file.
     - Args:
         - in_path:         Đường dẫn file input JSONL.
         - out_path:        Đường dẫn file output JSONL.
@@ -133,17 +134,27 @@ def _process_file(
     records      = _get_records(in_path)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    new_count = 0
+    new_count   = 0
+    total_token = 0
+    start_time  = time.time()
     with out_path.open('a', encoding='utf-8') as fout:
         for record in tqdm.tqdm(records, desc=f'label {in_path.name}', ncols=100):
-            if record.get("id") in existing_ids:
+            sample_id = record.get("id")
+            if sample_id in existing_ids:
                 continue
-            prompt              = _build_prompt(prompt_template, record.get("content", ""))
-            record["label_raw"] = _get_response_from_openai_api(client, model, temperature, prompt)
+
+            print(f"bắt đầu xử lí sample {sample_id}...")
+            prompt                    = _build_prompt(prompt_template, record.get("content", ""))
+            label_raw, used_token     = _get_response_from_openai_api(client, model, temperature, prompt)
+            record["label_raw"]       = label_raw
+            total_token              += used_token
             fout.write(json.dumps(record, ensure_ascii=False) + '\n')
             new_count += 1
+            print(f"đã xử lí xong sample {sample_id}, tốn {used_token} token")
 
+    elapsed_seconds = time.time() - start_time
     print(f'  label: {new_count} mới / {len(records)} tổng (đã có: {len(existing_ids)}) → {out_path.name}')
+    print(f'  thời gian xử lý: {elapsed_seconds:.2f}s, tổng token đã dùng: {total_token}')
 
 
 def process_files(
