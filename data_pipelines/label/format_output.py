@@ -33,6 +33,7 @@ EVENTS_FIELDS = {
     "M&A":                           ["ben_mua", "ten_to_chuc", "loai_giao_dich", "ty_le_so_huu_truoc", "ty_le_so_huu_sau", "gia_tri_thuong_vu", "ngay_hoan_tat"],
     "Đầu tư":                        ["ten_to_chuc", "ten_cong_ty_dau_tu_vao", "ty_le_so_huu", "gia_tri_dau_tu", "muc_dich", "ngay_thuc_hien"],
     "Hợp đồng lớn":                  ["ten_to_chuc", "ten_doi_tac", "loai_hop_dong", "ten_du_an", "gia_tri_hop_dong", "thoi_gian_thuc_hien", "ngay_ky"],
+    "Vay vốn":                       ["ten_to_chuc", "ben_cho_vay", "tong_gia_tri_khoan_vay", "muc_dich", "ky_han", "ben_bao_lanh", "ngay_ky"],
     "Tổn thất tài sản nghiêm trọng": ["ten_to_chuc", "mo_ta_su_co", "gia_tri_ton_that", "bao_hiem_boi_thuong", "ngay_cong_bo"],
     "Bồi thường lớn cho bên ngoài":  ["ten_to_chuc", "ben_nhan_boi_thuong", "so_tien", "ly_do", "ngay_cong_bo"],
     "Vấn đề pháp lý với tổ chức":    ["thuc_the_bi_xu_ly", "co_quan_xu_phat", "ly_do_vi_pham", "hinh_thuc_xu_phat", "so_tien_phat", "ngay_quyet_dinh"],

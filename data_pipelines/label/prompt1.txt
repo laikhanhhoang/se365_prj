@@ -130,21 +130,30 @@ Các loại sự kiện và các thành phần được định nghĩa như sau:
     - thoi_gian_thuc_hien: Thời gian thực hiện hợp đồng.
     - ngay_ky: Ngày ký kết hợp đồng.
 
-17. Tổn thất tài sản nghiêm trọng: là việc doanh nghiệp gặp phải thiệt hại tài sản nghiêm trọng do sự cố như cháy nổ, hỏa hoạn, thiên tai hoặc tai nạn lao động, có thể kèm theo thương vong. Sự kiện này thường ảnh hưởng tiêu cực đến hoạt động sản xuất kinh doanh và kết quả tài chính của doanh nghiệp trong ngắn hạn.
+17. Vay vốn: là việc doanh nghiệp vay vốn từ ngân hàng hoặc tổ chức tín dụng để phục vụ hoạt động kinh doanh, đầu tư dự án hoặc tái cơ cấu nợ. Khoản vay có thể được bảo lãnh bởi công ty mẹ, công ty liên quan hoặc bên thứ ba. Đây là kênh huy động vốn nợ phổ biến bên cạnh phát hành trái phiếu, phản ánh nhu cầu vốn và mức độ đòn bẩy tài chính của doanh nghiệp.
+    - ten_to_chuc: Tên tổ chức thực hiện vay vốn.
+    - ben_cho_vay: Bên cho vay (ngân hàng, tổ chức tín dụng).
+    - tong_gia_tri_khoan_vay: Tổng giá trị khoản vay.
+    - muc_dich: Mục đích của khoản vay.
+    - ky_han: Kỳ hạn khoản vay.
+    - ben_bao_lanh: Bên bảo lãnh cho khoản vay (nếu có).
+    - ngay_ky: Ngày ký kết hoặc công bố thông tin khoản vay.
+
+18. Tổn thất tài sản nghiêm trọng: là việc doanh nghiệp gặp phải thiệt hại tài sản nghiêm trọng do sự cố như cháy nổ, hỏa hoạn, thiên tai hoặc tai nạn lao động, có thể kèm theo thương vong. Sự kiện này thường ảnh hưởng tiêu cực đến hoạt động sản xuất kinh doanh và kết quả tài chính của doanh nghiệp trong ngắn hạn.
     - ten_to_chuc: Tên tổ chức gặp tổn thất tài sản.
     - mo_ta_su_co: Mô tả ngắn gọn về sự cố gây tổn thất.
     - gia_tri_ton_that: Giá trị thiệt hại ước tính.
     - bao_hiem_boi_thuong: Tình trạng được bảo hiểm bồi thường (có/không/một phần).
     - ngay_cong_bo: Ngày công bố thông tin về sự cố.
 
-18. Bồi thường lớn cho bên ngoài: là việc doanh nghiệp phải chi trả một khoản bồi thường lớn cho bên thứ ba, do vi phạm hợp đồng, gây thiệt hại hoặc theo phán quyết của tòa án/trọng tài. Khoản bồi thường lớn có thể ảnh hưởng đáng kể đến kết quả kinh doanh của doanh nghiệp.
+19. Bồi thường lớn cho bên ngoài: là việc doanh nghiệp phải chi trả một khoản bồi thường lớn cho bên thứ ba, do vi phạm hợp đồng, gây thiệt hại hoặc theo phán quyết của tòa án/trọng tài. Khoản bồi thường lớn có thể ảnh hưởng đáng kể đến kết quả kinh doanh của doanh nghiệp.
     - ten_to_chuc: Tên tổ chức phải chi trả bồi thường.
     - ben_nhan_boi_thuong: Bên nhận khoản bồi thường.
     - so_tien: Số tiền bồi thường.
     - ly_do: Lý do dẫn đến việc bồi thường.
     - ngay_cong_bo: Ngày công bố thông tin bồi thường.
 
-19. Vấn đề pháp lý với tổ chức: là việc doanh nghiệp bị cơ quan quản lý nhà nước xử phạt vi phạm hành chính, thanh tra hoặc cưỡng chế do vi phạm quy định pháp luật trong hoạt động kinh doanh, công bố thông tin hoặc thuế. Đây là thông tin phản ánh rủi ro tuân thủ của doanh nghiệp.
+20. Vấn đề pháp lý với tổ chức: là việc doanh nghiệp bị cơ quan quản lý nhà nước xử phạt vi phạm hành chính, thanh tra hoặc cưỡng chế do vi phạm quy định pháp luật trong hoạt động kinh doanh, công bố thông tin hoặc thuế. Đây là thông tin phản ánh rủi ro tuân thủ của doanh nghiệp.
     - thuc_the_bi_xu_ly: Tên tổ chức bị xử lý vi phạm.
     - co_quan_xu_phat: Cơ quan ra quyết định xử phạt hoặc thanh tra.
     - ly_do_vi_pham: Lý do dẫn đến vi phạm.
@@ -152,7 +161,7 @@ Các loại sự kiện và các thành phần được định nghĩa như sau:
     - so_tien_phat: Số tiền phạt (nếu có).
     - ngay_quyet_dinh: Ngày ra quyết định xử phạt.
 
-20. Vấn đề pháp lý với cá nhân: là việc một cá nhân liên quan đến doanh nghiệp (lãnh đạo, cổ đông...) bị cơ quan thực thi pháp luật khởi tố, bắt tạm giam hoặc điều tra do liên quan đến hành vi vi phạm pháp luật. Sự kiện này thường tác động mạnh đến uy tín và giá cổ phiếu của doanh nghiệp liên quan.
+21. Vấn đề pháp lý với cá nhân: là việc một cá nhân liên quan đến doanh nghiệp (lãnh đạo, cổ đông...) bị cơ quan thực thi pháp luật khởi tố, bắt tạm giam hoặc điều tra do liên quan đến hành vi vi phạm pháp luật. Sự kiện này thường tác động mạnh đến uy tín và giá cổ phiếu của doanh nghiệp liên quan.
     - ten_ca_nhan: Tên cá nhân liên quan đến vụ việc pháp lý.
     - ten_to_chuc: Tên tổ chức mà cá nhân đó liên quan.
     - chuc_vu: Chức vụ của cá nhân tại tổ chức.
@@ -161,7 +170,7 @@ Các loại sự kiện và các thành phần được định nghĩa như sau:
     - co_quan_thuc_thi: Cơ quan thực thi pháp luật xử lý vụ việc.
     - ngay_thuc_thi: Ngày thực hiện hành động pháp lý.
 
-21. Phá sản: là việc doanh nghiệp mất khả năng thanh toán các khoản nợ đến hạn và bị tòa án ra quyết định mở thủ tục phá sản, tái cơ cấu bắt buộc hoặc tự nguyện thanh lý. Đây là sự kiện nghiêm trọng nhất, thường đánh dấu sự chấm dứt hoạt động hoặc tái cấu trúc toàn diện của doanh nghiệp.
+22. Phá sản: là việc doanh nghiệp mất khả năng thanh toán các khoản nợ đến hạn và bị tòa án ra quyết định mở thủ tục phá sản, tái cơ cấu bắt buộc hoặc tự nguyện thanh lý. Đây là sự kiện nghiêm trọng nhất, thường đánh dấu sự chấm dứt hoạt động hoặc tái cấu trúc toàn diện của doanh nghiệp.
     - ten_to_chuc: Tên tổ chức phá sản.
     - loai_hanh_dong: Loại hành động (phá sản/tái cơ cấu/thanh lý tự nguyện).
     - nganh_nghe: Ngành nghề kinh doanh chính của doanh nghiệp.
@@ -171,11 +180,20 @@ Các loại sự kiện và các thành phần được định nghĩa như sau:
 
 Dưới đây là một vài ví dụ trích xuất sự kiện tài chính:
 
+
+NỘI DUNG:
+Tiêu đề: Bảo hiểm Quân đội: Ra mắt ứng dụng bảo hiểm số phiên bản nâng cấp tích hợp đa tiện ích\nNội dung:Chuyển đổi số toàn cầu và công nghệ số 4.0 đã trở thành khái niệm quen thuộc với nhiều ứng dụng thực tiễn trong cuộc sống. Với ngành bảo hiểm nói chung và bảo hiểm số MIC nói riêng đã có những bước tiến lớn giúp chinh phục trái tim khách hàng bằng ứng dụng Bảo hiểm dễ hiểu – dễ mua.\nTrong những năm gần đây, dưới sự tác động của dịch bệnh và những nguy cơ luôn tiềm ẩn tăng cao. Thị trường bảo hiểm Việt Nam được đánh giá là tiềm năng với tỷ lệ thâm nhập (doanh thu phí bảo hiểm/GDP) và phí bảo hiểm bình quân (chi tiêu cho bảo hiểm bình quân đầu người) ở mức thấp. Ngành bảo hiểm được coi là “tấm lá chắn” vững chắc cho nền kinh tế - xã hội. Hàng năm, ngành bảo hiểm chi trả hàng chục nghìn tỷ đồng tiền bồi thường và quyền lợi bảo hiểm cho các cá nhân, doanh nghiệp gặp rủi ro, góp phần ổn định ngân sách nhà nước. Bên cạnh đó các loại hình bảo hiểm thiết thực cho đời sống như: bảo hiểm sức khỏe, bảo hiểm xe, bảo hiểm tài sản (cháy nổ),... cũng đã được người dân hiểu và chú trọng.\nVới những đặc điểm chung đó, Bảo hiểm Quân đội – thương hiệu Top đầu ngành bảo hiểm Phi nhân thọ và được lựa chọn là thương hiệu uy tín nhiều năm liền đã liên tục nghiên cứu đưa ra các chương trình bảo hiểm linh hoạt đáp ứng nhu cầu bảo vệ của khách hàng. Trong đó, MIC đề cao tiêu chí “bảo hiểm dễ hiểu” để người dân ai cũng có thể mua bảo hiểm, bảo vệ mọi rủi ro tiềm ẩn góp phần nâng cao chất lượng cuộc sống.\nBên cạnh đó tiêu chí “dễ mua” đơn giản thuận tiện cho khách hàng cũng được đặt lên hàng đầu. Bảo hiểm Quân đội tập trung đầu tư công nghệ liên tục nâng cấp ứng dụng MIC giúp người mua có thể thực hiện 100% các thao tác online chỉ trong tích tắc.\nTrước đây, bảo hiểm luôn gặp những rào cản để có thể đến tay khách hàng tuy nhiên hiện nay với sự trợ giúp của công nghệ tất cả đã nằm trong tay người dùng. Chủ động tìm hiểu, mua và nhận giấy chứng nhận bảo hiểm online mọi lúc mọi nơi. Năm 2021, MIC tiên phong là đơn vị cấp ấn chỉ điện tử cho nhiều nghiệp vụ bảo hiểm trong đó có Bảo hiểm TNDS mở ra một trang mới về bảo hiểm xe, người tham gia giao thông có thể chủ động mua bảo hiểm mọi lúc mọi nơi không sợ mất- quên giấy tờ, không sợ bảo hiểm giả mạo,... Đến nay với ứng dụng MIC thế hệ mới đã nâng cấp với nhiều tính năng vượt trội tích hợp công nghệ bồi thường online cho nghiệp vụ bảo hiểm xe, tiến tới bồi thường online bảo hiểm sức khỏe con người.\nBên cách đó điểm nổi bật trong phiên bản nâng cấp 2022 đó là tính cá nhân hóa thân thiện với người dùng. Các chương trình bảo hiểm cũng được bổ sung giúp người mua chủ động và dễ dàng tìm hiểu. Đặc biệt, MIC là đơn vị tiên phong triển khai mua bảo hiểm vật chất xe ngay tại APP. Khách hàng có thể chủ động tìm hiểu mức phí phù hợp cho từng loại xe  trên ứng dụng và không cần chờ đợi tư vấn viên.\nTheo đó, chị Thu Hà – Quận Hai Bà Trưng,  Hà Nội chia sẻ: “trước đây khi mua bảo hiểm sức khỏe của một số bên tôi thường phải tìm Website sau đó gọi điện để nhờ từ vấn các mức phí, quyền lợi,… nhưng nay sử dụng app MIC tôi thấy nhanh và tiện, chủ động xem phí để lựa chọn cho cả gia đình. Ngoài ra mua qua app thanh toán online qua các ngân hàng điện tử thao tác dễ dàng chỉ ít phút là có ngay bảo hiểm. Đặc biệt, thông qua APP tôi cũng theo dõi được tiến độ hồ sơ bồi thường của minh. Nói chung rất là hiện đại và tiện lợi”\nVới sự cải tiến nâng cấp liên tục về công nghệ, hiện nay khách hàng có thể chủ động mua bảo hiểm vật chất xe trực tiếp trên app. Anh Nam – Quận Đống Đa, HN cho biết: “Trước đây việc quản lý thông tin bảo hiểm bằng giấy tờ trong đó có bảo hiểm xe ô tô, nhưng nay bảo hiểm vật chất đã được tích hợp trên app MIC giúp tôi chủ động theo dõi thông tin, tái tục đúng hạn giúp an tâm hơn khi tham gia giao thông”.\nCó thể thấy, sự tiện lợi của ứng dụng MIC khi hỗ trợ khách hàng làm thủ tục bồi thường dễ dàng thao tác nộp hồ sơ online trên điện thoại sẽ thay đổi hoàn toàn định kiến của khách hàng về quy trình bảo hiểm từ trước đến nay.\nVới ứng dụng MIC, khách hàng có thể tham gia bảo hiểm trực tuyến, tra cứu mạng lưới hệ thống MIC, mạng lưới gara và các cơ sở y tế trong trường hợp cần được trợ giúp, dễ dàng quản lý lịch sử mua & Chứng nhận bảo hiểm chủ động tái tục khi hết hạn.\nPhía lãnh đạo MIC cho biết với sự thay đổi liên tục của công nghệ cũng như nghiên cứu hành vi mua sắm của khách hàng, MIC đã và đang phát triển nền tảng công nghệ số thông qua các giải pháp mới như OPEN API, CRM…thiết lập và vận hành mô hình kinh doanh số: Hệ thống core bảo hiểm, kết nối toàn bộ dữ liêu xuyên suốt từ khâu bán hàng, dịch vụ khách hàng, bồi thường, kế toán…. hình thành một hệ sinh thái số với những tính năng đa dạng, quy trình hiện đại mang đến cho khách hàng những trải nghiệm liền mạch, vượt trội, an toàn và tiện ích, hướng tới mục tiêu TOP 3 về thị phần năm 2026 & số 1 về chuyển đổi số.\nTải ứng dụng tại đây: https://onelink.to/b9enrf
+
+OUTPUT:
+[]
+
 NỘI DUNG:
 Tiêu đề: Chia cổ tức \"khủng\" 330,000 đồng/cp, công ty con của KBC có gì?\nNội dung:Trong ngày cuối cùng của năm 2022 (31/12), Tổng Công ty Phát triển Đô thị Kinh Bắc - CTCP (HOSE: KBC) công bố thông tin về việc công ty con là CTCP Khu công nghiệp Sài Gòn – Hải Phòng (SHP) sẽ thực hiện chi trả cổ tức với tỷ lệ \"khủng\" 330%.\nVới mệnh giá 100,000 đồng/cp, tỷ lệ chia cổ tức 330%, mỗi cổ phần sở hữu, cổ đông SHP sẽ nhận được 330,000 đồng.\nSHP thành lập ngày 20/07/2006 tại Hải Phòng với vốn điều lệ 200 tỷ đồng, tổng số cổ phần 2 triệu cp, do 9 cổ đông góp vốn thành lập. Trong đó, KBC nắm sở hữu 18%. Đến nay, sau khi tăng vốn điều lệ lên 416 tỷ đồng, KBC nâng sở hữu lên 3.6 triệu cp, tỷ lệ biểu quyết cũng như tỷ lệ lợi ích tăng lên 86.54%. Theo đó, số tiền cổ tức KBC có thể nhận được ước tính khoảng 1,188 tỷ đồng.\nDự kiến tiền cổ tức sẽ được SHP chuyển khoản vào ngày 30/01/2023. Tuy nhiên, KBC hiện đang thế chấp 700,000 cp SHP tại CTCP Chứng khoán An Bình (ABS). Do đó, KBC vào ngày 30/01/2023 sẽ chỉ nhận được 957 tỷ đồng, phần còn lại sẽ được chuyển vào tài khoản phong tỏa liên quan.\nSHP hoạt động chính lĩnh vực bất động sản khu công nghiệp (KCN) và khu đô thị (KĐT), là chủ đầu tư dự án KCN và KĐT Tràng Duệ, KCN thuộc khu kinh tế Đình Vũ – Cát Hải - Hải Phòng.\nNăm 2019, hai KCN Tràng Duệ 1, Tràng Duệ 2 có tổng quy mô 402 ha đã được lấp đầy 100%, thu hút được 73 nhà đầu tư nước ngoài, một số nhà đầu tư lớn có thể kể đến như là LG Electronics, LG Display, Dongjin Techwin Vina,… Theo KBC, sau khi một số nhà đầu tư lớn không còn thời hạn miễn phí dịch vụ cơ sở hạ tầng sau 5 năm, tổng doanh thu dịch vụ theo đơn giá hiện hành mà dự án có thể thu được ước tính trên 100 tỷ đồng/năm.\nĐối với dự án KĐT Tràng Duệ, dự án có diện tích 42.08 ha, tương đương với 22.6 ha đất thương phẩm, đã được cấp sổ đỏ, đã xây 93 căn shophouse, hoàn thiện hạ tầng, tổng diện tích đất đã ghi nhận doanh thu là 10.46 ha (vào cuối năm 2021). Tính đến 31/12/2021, SHP đã đầu tư 869.19 tỷ đồng cho dự án KĐT Tràng Duệ, để hoàn thiện hạ tầng và nộp tiền sử dụng đất. Theo đó, dự án đã ghi nhận doanh thu cho năm 2021 là 370.9 tỷ đồng, tương ứng với 4.55 ha.\nVề kết quả kinh doanh, tổng doanh thu năm 2021 của SHP đạt 710 tỷ đồng, gấp đôi năm 2020 chủ yếu ghi nhận từ việc bán 4.55 ha đất KĐT và doanh thu từ cung cấp các dịch vụ nước, xử lý nước thải, đấu nối hạ tầng,… trong KCN. Lợi nhuận sau thuế gần 58 tỷ đồng, giảm 26%.\nKết quả kinh doanh của SHP giai đoạn 2011 - 2021\n\nNgoài dự án KCN và KĐT Tràng Duệ, trong năm 2021, SHP còn góp vốn vào 2 công ty con gồm CTCP Công viên Tâm linh Bảo Lạc (65 tỷ đồng) để xây dựng khu nghĩa trang 25 ha tại Bắc Ninh; CTCP TNHB Phát triển cơ sở Hạ tầng công nghiệp Tân Lập (220 tỷ đồng) để thực hiện dự án Cụm công nghiệp Tân Tập 71.2 ha tại Long An.\nVề dự án của công ty liên kết, SHP đã đầu tư 112.5 tỷ đồng vào KCN Nam Tân Tập do Công ty TNHH Saigontel – Long An làm chủ đầu tư; góp 583 tỷ đồng vào dự án KCN Lê Minh Xuân 2 với diện tích gần 320 ha.\nTại ngày 31/12/2021, tổng tài sản Công ty đạt gần 5,644 tỷ đồng, tăng gần 42% so với đầu năm. Trong khi đó, tổng dư nợ gốc các tổ chức tín dụng chỉ ghi nhận gần 142 tỷ đồng, giảm hơn 44%.\nVới số cổ tức nhận được từ SHP, kết quả kinh doanh quý 1/2023 của KBC dự kiến sẽ có sự tăng mạnh về lợi nhuận. Đây không phải lần đầu tiên kết quả BCTC của KBC chịu ảnh hưởng lớn từ các công ty con/liên kết.\nCụ thể, trong quý 2/2022, HĐQT KBC thông qua việc mua thêm 5.7 triệu cp của Đầu tư Sài Gòn - Đà Nẵng, nâng tỷ lệ sở hữu lên 48% (tương ứng 9.6 triệu cp) và chuyển đơn vị này thành công ty liên kết của KBC. Theo báo cáo, giá trị hợp lý của khoản đầu tư này gần 2.5 ngàn tỷ đồng, trong khi giá trị đầu tư tương ứng chỉ 96 tỷ đồng. Nói cách khác, khoản “đầu tư giá rẻ” này đã giúp KBC thu lãi tới gần 2.4 ngàn tỷ đồng. Dù gây tranh cãi trong nhiều tháng nhưng trong BCTC soát xét 9 tháng đầu năm, đơn vị kiểm toán đã đồng ý để KBC ghi nhận khoản lãi này.\nỞ diễn biến khác, vào giữa tháng 12/2022 vừa qua, HĐQT KBC đã thông qua 2 Nghị quyết liên quan đến việc vay vốn của 2 công ty con là SHP và CTCP Khu công nghiệp Sài Gòn - Bắc Giang. Trong đó, KBC sẽ bảo lãnh cho khoản vay 320 tỷ đồng của SHP tại Ngân hàng TMCP Công thương Việt Nam - chi nhánh Ngô Quyền. Mục đích khoản vay nhằm thanh toán các khoản chi phí đầu tư của dự án Đầu tư nhà xưởng tại KCN Quế Võ và KCN Quế Võ mở rộng nhằm cho thuê/bán thương mại. Thời hạn bảo lãnh tính từ ngày 15/12/2022 đến khi SHP hoàn tất nghĩa vụ thanh toán nợ cho phía ngân hàng.
 
 OUTPUT:
-[]
+[
+{"event_type": "Vay vốn", "ten_to_chuc": "CTCP Khu công nghiệp Sài Gòn – Hải Phòng (SHP)", "ben_cho_vay": "Ngân hàng TMCP Công thương Việt Nam - chi nhánh Ngô Quyền", "tong_gia_tri_khoan_vay": "320 tỷ đồng", "muc_dich": "thanh toán chi phí đầu tư dự án Đầu tư nhà xưởng tại KCN Quế Võ và KCN Quế Võ mở rộng", "ky_han": null, "ben_bao_lanh": "Tổng Công ty Phát triển Đô thị Kinh Bắc - CTCP (HOSE: KBC)", "ngay_ky": "15/12/2022", "confidence": "high"}
+]
 
 
 NỘI DUNG:
@@ -223,7 +241,7 @@ OUTPUT:
 
 
 Bây giờ bắt đầu với văn bản gốc cần trích xuất! 
-Chỉ tập trung vào 21 loại sự kiện sau: [Chi trả cổ tức, Phát hành thêm cổ phiếu, Chia tách cổ phiếu, Gộp cổ phiếu, Niêm yết, Hủy niêm yết, Chuyển sàn, Phát hành trái phiếu, Cổ đông thay đổi tỷ lệ sở hữu, Cổ đông cầm cố cổ phiếu, Cổ đông phong tỏa cổ phiếu, Thay đổi nhân sự chủ chốt, Lãnh đạo cấp cao qua đời, M&A, Đầu tư, Hợp đồng lớn, Tổn thất tài sản nghiêm trọng, Bồi thường lớn cho bên ngoài, Vấn đề pháp lý với tổ chức, Vấn đề pháp lý với cá nhân, Phá sản].
+Chỉ tập trung vào 22 loại sự kiện sau: [Chi trả cổ tức, Phát hành thêm cổ phiếu, Chia tách cổ phiếu, Gộp cổ phiếu, Niêm yết, Hủy niêm yết, Chuyển sàn, Phát hành trái phiếu, Cổ đông thay đổi tỷ lệ sở hữu, Cổ đông cầm cố cổ phiếu, Cổ đông phong tỏa cổ phiếu, Thay đổi nhân sự chủ chốt, Lãnh đạo cấp cao qua đời, M&A, Đầu tư, Hợp đồng lớn, Vay vốn, Tổn thất tài sản nghiêm trọng, Bồi thường lớn cho bên ngoài, Vấn đề pháp lý với tổ chức, Vấn đề pháp lý với cá nhân, Phá sản].
 Lưu ý văn bản có thể chứa nhiều loại sự kiện trong các loại sự kiện cần trích xuất. Còn nếu không có sự kiện nào, hãy xuất ra danh sách rỗng.
 
 

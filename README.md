@@ -37,13 +37,14 @@
 | **14. M&A** | `ben_mua` · `ten_to_chuc` · `loai_giao_dich` (mua lại/sáp nhập) · `ty_le_so_huu_truoc` · `ty_le_so_huu_sau` · `gia_tri_thuong_vu` · `ngay_hoan_tat` |
 | **15. Đầu tư** | `ten_to_chuc` · `ten_cong_ty_dau_tu_vao` · `ty_le_so_huu` · `gia_tri_dau_tu` · `muc_dich` · `ngay_thuc_hien` |
 | **16. Hợp đồng lớn** | `ten_to_chuc` · `ten_doi_tac` · `loai_hop_dong` (EPC/tư vấn/cung cấp...) · `ten_du_an` · `gia_tri_hop_dong` · `thoi_gian_thuc_hien` · `ngay_ky` |
+| **17. Vay vốn** | `ten_to_chuc` · `ben_cho_vay` · `tong_gia_tri_khoan_vay` · `muc_dich` · `ky_han` · `ben_bao_lanh` · `ngay_ky` |
 | **— Tổn thất —** | |
-| **17. Tổn thất tài sản nghiêm trọng** | `ten_to_chuc` · `mo_ta_su_co` · `gia_tri_ton_that` · `bao_hiem_boi_thuong` (có/không/một phần) · `ngay_cong_bo` |
-| **18. Bồi thường lớn cho bên ngoài** | `ten_to_chuc` · `ben_nhan_boi_thuong` · `so_tien` · `ly_do` · `ngay_cong_bo` |
+| **18. Tổn thất tài sản nghiêm trọng** | `ten_to_chuc` · `mo_ta_su_co` · `gia_tri_ton_that` · `bao_hiem_boi_thuong` (có/không/một phần) · `ngay_cong_bo` |
+| **19. Bồi thường lớn cho bên ngoài** | `ten_to_chuc` · `ben_nhan_boi_thuong` · `so_tien` · `ly_do` · `ngay_cong_bo` |
 | **— Pháp lý —** | |
-| **19. Vấn đề pháp lý với tổ chức** | `thuc_the_bi_xu_ly` · `co_quan_xu_phat` · `ly_do_vi_pham` · `hinh_thuc_xu_phat` (phạt tiền/đình chỉ/thu hồi GCN...) · `so_tien_phat` · `ngay_quyet_dinh` |
-| **20. Vấn đề pháp lý với cá nhân** | `ten_ca_nhan` · `ten_to_chuc` · `chuc_vu` · `toi_danh` · `loai_hanh_dong` (khởi tố/tạm giam/bắt tạm giam/tuyên án/kháng cáo) · `co_quan_thuc_thi` · `ngay_thuc_thi` |
-| **21. Phá sản** | `ten_to_chuc` · `loai_hanh_dong` (phá sản/tái cơ cấu/thanh lý tự nguyện) · `nganh_nghe` · `toa_an_thu_ly` · `ngay_cong_bo` · `ngay_phan_quyet` |
+| **20. Vấn đề pháp lý với tổ chức** | `thuc_the_bi_xu_ly` · `co_quan_xu_phat` · `ly_do_vi_pham` · `hinh_thuc_xu_phat` (phạt tiền/đình chỉ/thu hồi GCN...) · `so_tien_phat` · `ngay_quyet_dinh` |
+| **21. Vấn đề pháp lý với cá nhân** | `ten_ca_nhan` · `ten_to_chuc` · `chuc_vu` · `toi_danh` · `loai_hanh_dong` (khởi tố/tạm giam/bắt tạm giam/tuyên án/kháng cáo) · `co_quan_thuc_thi` · `ngay_thuc_thi` |
+| **22. Phá sản** | `ten_to_chuc` · `loai_hanh_dong` (phá sản/tái cơ cấu/thanh lý tự nguyện) · `nganh_nghe` · `toa_an_thu_ly` · `ngay_cong_bo` · `ngay_phan_quyet` |
 
 
 # Hướng dẫn chạy
