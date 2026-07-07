@@ -13,7 +13,32 @@ if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 from data_pipelines.utils.dir_processor import get_project_abs_dir_str_from_env
 
-_CODE_FENCE = "```"
+_CODE_FENCE     = "```"
+_COMMON_FIELDS  = ["event_type", "confidence"]  # có ở mọi event, không tính riêng theo EVENTS_FIELDS
+
+EVENTS_FIELDS = {
+    "Chi trả cổ tức":                ["ten_to_chuc", "hinh_thuc_co_tuc", "ty_le", "ngay_gd_khong_huong_quyen", "ngay_thanh_toan"],
+    "Phát hành thêm cổ phiếu":       ["ten_to_chuc", "phuong_thuc_phat_hanh", "loai_co_phieu", "so_luong", "gia_phat_hanh", "tong_gia_tri", "ngay_chot_quyen"],
+    "Chia tách cổ phiếu":            ["ten_to_chuc", "ty_le_thuc_hien", "ngay_gd_khong_huong_quyen"],
+    "Gộp cổ phiếu":                  ["ten_to_chuc", "ty_le_thuc_hien", "ngay_gd_khong_huong_quyen"],
+    "Niêm yết":                      ["ten_to_chuc", "ma_co_phieu", "san_giao_dich", "so_luong_co_phieu", "ngay_hieu_luc"],
+    "Hủy niêm yết":                  ["ten_to_chuc", "ma_co_phieu", "san_giao_dich", "ngay_hieu_luc"],
+    "Chuyển sàn":                    ["ten_to_chuc", "ma_co_phieu", "san_giao_dich", "san_giao_dich_cu", "so_luong_co_phieu", "ngay_hieu_luc"],
+    "Phát hành trái phiếu":          ["ten_to_chuc", "loai_trai_phieu", "tong_gia_tri", "lai_suat", "ky_han", "ngay_phat_hanh"],
+    "Cổ đông thay đổi tỷ lệ sở hữu": ["ten_to_chuc", "ten_co_dong", "chieu_thay_doi", "ty_le_truoc", "ty_le_sau", "so_cp_thay_doi", "ngay_bat_dau"],
+    "Cổ đông cầm cố cổ phiếu":       ["ten_to_chuc", "ben_cam_co", "ben_nhan_cam_co", "so_luong_cp", "ngay_bat_dau", "ngay_ket_thuc"],
+    "Cổ đông phong tỏa cổ phiếu":    ["ten_to_chuc", "ten_co_dong", "so_luong_cp", "ngay_bat_dau", "ngay_ket_thuc", "co_quan_ra_lenh"],
+    "Thay đổi nhân sự chủ chốt":     ["ten_to_chuc", "ten_nhan_su", "trang_thai", "chuc_vu", "nguoi_thay_the"],
+    "Lãnh đạo cấp cao qua đời":      ["ten_to_chuc", "ten_lanh_dao", "chuc_vu", "con_lien_quan", "ngay_ghi_nhan"],
+    "M&A":                           ["ben_mua", "ten_to_chuc", "loai_giao_dich", "ty_le_so_huu_truoc", "ty_le_so_huu_sau", "gia_tri_thuong_vu", "ngay_hoan_tat"],
+    "Đầu tư":                        ["ten_to_chuc", "ten_cong_ty_dau_tu_vao", "ty_le_so_huu", "gia_tri_dau_tu", "muc_dich", "ngay_thuc_hien"],
+    "Hợp đồng lớn":                  ["ten_to_chuc", "ten_doi_tac", "loai_hop_dong", "ten_du_an", "gia_tri_hop_dong", "thoi_gian_thuc_hien", "ngay_ky"],
+    "Tổn thất tài sản nghiêm trọng": ["ten_to_chuc", "mo_ta_su_co", "gia_tri_ton_that", "bao_hiem_boi_thuong", "ngay_cong_bo"],
+    "Bồi thường lớn cho bên ngoài":  ["ten_to_chuc", "ben_nhan_boi_thuong", "so_tien", "ly_do", "ngay_cong_bo"],
+    "Vấn đề pháp lý với tổ chức":    ["thuc_the_bi_xu_ly", "co_quan_xu_phat", "ly_do_vi_pham", "hinh_thuc_xu_phat", "so_tien_phat", "ngay_quyet_dinh"],
+    "Vấn đề pháp lý với cá nhân":    ["ten_ca_nhan", "ten_to_chuc", "chuc_vu", "toi_danh", "loai_hanh_dong", "co_quan_thuc_thi", "ngay_thuc_thi"],
+    "Phá sản":                       ["ten_to_chuc", "loai_hanh_dong", "nganh_nghe", "toa_an_thu_ly", "ngay_cong_bo", "ngay_phan_quyet"],
+}
 
 
 def _get_existing_ids(out_path: Path) -> set[str]:
@@ -83,6 +108,19 @@ def _build_parsed_events(label_raw: str) -> list[dict] | None:
         return None
 
 
+def _get_field_diff(event: dict) -> tuple[set[str], set[str]]:
+    """
+    - Summary: So khớp field của event với EVENTS_FIELDS.
+    - Args:
+        - event: Dict 1 event đã parse từ model.
+    - Output:
+        - tuple[set[str], set[str]]: Tập field bị thiếu, tập field thừa (model bịa).
+    """
+    expected_fields = set(_COMMON_FIELDS) | set(EVENTS_FIELDS.get(event.get("event_type"), []))
+    actual_fields   = set(event.keys())
+    return expected_fields - actual_fields, actual_fields - expected_fields
+
+
 def _build_formatted_record(record: dict, raw_field: str, output_field: str) -> dict:
     """
     - Summary: Parse raw_field trong record, gán vào output_field.
@@ -109,7 +147,7 @@ def _process_file(
         1. Tải id đã xử lý (_get_existing_ids()).
         2. Tải records từ input (_get_records()).
         3. Parse và ghi từng record (_build_formatted_record()).
-        4. Đếm và in số sample parse lỗi.
+        4. Check field thiếu/thừa từng event (_get_field_diff()).
     - Args:
         - in_path:      Đường dẫn file input JSONL.
         - out_path:     Đường dẫn file output JSONL.
@@ -122,20 +160,30 @@ def _process_file(
     records      = _get_records(in_path)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    new_count    = 0
-    failed_count = 0
+    new_count         = 0
+    failed_count      = 0
+    field_issue_count = 0
     with out_path.open('a', encoding='utf-8') as fout:
         for record in tqdm.tqdm(records, desc=f'format {in_path.name}', ncols=100):
             if record.get("id") in existing_ids:
                 continue
             formatted_record = _build_formatted_record(dict(record), raw_field, output_field)
-            if formatted_record[output_field] is None:
+            events           = formatted_record[output_field]
+            if events is None:
                 failed_count += 1
                 print(f"[WARN] Parse lỗi sample {record.get('id')}")
+            else:
+                for event in events:
+                    missing_fields, extra_fields = _get_field_diff(event)
+                    if missing_fields or extra_fields:
+                        field_issue_count += 1
+                        print(f"[WARN] Sample {record.get('id')} - event '{event.get('event_type')}': "
+                              f"thiếu {missing_fields or '{}'}, thừa {extra_fields or '{}'}")
             fout.write(json.dumps(formatted_record, ensure_ascii=False) + '\n')
             new_count += 1
 
-    print(f'  format: {new_count} mới / {len(records)} tổng (lỗi parse: {failed_count}) → {out_path.name}')
+    print(f'  format: {new_count} mới / {len(records)} tổng '
+          f'(lỗi parse: {failed_count}, lệch field: {field_issue_count}) → {out_path.name}')
 
 
 def process_files(
