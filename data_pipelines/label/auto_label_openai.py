@@ -1,6 +1,5 @@
 import json
 import sys
-import os
 import time
 from pathlib import Path
 
@@ -17,13 +16,84 @@ if str(_PROJECT_ROOT) not in sys.path:
 from data_pipelines.utils.dir_processor import get_project_abs_dir_str_from_env
 
 
-def _call_openai(client: OpenAI, model: str, temperature: float, prompt: str, max_retries: int = 3) -> str:
+def _get_existing_ids(out_path: Path) -> set[str]:
+    """
+    - Summary: Đọc file output, trả về tập id đã xử lý.
+    - Args:
+        - out_path: Đường dẫn file output JSONL.
+    - Output:
+        - set[str]: Tập id đã tồn tại trong output.
+    """
+    existing_ids: set[str] = set()
+    if not out_path.exists():
+        return existing_ids
+    with out_path.open(encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                try:
+                    existing_ids.add(json.loads(line)["id"])
+                except Exception:
+                    pass
+    return existing_ids
+
+
+def _get_records(in_path: Path) -> list[dict]:
+    """
+    - Summary: Đọc toàn bộ record hợp lệ từ file JSONL.
+    - Args:
+        - in_path: Đường dẫn file input JSONL.
+    - Output:
+        - list[dict]: Danh sách record hợp lệ.
+    """
+    records: list[dict] = []
+    with in_path.open(encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if line:
+                try:
+                    records.append(json.loads(line))
+                except Exception:
+                    pass
+    return records
+
+
+def _build_prompt(prompt_template: str, content: str) -> str:
+    """
+    - Summary: Thay {{content}} trong template bằng nội dung record.
+    - Args:
+        - prompt_template: Chuỗi template có chứa "{{content}}".
+        - content:         Nội dung bài viết cần chèn vào.
+    - Output:
+        - str: Prompt hoàn chỉnh sẵn sàng gửi API.
+    """
+    return prompt_template.replace("{{content}}", content)
+
+
+def _get_response_from_openai_api(
+    client:      OpenAI,
+    model:       str,
+    temperature: float,
+    prompt:      str,
+    max_retries: int = 3,
+) -> str:
+    """
+    - Summary: Gọi OpenAI API, retry exponential backoff khi lỗi.
+    - Args:
+        - client:      OpenAI client đã khởi tạo.
+        - model:       Tên model (vd: "gpt-4o-mini").
+        - temperature: Độ ngẫu nhiên của model.
+        - prompt:      Nội dung prompt gửi lên API.
+        - max_retries: Số lần retry tối đa.
+    - Output:
+        - str: Phản hồi từ model đã được strip.
+    """
     for attempt in range(max_retries):
         try:
             resp = client.chat.completions.create(
-                model=model,
-                messages=[{"role": "user", "content": prompt}],
-                temperature=temperature,
+                model       = model,
+                messages    = [{"role": "user", "content": prompt}],
+                temperature = temperature,
             )
             return resp.choices[0].message.content.strip()
         except Exception as e:
@@ -35,86 +105,118 @@ def _call_openai(client: OpenAI, model: str, temperature: float, prompt: str, ma
                 raise
 
 
-def label_files(config: dict, project_dir: str):
-    """Gọi OpenAI để label từng record, lưu label_raw vào JSONL output."""
+def _process_file(
+    in_path:         Path,
+    out_path:        Path,
+    client:          OpenAI,
+    model:           str,
+    temperature:     float,
+    prompt_template: str,
+):
+    """
+    - Summary:
+        1. Tải id đã xử lý (_get_existing_ids()).
+        2. Tải records từ input (_get_records()).
+        3. Build prompt và gọi API (_build_prompt(), _get_response_from_openai_api()).
+        4. Ghi label_raw vào output.
+    - Args:
+        - in_path:         Đường dẫn file input JSONL.
+        - out_path:        Đường dẫn file output JSONL.
+        - client:          OpenAI client đã khởi tạo.
+        - model:           Tên model.
+        - temperature:     Độ ngẫu nhiên của model.
+        - prompt_template: Template prompt có "{{content}}".
+    - Output:
+        - None. Ghi kết quả vào out_path (append).
+    """
+    existing_ids = _get_existing_ids(out_path)
+    records      = _get_records(in_path)
+
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    new_count = 0
+    with out_path.open('a', encoding='utf-8') as fout:
+        for record in tqdm.tqdm(records, desc=f'label {in_path.name}', ncols=100):
+            if record.get("id") in existing_ids:
+                continue
+            prompt              = _build_prompt(prompt_template, record.get("content", ""))
+            record["label_raw"] = _get_response_from_openai_api(client, model, temperature, prompt)
+            fout.write(json.dumps(record, ensure_ascii=False) + '\n')
+            new_count += 1
+
+    print(f'  label: {new_count} mới / {len(records)} tổng (đã có: {len(existing_ids)}) → {out_path.name}')
+
+
+def process_files(
+    in_out_pairs:    list,
+    project_dir:     str,
+    client:          OpenAI,
+    model:           str,
+    temperature:     float,
+    prompt_template: str,
+):
+    """
+    - Summary:
+        1. Resolve đường dẫn từng cặp in/out.
+        2. Xử lý từng file (_process_file()).
+    - Args:
+        - in_out_pairs:    List các cặp [input_path_str, output_path_str].
+        - project_dir:     Đường dẫn tuyệt đối thư mục gốc dự án.
+        - client:          OpenAI client đã khởi tạo.
+        - model:           Tên model.
+        - temperature:     Độ ngẫu nhiên của model.
+        - prompt_template: Template prompt có "{{content}}".
+    - Output:
+        - None. Ghi kết quả ra các file JSONL output.
+    """
     project_path = Path(project_dir)
 
-    api_key = (
-        config.get("openai_api_key")
-        or os.environ.get("OPENAI_API_KEY")
-        or os.environ.get("OPENAI_KEY")
-    )
-    if not api_key:
-        raise ValueError("Thiếu API key. Đặt trong label_config['openai_api_key'] hoặc biến môi trường OPENAI_KEY.")
-
-    client      = OpenAI(api_key=api_key)
-    model       = config.get("model", "gpt-4o-mini")
-    temperature = config.get("temperature", 0.2)
-
-    prompt_path     = project_path / config["prompt_file"]
-    prompt_template = prompt_path.read_text(encoding='utf-8')
-
-    for in_str, out_str in config.get("in_out", []):
-        in_path  = project_path / in_str
-        out_path = project_path / out_str
+    for in_path_str, out_path_str in in_out_pairs:
+        in_path  = project_path / in_path_str
+        out_path = project_path / out_path_str
 
         if not in_path.exists():
             print(f"[SKIP] Không tìm thấy: {in_path}")
             continue
 
-        existing_ids: set[str] = set()
-        if out_path.exists():
-            with out_path.open(encoding='utf-8') as f:
-                for line in f:
-                    line = line.strip()
-                    if line:
-                        try:
-                            existing_ids.add(json.loads(line)["id"])
-                        except Exception:
-                            pass
-
-        records: list[dict] = []
-        with in_path.open(encoding='utf-8') as f:
-            for line in f:
-                line = line.strip()
-                if line:
-                    try:
-                        records.append(json.loads(line))
-                    except Exception:
-                        pass
-
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        new_count = 0
-        with out_path.open('a', encoding='utf-8') as fout:
-            for record in tqdm.tqdm(records, desc=f'label {in_path.name}', ncols=100):
-                if record.get("id") in existing_ids:
-                    continue
-                prompt = prompt_template.replace("{{content}}", record.get("content", ""))
-                record["label_raw"] = _call_openai(client, model, temperature, prompt)
-                fout.write(json.dumps(record, ensure_ascii=False) + '\n')
-                new_count += 1
-
-        print(f'  label: {new_count} mới / {len(records)} tổng (đã có: {len(existing_ids)}) → {out_path.name}')
+        _process_file(
+            in_path         = in_path,
+            out_path        = out_path,
+            client          = client,
+            model           = model,
+            temperature     = temperature,
+            prompt_template = prompt_template,
+        )
 
 
 if __name__ == "__main__":
     PROJECT_DIR = get_project_abs_dir_str_from_env(".env")
     ENV_PATH    = Path(__file__).parent.parent / ".env"   # data_pipelines/.env
 
-    _env = dotenv_values(str(ENV_PATH))
+    _env           = dotenv_values(str(ENV_PATH))
     OPENAI_API_KEY = _env.get("OPENAI_KEY") or _env.get("OPENAI_API_KEY")
 
     label_config = {
-        "openai_api_key": OPENAI_API_KEY,
-        "model": "gpt-4o-mini",
+        "model":       "gpt-4o-mini",
         "temperature": 0.2,
         "prompt_file": "data_pipelines/label/prompt.txt",  # chứa "{{content}}" sẽ được thay bằng content
         "in_out": [
-            ["data_pipelines/label/vietstock_formatted_20260601_20260601_CHUAN.jsonl",
+            ["data_pipelines/label/vietstock_preprocessed_20260601_20260601_CHUAN.jsonl",
              "data_pipelines/label/vietstock_labeled_20260601_20260601_CHUAN.jsonl"],
-            # ["data/processing/formatted/vietstock_filter_config1_2023_2026.jsonl",
-            #  "data/processing/labeled/vietstock_filter_config1_2023_2026.jsonl"]
+            # ["data/processing/preprocess/vietstock_preprocessed_filter_config1_2023_2026.jsonl",
+            #  "data/processing/labeled/vietstock_labeled_filter_config1_2023_2026.jsonl"]
         ]
     }
 
-    label_files(label_config, PROJECT_DIR)
+    model, temperature = label_config.get("model", "gpt-4o-mini"), label_config.get("temperature", 0.2)
+    in_out_pairs       = label_config.get("in_out", [])
+    prompt_template    = (Path(PROJECT_DIR) / label_config["prompt_file"]).read_text(encoding='utf-8')
+    client             = OpenAI(api_key=OPENAI_API_KEY)
+
+    process_files(
+        in_out_pairs    = in_out_pairs,
+        project_dir     = PROJECT_DIR,
+        client          = client,
+        model           = model,
+        temperature     = temperature,
+        prompt_template = prompt_template,
+    )

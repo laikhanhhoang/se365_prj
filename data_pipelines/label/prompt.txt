@@ -1,0 +1,233 @@
+Bạn là chuyên gia tài chính và có nhiều kinh nghiệm trong việc đọc thông tin tài chính và trích xuất thông tin thành dạng có cấu trúc.
+
+Hãy trích xuất các sự kiện tài chính xuất hiện trong văn bản được cung cấp. Việc trích ra các sự kiện và các thành phần tương ứng cần được xem xét kĩ càng ngữ nghĩa theo ngữ cảnh.
+
+Vui lòng sử dụng văn bản gốc để trích xuất sự kiện. 
+Mỗi sự kiện trích xuất được cần được trả về dưới dạng từ điển JSON. Với các trường không xuất hiện hoặc không được đề cập trong bài báo, hãy điền giá trị "NULL", không tự suy diễn hoặc bịa thông tin.
+Đồng thời, bổ sung trường "confidence" nhận một trong các giá trị high/medium/low tương ứng với sự kiện được xác nhận đã xảy ra/sự kiện là kế hoạch, dự kiến do người viết dự báo, chưa xảy ra hoặc chưa được phê duyệt chính thức/sự kiện chỉ là lời đồn hoặc do model suy luận từ ngữ cảnh, không được nêu trực tiếp.
+Nếu không có sự kiện nào thuộc về các loại sự kiện được đề cập, trả về list rỗng.
+Nếu trong bài có nhiều cá nhân/tổ chức khác nhau cùng liên quan đến 1 loại sự kiện (VD: nhiều cá nhân trong cùng một vụ án) và mỗi cá nhân/tổ chức đều có đủ thông tin rõ ràng để điền các trường, hãy trích xuất riêng từng cá nhân/tổ chức thành một sự kiện độc lập, không chỉ trích xuất nhân vật/tổ chức chính được nhắc ở tiêu đề.
+
+Các loại sự kiện và các thành phần được định nghĩa như sau:
+
+01. Chi trả cổ tức: là việc doanh nghiệp phân phối một phần lợi nhuận sau thuế cho cổ đông theo tỷ lệ sở hữu cổ phần. Đây là một trong những chỉ báo quan trọng phản ánh tình hình tài chính, khả năng sinh lời của doanh nghiệp và thường ảnh hưởng trực tiếp đến giá cổ phiếu quanh ngày giao dịch không hưởng quyền. Cổ tức có thể được chi trả bằng tiền mặt, bằng cổ phiếu hoặc tài sản khác.
+    - ten_to_chuc: Tên tổ chức công bố việc chi trả cổ tức.
+    - hinh_thuc_co_tuc: Hình thức chi trả cổ tức công ty khai báo (tiền mặt/cổ phiếu/tài sản khác).
+    - ty_le: Tỷ lệ chi trả cổ tức (VD: 10% bằng tiền mặt tương ứng 1.000đ/cổ phiếu).
+    - ngay_gd_khong_huong_quyen: Ngày giao dịch không hưởng quyền, nhà đầu tư mua cổ phiếu từ ngày này trở đi sẽ không được nhận cổ tức.
+    - ngay_thanh_toan: Ngày công ty thực hiện chi trả cổ tức cho cổ đông.
+
+02. Phát hành thêm cổ phiếu: là việc doanh nghiệp tăng vốn điều lệ bằng cách phát hành cổ phiếu mới ra thị trường hoặc cho các đối tượng cụ thể. Đây là hoạt động huy động vốn phổ biến, có thể làm pha loãng tỷ lệ sở hữu của cổ đông hiện hữu và ảnh hưởng đến giá cổ phiếu, đồng thời phản ánh nhu cầu vốn hoặc chiến lược mở rộng của doanh nghiệp. Việc phát hành có thể thực hiện qua nhiều phương thức như chào bán ra công chúng, phát hành riêng lẻ, phát hành cho cổ đông hiện hữu hoặc phát hành ESOP cho người lao động.
+    - ten_to_chuc: Tên tổ chức thực hiện phát hành thêm cổ phiếu.
+    - phuong_thuc_phat_hanh: Phương thức phát hành (chào bán ra công chúng/phát hành riêng lẻ/phát hành cho cổ đông hiện hữu/ESOP...).
+    - loai_co_phieu: Loại cổ phiếu phát hành (phổ thông/ưu đãi).
+    - so_luong: Số lượng cổ phiếu dự kiến hoặc đã phát hành.
+    - gia_phat_hanh: Giá phát hành cho mỗi cổ phiếu.
+    - tong_gia_tri: Tổng giá trị đợt phát hành (số lượng cổ phiếu nhân giá phát hành).
+    - ngay_chot_quyen: Ngày chốt danh sách cổ đông được hưởng quyền mua cổ phiếu phát hành thêm.
+
+03. Chia tách cổ phiếu: là việc doanh nghiệp chia một cổ phiếu đang lưu hành thành nhiều cổ phiếu mới theo một tỷ lệ nhất định, nhằm tăng số lượng cổ phiếu lưu hành mà không làm thay đổi tổng vốn điều lệ. Hành động này thường làm giảm thị giá cổ phiếu tương ứng với tỷ lệ chia tách, giúp tăng thanh khoản và mở rộng khả năng tiếp cận của nhà đầu tư nhỏ lẻ.
+    - ten_to_chuc: Tên tổ chức thực hiện chia tách cổ phiếu.
+    - ty_le_thuc_hien: Tỷ lệ chia tách cổ phiếu (VD: 1:2, nghĩa là 1 cổ phiếu cũ được chia thành 2 cổ phiếu mới).
+    - ngay_gd_khong_huong_quyen: Ngày giao dịch không hưởng quyền, nhà đầu tư mua cổ phiếu từ ngày này trở đi sẽ không được nhận cổ phiếu chia tách.
+
+04. Gộp cổ phiếu: là việc doanh nghiệp gộp nhiều cổ phiếu đang lưu hành thành một số lượng cổ phiếu mới ít hơn theo một tỷ lệ nhất định, nhằm giảm số lượng cổ phiếu lưu hành mà không làm thay đổi tổng vốn điều lệ. Hành động này thường làm tăng thị giá cổ phiếu tương ứng với tỷ lệ gộp, thường được thực hiện để tránh bị hủy niêm yết do thị giá quá thấp hoặc để tái cấu trúc cổ phiếu.
+    - ten_to_chuc: Tên tổ chức thực hiện gộp cổ phiếu.
+    - ty_le_thuc_hien: Tỷ lệ gộp cổ phiếu (VD: 10:1, nghĩa là 10 cổ phiếu cũ được gộp thành 1 cổ phiếu mới).
+    - ngay_gd_khong_huong_quyen: Ngày giao dịch không hưởng quyền, nhà đầu tư mua cổ phiếu từ ngày này trở đi sẽ không được thực hiện quyền gộp cổ phiếu.
+
+05. Niêm yết: là việc cổ phiếu của doanh nghiệp được cơ quan quản lý chấp thuận đưa vào giao dịch chính thức trên một sở giao dịch chứng khoán (HOSE/HNX/UPCoM). Đây là bước ngoặt quan trọng giúp doanh nghiệp tăng khả năng huy động vốn, nâng cao uy tín và minh bạch thông tin, đồng thời cho phép cổ đông hiện hữu giao dịch cổ phiếu dễ dàng hơn trên thị trường tập trung.
+    - ten_to_chuc: Tên tổ chức thực hiện niêm yết.
+    - ma_co_phieu: Mã cổ phiếu được cấp khi niêm yết (VD: BVB).
+    - san_giao_dich: Sàn giao dịch nơi cổ phiếu được niêm yết (HOSE/HNX/UPCoM).
+    - so_luong_co_phieu: Số lượng cổ phiếu được niêm yết.
+    - ngay_hieu_luc: Ngày cổ phiếu chính thức được niêm yết và giao dịch.
+
+06. Hủy niêm yết: là việc cổ phiếu của doanh nghiệp bị đưa ra khỏi sở giao dịch chứng khoán, không còn được giao dịch chính thức trên sàn đó nữa. Việc hủy niêm yết thường xuất phát từ vi phạm nghĩa vụ công bố thông tin, thua lỗ kéo dài, không đáp ứng điều kiện niêm yết hoặc doanh nghiệp tự nguyện rút khỏi sàn để tái cấu trúc, có tác động lớn đến thanh khoản và quyền lợi của cổ đông.
+    - ten_to_chuc: Tên tổ chức bị hủy niêm yết.
+    - ma_co_phieu: Mã cổ phiếu bị hủy niêm yết.
+    - san_giao_dich: Sàn giao dịch mà cổ phiếu bị hủy niêm yết (HOSE/HNX/UPCoM).
+    - ngay_hieu_luc: Ngày cổ phiếu chính thức bị hủy niêm yết.
+
+07. Chuyển sàn: là việc cổ phiếu của doanh nghiệp được chuyển từ sàn giao dịch này sang sàn giao dịch khác (VD: từ UPCoM lên HOSE), thường nhằm đáp ứng tiêu chuẩn niêm yết cao hơn, tăng uy tín và khả năng tiếp cận nhà đầu tư. Đây là sự kiện tích cực phản ánh sự phát triển và tuân thủ chuẩn mực của doanh nghiệp.
+    - ten_to_chuc: Tên tổ chức thực hiện chuyển sàn.
+    - ma_co_phieu: Mã cổ phiếu thực hiện chuyển sàn.
+    - san_giao_dich: Sàn giao dịch mới mà cổ phiếu chuyển đến.
+    - san_giao_dich_cu: Sàn giao dịch cũ mà cổ phiếu rời đi.
+    - so_luong_co_phieu: Số lượng cổ phiếu được chuyển sàn.
+    - ngay_hieu_luc: Ngày cổ phiếu chính thức giao dịch trên sàn mới.
+
+08. Phát hành trái phiếu: là việc doanh nghiệp huy động vốn vay bằng cách phát hành trái phiếu cho nhà đầu tư, cam kết trả lãi định kỳ và hoàn trả gốc khi đáo hạn. Đây là kênh huy động vốn nợ phổ biến bên cạnh vay ngân hàng, phản ánh nhu cầu vốn cho hoạt động kinh doanh, đầu tư dự án hoặc tái cơ cấu nợ, đồng thời làm tăng đòn bẩy tài chính của doanh nghiệp.
+    - ten_to_chuc: Tên tổ chức phát hành trái phiếu.
+    - loai_trai_phieu: Loại trái phiếu phát hành (doanh nghiệp/chuyển đổi/có bảo đảm).
+    - tong_gia_tri: Tổng giá trị đợt phát hành trái phiếu.
+    - lai_suat: Lãi suất trái phiếu (%/năm), có thể là lãi suất cố định hoặc thả nổi.
+    - ky_han: Kỳ hạn của trái phiếu (VD: 3 năm, 5 năm).
+    - ngay_phat_hanh: Ngày phát hành trái phiếu.
+
+09. Cổ đông thay đổi tỷ lệ sở hữu: là việc một cổ đông của doanh nghiệp mua vào hoặc bán ra cổ phiếu, làm thay đổi tỷ lệ sở hữu của cổ đông đó tại doanh nghiệp. Đây là thông tin quan trọng để theo dõi động thái của cổ đông lớn, ban lãnh đạo hoặc người có liên quan, có thể phản ánh kỳ vọng của họ về triển vọng doanh nghiệp.
+    - ten_to_chuc: Tên tổ chức có cổ đông thay đổi tỷ lệ sở hữu.
+    - ten_co_dong: Tên cổ đông thực hiện giao dịch.
+    - chieu_thay_doi: Chiều thay đổi tỷ lệ sở hữu (tăng/giảm).
+    - ty_le_truoc: Tỷ lệ sở hữu của cổ đông trước khi giao dịch.
+    - ty_le_sau: Tỷ lệ sở hữu của cổ đông sau khi giao dịch.
+    - so_cp_thay_doi: Số lượng cổ phiếu được giao dịch.
+    - ngay_bat_dau: Ngày dự kiến hoặc thực hiện giao dịch.
+
+10. Cổ đông cầm cố cổ phiếu: là việc cổ đông dùng cổ phiếu đang sở hữu làm tài sản đảm bảo để vay vốn hoặc bảo đảm cho một nghĩa vụ tài chính khác tại tổ chức tín dụng hoặc công ty chứng khoán. Đây là thông tin đáng chú ý vì có thể tiềm ẩn rủi ro bị giải chấp, bán tháo cổ phiếu nếu giá giảm mạnh.
+    - ten_to_chuc: Tên tổ chức có cổ đông thực hiện cầm cố cổ phiếu.
+    - ben_cam_co: Cổ đông thực hiện cầm cố cổ phiếu.
+    - ben_nhan_cam_co: Tổ chức nhận cầm cố (ngân hàng, công ty chứng khoán...).
+    - so_luong_cp: Số lượng cổ phiếu được cầm cố.
+    - ngay_bat_dau: Ngày bắt đầu cầm cố.
+    - ngay_ket_thuc: Ngày kết thúc cầm cố.
+
+11. Cổ đông phong tỏa cổ phiếu: là việc cổ phiếu của một cổ đông bị cơ quan có thẩm quyền ra lệnh tạm ngừng chuyển nhượng, thường liên quan đến nghĩa vụ tài chính, tranh chấp pháp lý hoặc yêu cầu cưỡng chế thi hành án. Đây là tín hiệu rủi ro liên quan đến cổ đông đó và có thể ảnh hưởng đến tính thanh khoản của cổ phiếu liên quan.
+    - ten_to_chuc: Tên tổ chức có cổ đông bị phong tỏa cổ phiếu.
+    - ten_co_dong: Tên cổ đông bị phong tỏa cổ phiếu.
+    - so_luong_cp: Số lượng cổ phiếu bị phong tỏa.
+    - ngay_bat_dau: Ngày bắt đầu phong tỏa.
+    - ngay_ket_thuc: Ngày kết thúc phong tỏa.
+    - co_quan_ra_lenh: Cơ quan ra lệnh phong tỏa.
+
+12. Thay đổi nhân sự chủ chốt: là việc doanh nghiệp bổ nhiệm, miễn nhiệm, cho từ chức hoặc bầu lại nhân sự giữ vị trí lãnh đạo chủ chốt (Hội đồng quản trị, Ban Tổng giám đốc, Ban kiểm soát...). Thay đổi nhân sự cấp cao có thể ảnh hưởng đến định hướng chiến lược, niềm tin của nhà đầu tư và giá cổ phiếu của doanh nghiệp.
+    - ten_to_chuc: Tên tổ chức có thay đổi nhân sự.
+    - ten_nhan_su: Tên nhân sự được thay đổi.
+    - trang_thai: Trạng thái thay đổi (bổ nhiệm/từ chức/miễn nhiệm/bầu).
+    - chuc_vu: Chức vụ liên quan đến thay đổi nhân sự.
+    - nguoi_thay_the: Tên người thay thế (nếu có).
+
+13. Lãnh đạo cấp cao qua đời: là việc một lãnh đạo cấp cao hoặc người có liên quan mật thiết đến doanh nghiệp (cổ đông lớn, sáng lập viên, cố vấn chính thức) qua đời. Sự kiện này chỉ được ghi nhận khi người qua đời còn liên quan trực tiếp đến doanh nghiệp tại thời điểm qua đời, vì có thể ảnh hưởng đến ổn định quản trị hoặc tâm lý nhà đầu tư.
+    - ten_to_chuc: Tên tổ chức có lãnh đạo qua đời.
+    - ten_lanh_dao: Tên lãnh đạo qua đời.
+    - chuc_vu: Chức vụ hoặc vai trò của người qua đời tại doanh nghiệp.
+    - con_lien_quan: Xác nhận người qua đời còn liên quan đến doanh nghiệp tại thời điểm qua đời hay không (true/false) — chỉ tính là còn liên quan nếu còn là cổ đông lớn, sáng lập viên hoặc cố vấn chính thức.
+    - ngay_ghi_nhan: Ngày ghi nhận thông tin qua đời.
+
+14. M&A: là việc một tổ chức bên ngoài mua lại hoặc sáp nhập vào doanh nghiệp, dẫn đến thay đổi quyền kiểm soát doanh nghiệp. Đây là hoạt động phản ánh sự thay đổi lớn trong cơ cấu sở hữu, thường xuất phát từ nhu cầu tái cấu trúc, mở rộng thị phần hoặc thâu tóm chiến lược của bên mua, có tác động đáng kể đến giá cổ phiếu và định hướng kinh doanh của doanh nghiệp bị mua.
+    - ben_mua: Bên mua, thực hiện mua lại hoặc sáp nhập vào doanh nghiệp.
+    - ten_to_chuc: Tên doanh nghiệp bị mua lại hoặc sáp nhập.
+    - loai_giao_dich: Loại giao dịch (mua lại/sáp nhập).
+    - ty_le_so_huu_truoc: Tỷ lệ sở hữu của bên mua tại doanh nghiệp trước khi giao dịch diễn ra.
+    - ty_le_so_huu_sau: Tỷ lệ sở hữu của bên mua tại doanh nghiệp sau khi giao dịch hoàn tất.
+    - gia_tri_thuong_vu: Giá trị của thương vụ M&A.
+    - ngay_hoan_tat: Ngày giao dịch chính thức hoàn tất.
+
+15. Đầu tư: là việc doanh nghiệp dùng vốn để đầu tư hoặc góp vốn vào một công ty khác, nhằm mở rộng lĩnh vực kinh doanh, tìm kiếm lợi nhuận hoặc thiết lập quan hệ hợp tác chiến lược. Hoạt động này phản ánh chiến lược phân bổ vốn và định hướng phát triển của doanh nghiệp, có thể ảnh hưởng đến dòng tiền và cơ cấu tài sản của doanh nghiệp.
+    - ten_to_chuc: Tên doanh nghiệp thực hiện đầu tư/góp vốn ra ngoài.
+    - ten_cong_ty_dau_tu_vao: Tên công ty được đầu tư hoặc nhận vốn góp.
+    - ty_le_so_huu: Tỷ lệ sở hữu của doanh nghiệp tại công ty được đầu tư sau giao dịch.
+    - gia_tri_dau_tu: Giá trị khoản đầu tư/góp vốn.
+    - muc_dich: Mục đích của việc đầu tư/góp vốn.
+    - ngay_thuc_hien: Ngày thực hiện giao dịch đầu tư/góp vốn.
+
+16. Hợp đồng lớn: là việc doanh nghiệp trúng thầu hoặc ký kết hợp đồng có giá trị lớn với đối tác, phản ánh năng lực cạnh tranh và triển vọng doanh thu trong tương lai. Đây là thông tin tích cực thường được công bố khi hợp đồng có quy mô đáng kể so với hoạt động kinh doanh hiện tại của doanh nghiệp.
+    - ten_to_chuc: Tên tổ chức trúng thầu hoặc ký hợp đồng.
+    - ten_doi_tac: Tên đối tác trong hợp đồng.
+    - loai_hop_dong: Loại hợp đồng (EPC/tư vấn/cung cấp...).
+    - ten_du_an: Tên dự án liên quan đến hợp đồng.
+    - gia_tri_hop_dong: Giá trị hợp đồng.
+    - thoi_gian_thuc_hien: Thời gian thực hiện hợp đồng.
+    - ngay_ky: Ngày ký kết hợp đồng.
+
+17. Tổn thất tài sản nghiêm trọng: là việc doanh nghiệp gặp phải thiệt hại tài sản nghiêm trọng do sự cố như cháy nổ, hỏa hoạn, thiên tai hoặc tai nạn lao động, có thể kèm theo thương vong. Sự kiện này thường ảnh hưởng tiêu cực đến hoạt động sản xuất kinh doanh và kết quả tài chính của doanh nghiệp trong ngắn hạn.
+    - ten_to_chuc: Tên tổ chức gặp tổn thất tài sản.
+    - mo_ta_su_co: Mô tả ngắn gọn về sự cố gây tổn thất.
+    - gia_tri_ton_that: Giá trị thiệt hại ước tính.
+    - bao_hiem_boi_thuong: Tình trạng được bảo hiểm bồi thường (có/không/một phần).
+    - ngay_cong_bo: Ngày công bố thông tin về sự cố.
+
+18. Bồi thường lớn cho bên ngoài: là việc doanh nghiệp phải chi trả một khoản bồi thường lớn cho bên thứ ba, do vi phạm hợp đồng, gây thiệt hại hoặc theo phán quyết của tòa án/trọng tài. Khoản bồi thường lớn có thể ảnh hưởng đáng kể đến kết quả kinh doanh của doanh nghiệp.
+    - ten_to_chuc: Tên tổ chức phải chi trả bồi thường.
+    - ben_nhan_boi_thuong: Bên nhận khoản bồi thường.
+    - so_tien: Số tiền bồi thường.
+    - ly_do: Lý do dẫn đến việc bồi thường.
+    - ngay_cong_bo: Ngày công bố thông tin bồi thường.
+
+19. Vấn đề pháp lý với tổ chức: là việc doanh nghiệp bị cơ quan quản lý nhà nước xử phạt vi phạm hành chính, thanh tra hoặc cưỡng chế do vi phạm quy định pháp luật trong hoạt động kinh doanh, công bố thông tin hoặc thuế. Đây là thông tin phản ánh rủi ro tuân thủ của doanh nghiệp.
+    - thuc_the_bi_xu_ly: Tên tổ chức bị xử lý vi phạm.
+    - co_quan_xu_phat: Cơ quan ra quyết định xử phạt hoặc thanh tra.
+    - ly_do_vi_pham: Lý do dẫn đến vi phạm.
+    - hinh_thuc_xu_phat: Hình thức xử phạt (phạt tiền/đình chỉ/thu hồi giấy chứng nhận...).
+    - so_tien_phat: Số tiền phạt (nếu có).
+    - ngay_quyet_dinh: Ngày ra quyết định xử phạt.
+
+20. Vấn đề pháp lý với cá nhân: là việc một cá nhân liên quan đến doanh nghiệp (lãnh đạo, cổ đông...) bị cơ quan thực thi pháp luật khởi tố, bắt tạm giam hoặc điều tra do liên quan đến hành vi vi phạm pháp luật. Sự kiện này thường tác động mạnh đến uy tín và giá cổ phiếu của doanh nghiệp liên quan.
+    - ten_ca_nhan: Tên cá nhân liên quan đến vụ việc pháp lý.
+    - ten_to_chuc: Tên tổ chức mà cá nhân đó liên quan.
+    - chuc_vu: Chức vụ của cá nhân tại tổ chức.
+    - toi_danh: Tội danh hoặc hành vi vi phạm bị cáo buộc.
+    - loai_hanh_dong: Loại hành động pháp lý (khởi tố/tạm giam/bắt tạm giam/tuyên án/kháng cáo).
+    - co_quan_thuc_thi: Cơ quan thực thi pháp luật xử lý vụ việc.
+    - ngay_thuc_thi: Ngày thực hiện hành động pháp lý.
+
+21. Phá sản: là việc doanh nghiệp mất khả năng thanh toán các khoản nợ đến hạn và bị tòa án ra quyết định mở thủ tục phá sản, tái cơ cấu bắt buộc hoặc tự nguyện thanh lý. Đây là sự kiện nghiêm trọng nhất, thường đánh dấu sự chấm dứt hoạt động hoặc tái cấu trúc toàn diện của doanh nghiệp.
+    - ten_to_chuc: Tên tổ chức phá sản.
+    - loai_hanh_dong: Loại hành động (phá sản/tái cơ cấu/thanh lý tự nguyện).
+    - nganh_nghe: Ngành nghề kinh doanh chính của doanh nghiệp.
+    - toa_an_thu_ly: Tòa án thụ lý vụ việc.
+    - ngay_cong_bo: Ngày công bố thông tin.
+    - ngay_phan_quyet: Ngày tòa án ra phán quyết.
+
+Dưới đây là một vài ví dụ trích xuất sự kiện tài chính:
+
+NỘI DUNG:
+Tiêu đề: Chia cổ tức \"khủng\" 330,000 đồng/cp, công ty con của KBC có gì?\nNội dung:Trong ngày cuối cùng của năm 2022 (31/12), Tổng Công ty Phát triển Đô thị Kinh Bắc - CTCP (HOSE: KBC) công bố thông tin về việc công ty con là CTCP Khu công nghiệp Sài Gòn – Hải Phòng (SHP) sẽ thực hiện chi trả cổ tức với tỷ lệ \"khủng\" 330%.\nVới mệnh giá 100,000 đồng/cp, tỷ lệ chia cổ tức 330%, mỗi cổ phần sở hữu, cổ đông SHP sẽ nhận được 330,000 đồng.\nSHP thành lập ngày 20/07/2006 tại Hải Phòng với vốn điều lệ 200 tỷ đồng, tổng số cổ phần 2 triệu cp, do 9 cổ đông góp vốn thành lập. Trong đó, KBC nắm sở hữu 18%. Đến nay, sau khi tăng vốn điều lệ lên 416 tỷ đồng, KBC nâng sở hữu lên 3.6 triệu cp, tỷ lệ biểu quyết cũng như tỷ lệ lợi ích tăng lên 86.54%. Theo đó, số tiền cổ tức KBC có thể nhận được ước tính khoảng 1,188 tỷ đồng.\nDự kiến tiền cổ tức sẽ được SHP chuyển khoản vào ngày 30/01/2023. Tuy nhiên, KBC hiện đang thế chấp 700,000 cp SHP tại CTCP Chứng khoán An Bình (ABS). Do đó, KBC vào ngày 30/01/2023 sẽ chỉ nhận được 957 tỷ đồng, phần còn lại sẽ được chuyển vào tài khoản phong tỏa liên quan.\nSHP hoạt động chính lĩnh vực bất động sản khu công nghiệp (KCN) và khu đô thị (KĐT), là chủ đầu tư dự án KCN và KĐT Tràng Duệ, KCN thuộc khu kinh tế Đình Vũ – Cát Hải - Hải Phòng.\nNăm 2019, hai KCN Tràng Duệ 1, Tràng Duệ 2 có tổng quy mô 402 ha đã được lấp đầy 100%, thu hút được 73 nhà đầu tư nước ngoài, một số nhà đầu tư lớn có thể kể đến như là LG Electronics, LG Display, Dongjin Techwin Vina,… Theo KBC, sau khi một số nhà đầu tư lớn không còn thời hạn miễn phí dịch vụ cơ sở hạ tầng sau 5 năm, tổng doanh thu dịch vụ theo đơn giá hiện hành mà dự án có thể thu được ước tính trên 100 tỷ đồng/năm.\nĐối với dự án KĐT Tràng Duệ, dự án có diện tích 42.08 ha, tương đương với 22.6 ha đất thương phẩm, đã được cấp sổ đỏ, đã xây 93 căn shophouse, hoàn thiện hạ tầng, tổng diện tích đất đã ghi nhận doanh thu là 10.46 ha (vào cuối năm 2021). Tính đến 31/12/2021, SHP đã đầu tư 869.19 tỷ đồng cho dự án KĐT Tràng Duệ, để hoàn thiện hạ tầng và nộp tiền sử dụng đất. Theo đó, dự án đã ghi nhận doanh thu cho năm 2021 là 370.9 tỷ đồng, tương ứng với 4.55 ha.\nVề kết quả kinh doanh, tổng doanh thu năm 2021 của SHP đạt 710 tỷ đồng, gấp đôi năm 2020 chủ yếu ghi nhận từ việc bán 4.55 ha đất KĐT và doanh thu từ cung cấp các dịch vụ nước, xử lý nước thải, đấu nối hạ tầng,… trong KCN. Lợi nhuận sau thuế gần 58 tỷ đồng, giảm 26%.\nKết quả kinh doanh của SHP giai đoạn 2011 - 2021\n\nNgoài dự án KCN và KĐT Tràng Duệ, trong năm 2021, SHP còn góp vốn vào 2 công ty con gồm CTCP Công viên Tâm linh Bảo Lạc (65 tỷ đồng) để xây dựng khu nghĩa trang 25 ha tại Bắc Ninh; CTCP TNHB Phát triển cơ sở Hạ tầng công nghiệp Tân Lập (220 tỷ đồng) để thực hiện dự án Cụm công nghiệp Tân Tập 71.2 ha tại Long An.\nVề dự án của công ty liên kết, SHP đã đầu tư 112.5 tỷ đồng vào KCN Nam Tân Tập do Công ty TNHH Saigontel – Long An làm chủ đầu tư; góp 583 tỷ đồng vào dự án KCN Lê Minh Xuân 2 với diện tích gần 320 ha.\nTại ngày 31/12/2021, tổng tài sản Công ty đạt gần 5,644 tỷ đồng, tăng gần 42% so với đầu năm. Trong khi đó, tổng dư nợ gốc các tổ chức tín dụng chỉ ghi nhận gần 142 tỷ đồng, giảm hơn 44%.\nVới số cổ tức nhận được từ SHP, kết quả kinh doanh quý 1/2023 của KBC dự kiến sẽ có sự tăng mạnh về lợi nhuận. Đây không phải lần đầu tiên kết quả BCTC của KBC chịu ảnh hưởng lớn từ các công ty con/liên kết.\nCụ thể, trong quý 2/2022, HĐQT KBC thông qua việc mua thêm 5.7 triệu cp của Đầu tư Sài Gòn - Đà Nẵng, nâng tỷ lệ sở hữu lên 48% (tương ứng 9.6 triệu cp) và chuyển đơn vị này thành công ty liên kết của KBC. Theo báo cáo, giá trị hợp lý của khoản đầu tư này gần 2.5 ngàn tỷ đồng, trong khi giá trị đầu tư tương ứng chỉ 96 tỷ đồng. Nói cách khác, khoản “đầu tư giá rẻ” này đã giúp KBC thu lãi tới gần 2.4 ngàn tỷ đồng. Dù gây tranh cãi trong nhiều tháng nhưng trong BCTC soát xét 9 tháng đầu năm, đơn vị kiểm toán đã đồng ý để KBC ghi nhận khoản lãi này.\nỞ diễn biến khác, vào giữa tháng 12/2022 vừa qua, HĐQT KBC đã thông qua 2 Nghị quyết liên quan đến việc vay vốn của 2 công ty con là SHP và CTCP Khu công nghiệp Sài Gòn - Bắc Giang. Trong đó, KBC sẽ bảo lãnh cho khoản vay 320 tỷ đồng của SHP tại Ngân hàng TMCP Công thương Việt Nam - chi nhánh Ngô Quyền. Mục đích khoản vay nhằm thanh toán các khoản chi phí đầu tư của dự án Đầu tư nhà xưởng tại KCN Quế Võ và KCN Quế Võ mở rộng nhằm cho thuê/bán thương mại. Thời hạn bảo lãnh tính từ ngày 15/12/2022 đến khi SHP hoàn tất nghĩa vụ thanh toán nợ cho phía ngân hàng.
+
+OUTPUT:
+[]
+
+
+NỘI DUNG:
+Tiêu đề: SeABank chính thức bổ nhiệm ông Loic Faussier làm Tổng Giám đốc\nNội dung:Ngày 03/01/2023, được sự chấp thuận của Ngân hàng Nhà nước Việt Nam, Hội đồng Quản trị Ngân hàng TMCP Đông Nam Á (SeABank, HOSE: SSB) đã chính thức công bố và trao quyết định bổ nhiệm ông Loic Faussier (quốc tịch Pháp) đảm nhiệm chức vụ Tổng Giám đốc Ngân hàng. Quyết định có thời hạn 02 năm và hiệu lực từ ngày 03/01/2023.\nTrước đó, ông Loic Faussier là Phó Tổng Giám đốc cao cấp phụ trách điều hành hoạt động SeABank từ tháng 7/2022.\nÔng Loic Faussier sinh năm 1972 tại Pháp, tốt nghiệp chuyên ngành Kinh tế của Đại học Paris Assas và sở hữu 2 bằng thạc sĩ gồm: Thạc sĩ tài chính - Đại học Paris Dauphine và Thạc sĩ Luật kinh doanh – Học viện Chính trị Paris. Ông đã có hơn 25 năm kinh nghiệm công tác tại nhiều vị trí quan trọng trong các Tổ chức tài chính, Ngân hàng lớn ở Pháp, Hong Kong và Nhật Bản như: Giám đốc Ngân hàng HSBC Việt Nam, Phó Giám đốc Ngân hàng HSBC Nhật Bản, Phó Tổng Giám đốc Ngân hàng TMCP Quốc tế Việt Nam (VIB),... Ông Loic Faussier cũng từng là Phó tùy viên tài chính phòng Thương mại của Đại sứ quán Pháp ở Bắc Kinh và từng làm việc cho Citibank ở Paris.\nTrước khi được bổ nhiệm chính thức chức vụ Tổng Giám đốc SeABank, ông Loic Faussier là Phó Tổng giám đốc cao cấp phụ trách điều hành hoạt động Ngân hàng từ tháng 7/2022 và từng là Thành viên độc lập HĐQT của SeABank nhiệm kỳ 2018 - 2023, được phân công phụ trách nhiều lĩnh vực quan trọng của Ngân hàng và có nhiều đóng góp cho sự phát triển của SeABank trong thời gian qua.\nVới việc bổ nhiệm Ông Loic Faussier giữ chức vụ Tổng Giám đốc, SeABank đã kiện toàn bộ máy nhân sự cấp cao với các thành viên Ban Tổng Giám đốc đều là các nhân sự dày dặn kinh nghiệm trong nhiều lĩnh vực. Đây là một trong những bước đi chiến lược của HĐQT nhằm tăng cường năng lực quản trị, điều hành để triển khai mạnh mẽ kế hoạch phát triển của SeABank trong thời gian tới.\nSeABank sẽ tiếp tục phát triển theo mô hình ngân hàng bán lẻ hiện đại, đa dạng hóa sản phẩm dịch vụ cũng như đẩy mạnh hội nhập quốc tế, góp phần triển khai thành công các chiến lược đã đề ra. Đồng thời, SeABank cũng tập trung nguồn lực đẩy mạnh số hóa toàn diện theo chiến lược “Hội tụ số”, áp dụng các công nghệ hiện đại để nâng cao hiệu quả, tối ưu hóa các ứng dụng phục vụ kinh doanh. Qua đó, Ngân hàng hướng tới nâng cao trải nghiệm khách hàng và hiện thực hóa mục tiêu trở thành Ngân hàng bán lẻ được yêu thích nhất.\nKhẳng định vị thế vững mạnh, 9 tháng đầu năm 2022 SeABank đã đạt được những kết quả kinh doanh khả quan với lợi nhuận trước thuế hơn 4,016 tỷ đồng (tăng trưởng 58.7% so với cùng kỳ năm 2021); tăng vốn điều lệ lên gần 19,809 tỷ đồng; được Moody’s nâng đánh giá xếp hạng lên mức Ba3 cho nhiều danh mục… Bên cạnh đó, SeABank cũng đã nhận được các khoản huy động vốn trung và dài hạn trị giá lên đến 495 triệu USD từ các tổ chức tài chính uy tín thế giới như: Tập đoàn Tài chính Phát triển Quốc tế Hoa Kỳ (DFC), Tổ chức tài chính Quốc tế (IFC) và các quỹ đầu tư nước ngoài như responsAbility, BlueOrchard, BRED, OPEC Fund, Kasikorn Bank để nâng cao năng lực tài chính, gia tăng nguồn vốn hỗ trợ DNNVV, phát triển kinh tế xanh.
+
+OUTPUT:
+[
+{"event_type": "Thay đổi nhân sự chủ chốt", "ten_to_chuc": "Ngân hàng TMCP Đông Nam Á (SeABank, SSB)", "ten_nhan_su": "Loic Faussier", "trang_thai": bổ nhiệm, "chuc_vu": "Tổng Giám đốc", "nguoi_thay_the": NULL, "confidence": "high"}
+]
+
+
+NỘI DUNG:
+Tiêu đề: Ông Đỗ Thành Nhân kháng cáo, cho rằng mình bị lợi dụng, trục lợi\nNội dung:Ông Đỗ Thành Nhân (cựu Chủ tịch HĐQT Công ty Cổ phần Louis Holdings; thành viên HĐQT Công ty Cổ phần Louis Capital và Công ty Cổ phần Louis Land) vừa có đơn kháng cáo đề nghị xem xét lại toàn bộ bản án sơ thẩm.\nBị tòa án cấp sơ thẩm tuyên phạt mức án 5 năm 6 tháng tù vì tội “Thao túng thị trường chứng khoán”, ông Đỗ Thành Nhân cho rằng, mức án này là quá nghiêm khắc.\nVề trách nhiệm dân sự, tòa án sơ thẩm buộc bị cáo Nhân phải nộp lại 154 tỷ đồng. Đối trừ số tiền bị cáo đã khắc phục hậu quả, bị cáo còn phải nộp 136 tỷ đồng. Đối với phần trách nhiệm dân sự nêu trên, bị cáo Nhân cho rằng mình phải khắc phục một mình là chưa hợp lý.\nTrong đơn kháng cáo, ông Đỗ Thành Nhân khẳng định, bị cáo không phải là chủ mưu, cầm đầu trong vụ án này. Để xảy ra hành vi vi phạm là do bị cáo thiếu kiến thức, thiếu hiểu biết về thị trường chứng khoán và pháp luật nên đã bị người khác lợi dụng để trục lợi.\nNgoài ra, số tiền hơn 154 tỷ đồng bị xác định thiệt hại trong vụ án là chưa đúng thực tế và chưa trừ các loại thuế, phí giao dịch, phần tiền chi ngoài cho bị cáo Đỗ Đức Nam (cựu TGĐ Công ty CP Chứng khoán Trí Việt).\nTheo bị cáo Nhân, chủ thể thu hồi tiền gây thiệt hại ở đây phải là Công ty Louis Capital, đơn vị trực tiếp bán cổ phần BII ra thị trường và là đơn vị nhận tiền trực tiếp từ các hành vi thao túng thị trường chứng khoán. Vì vậy, Công ty Louis Capital phải là đơn vị chịu trách nhiệm dân sự cùng với bị cáo Nhân.\nTheo bản án sơ thẩm, từ ngày 8/1/2021 – 6/10/2021, bị cáo Đỗ Thành Nhân đã bàn bạc, thống nhất, câu kết với bị cáo Đỗ Đức Nam sử dụng nhóm tài khoản chứng khoán đứng tên nhân viên, người thân và dùng tiền của Công ty Quản lý tài sản Trí Việt cho vay dưới hình thức hợp tác đầu tư để mua khối lượng lớn mã cổ phiếu BII, TGG.\nBị cáo Nam trao đổi với bị cáo Phạm Thanh Tùng (cựu Chủ tịch HĐQT Công ty chứng khoán Trí Việt, Chủ tịch HĐQT Công ty cổ phần Tập đoàn Quản lý tài sản Trí Việt) để Công ty Quản lý tài sản Trí Việt “bơm vốn” cho nhóm của Nhân nhằm thu hút nhà đầu tư.\nBị cáo Tùng chấp nhận đề xuất này của Nam, chỉ đạo Nam định hướng cho nhóm ông Nhân vay trong thời gian dài, số tiền hơn 700 tỷ đồng.\nTừ nguồn tiền này, bị cáo Nhân và Nam đã bàn bạc, thống nhất chiến thuật, kịch bản để thao túng mã chứng khoán BII, TGG, liên tục đặt lệnh, khớp lệnh, tạo cung cầu giả tạo, tạo giá đóng cửa mới dẫn đến đẩy giá cổ phiếu tăng cao.\nBị cáo Đỗ Thành Nhân còn lập group để đăng bài viết hô hào, lôi kéo nhà đầu tư. Các bị cáo kết thúc hành vi thao túng, bán cổ phiếu, thu lời 154 tỷ đồng.\nTheo HĐXX cấp sơ thẩm, đây là vụ án rất nghiêm trọng, gây thiệt hại, làm mất niềm tin của nhà đầu tư; không đảm bảo tính công bằng, minh bạch, công khai của thị trường chứng khoán nên cần xử lý nghiêm khắc.\nLiên quan đến vụ án, với cùng tội danh \"Thao túng thị trường chứng khoán\", tòa án cấp sơ thẩm còn tuyên phạt: bị cáo Phạm Thanh Tùng mức án 3 năm tù treo, thử thách 5 năm, HĐXX tuyên bố trả tự do cho bị cáo Tùng; Đỗ Đức Nam (cựu TGĐ Công ty CP Chứng khoán Trí Việt): 4 năm tù; Lê Thị Thu Hương (nguyên Phó TGĐ Công ty CP Chứng khoán Trí Việt): 15 tháng tù.\nBị cáo Lê Thị Thùy Liên (nhân viên dịch vụ tài chính Công ty CP Chứng khoán Trí Việt) và Trịnh Thị Thùy Linh (cựu Giám đốc hành chính Công ty Louis Holdings) chịu án 12 tháng 22 ngày tù (bằng thời hạn tạm giam). HĐXX xác nhận 2 bị cáo này đã chấp hành xong hình phạt tù nên tuyên bố trả tự do ngay tại tòa.\nBị cáo Vũ Ngọc Long (nguyên Phó TGĐ Công ty Louis Holdings) và Ngô Thục Vũ (nguyên TGĐ Công ty CP Louis Capital, nguyên Phó TGĐ Công ty Louis Holdings) nhận án 6 tháng tù.
+
+OUTPUT:
+[
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Đỗ Thành Nhân", "ten_to_chuc": "Công ty Cổ phần Louis Holdings", "chuc_vu": "cựu Chủ tịch HĐQT", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": kháng cáo, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"},
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Phạm Thanh Tùng", "ten_to_chuc": "Công ty Chứng khoán Trí Việt", "chuc_vu": "cựu Chủ tịch HĐQT", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"},
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Đỗ Đức Nam", "ten_to_chuc": "Công ty CP Chứng khoán Trí Việt", "chuc_vu": "cựu Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"},
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Lê Thị Thu Hương", "ten_to_chuc": "Công ty CP Chứng khoán Trí Việt", "chuc_vu": "nguyên Phó Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"},
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Lê Thị Thùy Liên", "ten_to_chuc": "Công ty CP Chứng khoán Trí Việt", "chuc_vu": "nhân viên dịch vụ tài chính", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"},
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Trịnh Thị Thùy Linh", "ten_to_chuc": "Công ty Louis Holdings", "chuc_vu": "cựu Giám đốc hành chính", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"},
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Vũ Ngọc Long", "ten_to_chuc": "Công ty Louis Holdings", "chuc_vu": "nguyên Phó Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"},
+{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Ngô Thục Vũ", "ten_to_chuc": "Công ty CP Louis Capital", "chuc_vu": "nguyên Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": NULL, "confidence": "high"}
+]
+
+
+NỘI DUNG:
+Tiêu đề: IPO 2022: “Nhỏ giọt”\nNội dung:Theo thống kê, thị trường IPO tại Việt Nam tỏ ra khá im hơi lặng tiếng trong năm qua, với hầu hết các thương vụ đáng chú ý diễn ra trong 6 tháng đầu năm.\n“2022 có thể là năm tồi tệ nhất của thị trường IPO toàn cầu kể từ cuộc khủng hoảng tài chính năm 2008” - một nhận định trong bài viết của Bloomberg đăng tải ngày 18/12/2022.\nCó lẽ hồi đầu năm, hiếm ai nghĩ rằng 2022 có thể tồi tệ đến như vậy đối với thị trường IPO. Nhưng những bất ổn trên thị trường toàn cầu ập tới đã khiến doanh nghiệp và các nhà đầu tư đều trở nên thận trọng hơn, chẳng còn mặn mà với câu chuyện này nữa. Theo dữ liệu thống kê từ Deloitte, công bố ngày 11/11, tại Đông Nam Á có 136 thương vụ IPO diễn ra thành công, kêu gọi được 6.3 tỷ USD, giảm 52% so với mức 13.3 tỷ USD ghi nhận vào cùng kỳ năm trước.\nViệt Nam cũng không nằm ngoài xu hướng này khi những thương vụ IPO trên thị trường năm qua diễn ra một cách nhỏ giọt. Trong đó, các thương vụ lớn nhất chủ yếu diễn ra ở thời điểm trước tháng 3, khi những thông tin tiêu cực trong và ngoài nước vẫn chưa gây ra ảnh hưởng quá nhiều.\nDưới đây là một số thương vụ IPO đáng chú ý trong năm qua.\nNgày 10/03/2022, CTCP Tôn Đông Á công bố hoàn tất đợt IPO sau khi chào bán thành công 15.35 triệu cp. Trong số này, có 12.4 triệu cp do doanh nghiệp phát hành tăng vốn và hơn 2.98 triệu cp do nhà đầu tư hiện hữu chào bán. Với giá chào bán là 40,000 đồng/cp, tổng số vốn huy động lên tới 641 tỷ đồng, trong đó doanh nghiệp ngành thép thu về 496 tỷ đồng.\n\nĐợt IPO của ông lớn ngành thép thu hút 137 nhà đầu tư (không phải cổ đông lớn), gồm 135 nhà đầu tư trong nước và 2 nhà đầu tư nước ngoài - mua thành công cổ phiếu, và được định giá gần 4.6 ngàn tỷ đồng.\nTheo văn bản công bố, Tôn Đông Á dùng hơn 345 tỷ đồng huy động được để mở rộng đầu tư nhà máy thứ 3 sản xuất thép mạ trong xây dựng, sản xuất thiết bị gia dụng và xe hơi. Gần 150 tỷ đồng còn lại được dùng để bổ sung vốn lưu động, cụ thể nhằm thanh toán chi phí mua nguyên, vật liệu.\nTại ĐHĐCĐ thường niên 2022, doanh nghiệp tiết lộ kế hoạch niêm yết cổ phiếu lên sàn HOSE, với dự kiến trong năm nay hoặc đầu năm 2023, sau khi được Sở Giao dịch Chứng khoán TPHCM chấp thuận. Trên thực tế, HOSE công bố đã nhận được văn bản đăng ký niêm yết của Tôn Đông Á vào ngày 22/04. Tuy nhiên ở thời điểm hiện tại, doanh nghiệp này vẫn chưa chính thức niêm yết giao dịch.\nVề tình hình kinh doanh, quý 3/2022, Tôn Đông Á ghi nhận doanh thu sụt giảm gần 40%, còn 4.2 ngàn tỷ đồng. Nhưng việc giá vốn nguyên, vật liệu tăng cao cùng các khoản chi phí đã khiến công ty báo lỗ hơn 206 tỷ đồng, cùng kỳ lãi hơn 336 tỷ đồng. Thời điểm ngày 30/09, nợ vay của Doanh nghiệp là hơn 4.8 ngàn tỷ đồng, hầu hết là nợ ngắn hạn từ ngân hàng. Vốn chủ sở hữu đạt hơn 3.8 ngàn tỷ đồng.\nTới ngày 11/03, CTCP Tập đoàn Nova Consumer công bố IPO thành công với 10.9 triệu cp được chào bán và phân phối hết, thu về hơn 479 tỷ đồng (tương ứng giá chào bán 44,000 đồng/cp).\nĐợt IPO của Nova Consumer thu hút 249 nhà đầu tư đăng ký tham gia. Trong đó, 182 nhà đầu tư trong nước và 1 nhà đầu tư nước ngoài đã mua thành công, với tỷ lệ lần lượt là 99.69% và 0.31%.\n\nVới số tiền thu được, Nova Consumer cho biết sẽ sử dụng 430 tỷ đồng để mua lại vốn góp của CTCP Đầu tư Tiêu dùng tại Công ty TNHH Thực phẩm Mặt trời mọc; gần 35 tỷ đồng để góp vốn vào Công ty TNHH Thực phẩm Mặt trời mọc. Phần còn lại để bổ sung vốn lưu động.\nNova Consumer cũng có kế hoạch niêm yết trên HOSE với mã giao dịch NCG và đã nộp hồ sơ đăng ký vào ngày 27/09. Tuy nhiên, gần đây Sở Giao dịch Chứng khoán TPHCM đã ra quyết định dừng xem xét hồ sơ này do đến ngày 09/12, Công ty vẫn chưa nộp hồ sơ chỉnh sửa, bổ sung hoàn chỉnh và các tài liệu phát sinh theo yêu cầu.\nCũng trong tháng 03, CTCP Tập đoàn Green+ công bố IPO thành công với lượng phát hành 9.59 triệu cp trên tổng số 9.6 triệu cp, hoàn tất vào ngày 08/03. Toàn bộ đều là cổ phiếu để tăng vốn. Công ty thu về 153.6 tỷ đồng, tương đương giá chào bán 16,000 đồng/cp.\n\nĐợt IPO của doanh nghiệp dược phẩm này thu hút được 118 nhà đầu tư đăng ký mua thành công. Với số tiền thu về, Green+ bỏ ra 80 tỷ đồng cho chi phí mua bất động sản và sang nhượng nhà thuốc, cùng kế hoạch mở mới 20 nhà thuốc; 17.6 tỷ là chi phí nhân viên, vận hành; còn lại là chi phí nhập hàng từ các đối tác Nhật Bản.\nSau IPO, Green+ có kế hoạch niêm yết trên Sở Giao dịch Chứng khoán Hà Nội (HNX). Theo công bố trên website Doanh nghiệp, ngày 13/07, Công ty đã nộp hồ sơ lên HNX để đăng ký niêm yết. Tuy nhiên ở thời điểm hiện tại, Green+ vẫn chưa chính thức giao dịch trên sàn.\nNgày 22/02, CTCP Nhựa Picomat (PICOMAT) tổ chức đấu giá cổ phần phát hành lần đầu ra công chúng, gồm gần 2.7 triệu cp với giá chào bán 10,000 đồng/cp nhằm huy động hơn 26 tỷ đồng phục vụ hoạt động sản xuất, kinh doanh của Công ty. Kết quả, 115 nhà đầu tư cá nhân đã trúng đấu giá. Tổng giá trị cổ phần bán được đạt 29.4 tỷ đồng, tương ứng bình quân 10,934 đồng/cp.\n\nĐến ngày 21/07, HNX có quyết định chấp thuận niêm yết 20 triệu cp của doanh nghiệp ngành nhựa này, với mã giao dịch PCH. Cổ phiếu PCH chính thức giao dịch trên HNX vào ngày 28/07/2022 với giá tham chiếu 11,000 đồng/cp. Tuy nhiên sau những phiên giao dịch mạnh đẩy giá lên trên 17,000 đồng/cp, giá mã này đổ đèo theo diễn biến chung của thị trường, kết phiên cuối năm 2022 đã chia hơn 3 lần giá trị so với đỉnh, dừng ở mức 5,100 đồng/cp.\nNgày 21/10, hơn 3.27 triệu cp của Công ty TNHH MTV Xây dựng Công trình Tân Cảng đã được chào bán đấu giá công khai lần đầu ra công chúng (36% cổ phần), với giá khởi điểm 15,322 đồng/cp, tương ứng giá trị huy động dự kiến hơn 50 tỷ đồng.\nĐiểm gây chú ý của thương vụ này nằm ở việc chỉ có 3 nhà đầu tư đăng ký tham gia đấu giá và mua thành công vỏn vẹn… 8,200 cổ phần, với giá bình quân 15,502 đồng/cp. Tổng số tiền Công ty thu được là hơn 127 triệu đồng.\n\nTới ngày 23/11, HNX gửi quyết định chấp thuận cho Công ty đăng ký giao dịch 8,200 cp trên UPCoM, với mã giao dịch XDC. Cổ phiếu XDC chính thức giao dịch trên UPCoM từ ngày 01/12, giá tham chiếu 15,500 đồng/cp. Tuy nhiên do khối lượng lưu hành ít ỏi, cổ phiếu mã này thường xuyên trắng thanh khoản. Kết phiên cuối năm 2022, thị giá XDC dừng ở mức 13,600 đồng/cp.
+
+OUTPUT:
+[
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tôn Đông Á", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": NULL, "so_luong": "12.4 triệu cp", "gia_phat_hanh": "40,000 đồng/cp", "tong_gia_tri": "496 tỷ đồng", "ngay_chot_quyen": NULL, "confidence": "high"},
+{"event_type": "Niêm yết", "ten_to_chuc": "CTCP Tôn Đông Á", "ma_co_phieu": NULL, "san_giao_dich": "HOSE", "so_luong_co_phieu": NULL, "ngay_hieu_luc": NULL, "confidence": "medium"},
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tập đoàn Nova Consumer", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": NULL, "so_luong": "10.9 triệu cp", "gia_phat_hanh": "44,000 đồng/cp", "tong_gia_tri": "479 tỷ đồng", "ngay_chot_quyen": NULL, "confidence": "high"},
+{"event_type": "Đầu tư", "ten_to_chuc": "CTCP Tập đoàn Nova Consumer", "ten_cong_ty_dau_tu_vao": "Công ty TNHH Thực phẩm Mặt trời mọc", "ty_le_so_huu": NULL, "gia_tri_dau_tu": "465 tỷ đồng", "muc_dich": "mua lại vốn góp và góp vốn để mở rộng kinh doanh", "ngay_thuc_hien": NULL, "confidence": "medium"},
+{"event_type": "Niêm yết", "ten_to_chuc": "CTCP Tập đoàn Nova Consumer", "ma_co_phieu": "NCG", "san_giao_dich": "HOSE", "so_luong_co_phieu": NULL, "ngay_hieu_luc": NULL, "confidence": "low"},
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tập đoàn Green+", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": NULL, "so_luong": "9.59 triệu cp", "gia_phat_hanh": "16,000 đồng/cp", "tong_gia_tri": "153.6 tỷ đồng", "ngay_chot_quyen": NULL, "confidence": "high"},
+{"event_type": "Niêm yết", "ten_to_chuc": "CTCP Tập đoàn Green+", "ma_co_phieu": NULL, "san_giao_dich": "HNX", "so_luong_co_phieu": NULL, "ngay_hieu_luc": NULL, "confidence": "medium"},
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Nhựa Picomat", "phuong_thuc_phat_hanh": "đấu giá công khai", "loai_co_phieu": NULL, "so_luong": "gần 2.7 triệu cp", "gia_phat_hanh": "10,934 đồng/cp", "tong_gia_tri": "29.4 tỷ đồng", "ngay_chot_quyen": NULL, "confidence": "high"},
+{"event_type": "Niêm yết", "ten_to_chuc": "CTCP Nhựa Picomat", "ma_co_phieu": "PCH", "san_giao_dich": "HNX", "so_luong_co_phieu": "20 triệu cp", "ngay_hieu_luc": "28/07/2022", "confidence": "high"},
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "Công ty TNHH MTV Xây dựng Công trình Tân Cảng", "phuong_thuc_phat_hanh": "đấu giá công khai", "loai_co_phieu": NULL, "so_luong": "8,200 cp", "gia_phat_hanh": "15,502 đồng/cp", "tong_gia_tri": "127 triệu đồng", "ngay_chot_quyen": NULL, "confidence": "high"},
+{"event_type": "Niêm yết", "ten_to_chuc": "Công ty TNHH MTV Xây dựng Công trình Tân Cảng", "ma_co_phieu": "XDC", "san_giao_dich": "UPCoM", "so_luong_co_phieu": "8,200 cp", "ngay_hieu_luc": "01/12/2022", "confidence": "high"}
+]
+
+
+Bây giờ bắt đầu với văn bản gốc cần trích xuất! 
+Chỉ tập trung vào 21 loại sự kiện sau: [Chi trả cổ tức, Phát hành thêm cổ phiếu, Chia tách cổ phiếu, Gộp cổ phiếu, Niêm yết, Hủy niêm yết, Chuyển sàn, Phát hành trái phiếu, Cổ đông thay đổi tỷ lệ sở hữu, Cổ đông cầm cố cổ phiếu, Cổ đông phong tỏa cổ phiếu, Thay đổi nhân sự chủ chốt, Lãnh đạo cấp cao qua đời, M&A, Đầu tư, Hợp đồng lớn, Tổn thất tài sản nghiêm trọng, Bồi thường lớn cho bên ngoài, Vấn đề pháp lý với tổ chức, Vấn đề pháp lý với cá nhân, Phá sản].
+Lưu ý văn bản có thể chứa nhiều loại sự kiện trong các loại sự kiện cần trích xuất. Còn nếu không có sự kiện nào, hãy xuất ra danh sách rỗng.
+
+
+NỘI DUNG:
+{{content}}
+
+OUTPUT:
