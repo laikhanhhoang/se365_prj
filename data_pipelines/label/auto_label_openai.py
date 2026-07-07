@@ -211,10 +211,10 @@ if __name__ == "__main__":
         "temperature": 0.2,
         "prompt_file": "data_pipelines/label/prompt.txt",  # chứa "{{content}}" sẽ được thay bằng content
         "in_out": [
-            ["data_pipelines/label/vietstock_preprocessed_20260601_20260601_CHUAN.jsonl",
-             "data_pipelines/label/vietstock_labeled_raw_20260601_20260601_CHUAN.jsonl"],
-            # ["data/processing/preprocess/vietstock_preprocessed_filter_config1_2023_2026.jsonl",
-            #  "data/processing/labeled/vietstock_labeled_filter_config1_2023_2026.jsonl"]
+            #["data_pipelines/label/vietstock_preprocessed_20260601_20260601_CHUAN.jsonl",
+            # "data_pipelines/label/vietstock_labeled_raw_20260601_20260601_CHUAN.jsonl"],
+            ["data/processing/preprocess/vietstock_preprocessed_filter_config1_2023_2026_PART_1.jsonl",
+             "data/processing/label/prompt1/vietstock_labeled_raw_prompt1_filter_config1_2023_2026_PART_1.jsonl"]
         ]
     }
 
