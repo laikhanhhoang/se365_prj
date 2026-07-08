@@ -230,7 +230,7 @@ if __name__ == "__main__":
         "raw_field":    "label_raw",
         "output_field": "events",
         "in_out": [
-            ["data_pipelines/label/vietstock_labeled_raw_20260601_20260601_CHUAN.jsonl",
+            ["data_pipelines/label/vietstock_labeled_raw_prompt1_20260601_20260601_CHUAN.jsonl",
              "data_pipelines/label/vietstock_labeled_20260601_20260601_CHUAN.jsonl"],
         ]
     }
