@@ -202,7 +202,7 @@ if __name__ == "__main__":
     # TEST
     filter_config_test = {
         "merge_output_files_into": "",
-        "log": "data_pipelines/samples/vietstock_labelling_step02_20260601_20260601_CHUAN.log.txt",
+        "log": "data_pipelines/samples/vietstock_labelling_step02_20260601_20260601_CHUAN.log1.txt",
         "in_out": [
             ["data_pipelines/samples/vietstock_labelling_step01_20260601_20260601_CHUAN.jsonl", 
              "data_pipelines/samples/vietstock_labelling_step02_20260601_20260601_CHUAN.jsonl"],
@@ -231,7 +231,7 @@ if __name__ == "__main__":
 
     # PROD 23-26
     filter_config = {
-        "log":                     "data/processing/filter/vietstock_labelling_step02_2023_2026.log.txt",
+        "log": "data/processing/filter/vietstock_labelling_step02_2023_2026.log1.txt",
         "in_out": [
             ["data/processing/preprocess/vietstock_labelling_step01_2023_2026.jsonl",
              "data/processing/filter/vietstock_labelling_step02_2023_2026.jsonl"]
