@@ -1,3 +1,38 @@
+  15 giữ lại / 17 tổng → vietstock_labelling_step02_20260601_20260601_CHUAN.jsonl
+=======================================================
+TỔNG KẾT
+=======================================================
+Tổng bài đầu vào :     17
+Giữ lại          :     15  (88.2%)
+Lọc bỏ           :      2  (11.8%)
+  Tên event                            Số bài
+  ----------------------------------  -------
+  Chi trả cổ tức                          9 bài
+  Phát hành thêm cổ phiếu                 1 bài
+  Chia tách cổ phiếu                      0 bài
+  Gộp cổ phiếu                            0 bài
+  Niêm yết                                0 bài
+  Hủy niêm yết                            0 bài
+  Chuyển sàn                              0 bài
+  Phát hành trái phiếu                    1 bài
+  Cổ đông thay đổi tỷ lệ sở hữu           0 bài
+  Cổ đông cầm cố cổ phiếu                 0 bài
+  Cổ đông phong tỏa cổ phiếu              0 bài
+  Thay đổi nhân sự chủ chốt               3 bài
+  Lãnh đạo cấp cao qua đời                0 bài
+  M&A                                     1 bài
+  Đầu tư                                  5 bài
+  Hợp đồng lớn                            0 bài
+  Vay vốn                                 4 bài
+  Tổn thất tài sản nghiêm trọng           1 bài
+  Bồi thường lớn cho bên ngoài            1 bài
+  Vấn đề pháp lý với tổ chức              1 bài
+  Vấn đề pháp lý với cá nhân              0 bài
+  Phá sản                                 0 bài
+
+============================================================
+Snapshot data_schema.json tại thời điểm chạy:
+============================================================
 {
   "dataset": {
     "schema": ["id", "content"],

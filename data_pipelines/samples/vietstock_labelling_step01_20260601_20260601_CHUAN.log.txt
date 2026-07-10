@@ -1,3 +1,10 @@
+Schema: ['id', 'content'] (strict_required=yes)
+[vietstock_data_20260601_20260601_CHUAN.jsonl]
+  preprocess: 17 record (id tự sinh: 0, lệch field: 0) → vietstock_labelling_step01_20260601_20260601_CHUAN.jsonl
+
+============================================================
+Snapshot data_schema.json tại thời điểm chạy:
+============================================================
 {
   "dataset": {
     "schema": ["id", "content"],

@@ -12,11 +12,10 @@ _PROJECT_ROOT = Path(__file__).parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 from data_pipelines.utils.dir_processor import get_project_abs_dir_str_from_env
-from data_pipelines.utils.file_processor import process_write_run_log
+from data_pipelines.utils.file_processor import process_write_run_log, process_merge_output_files
 
 _CODE_FENCE    = "```"
 _COMMON_FIELDS = ["event_type", "confidence"]  # có ở mọi event, không tính riêng theo events_fields
-_SCHEMA_PATH   = Path(__file__).parent / "data_schema.json"
 
 
 def _get_events_fields(schema_path: Path) -> dict[str, list[str]]:
@@ -105,7 +104,7 @@ def _build_formatted_record(record: dict, raw_field: str, output_field: str) -> 
     return record
 
 
-def _process_file(
+def _postprocess_file(
     in_path:       Path,
     out_path:      Path,
     raw_field:     str,
@@ -166,18 +165,18 @@ def _process_file(
     return [summary]
 
 
-def process_files(
+def postprocess_files(
     raw_field:    str,
     output_field: str,
     in_out_pairs: list,
     project_dir:  str,
-    schema_path:  Path = _SCHEMA_PATH,
+    schema_path:  Path,
 ) -> list[str]:
     """
     - Summary:
         1. Đọc field từng loại sự kiện (_get_events_fields()).
         2. Resolve đường dẫn từng cặp in/out.
-        3. Xử lý từng file (_process_file()).
+        3. Xử lý từng file (_postprocess_file()).
     - Args:
         - raw_field:    Tên trường chứa JSON thô cần parse.
         - output_field: Tên trường sẽ chứa kết quả đã parse.
@@ -201,7 +200,7 @@ def process_files(
             continue
 
         summary_lines.append(f'[{in_path.name}]')
-        summary_lines += _process_file(
+        summary_lines += _postprocess_file(
             in_path       = in_path,
             out_path      = out_path,
             raw_field     = raw_field,
@@ -214,11 +213,13 @@ def process_files(
 
 if __name__ == "__main__":
     PROJECT_DIR = get_project_abs_dir_str_from_env(".env")
+    SCHEMA_DIR  = Path(__file__).parent / "data_schema.json"
 
     postprocess_config = {
-        "raw_field":    "label_raw",
-        "output_field": "events",
-        "log":          "data_pipelines/labelling/logs/step04_postprocess.log.txt",
+        "raw_field":                "label_raw",
+        "output_field":             "events",
+        "log":                      "data_pipelines/labelling/logs/step04_postprocess.log.txt",
+        "merge_output_files_into":  "",
         "in_out": [
             #["data_pipelines/labelling/samples/vietstock_labeled_raw_prompt1_20260601_20260601_CHUAN.jsonl",
             # "data_pipelines/labelling/samples/vietstock_labeled_20260601_20260601_CHUAN.jsonl"],
@@ -230,13 +231,19 @@ if __name__ == "__main__":
     raw_field, output_field = postprocess_config.get("raw_field", "label_raw"), postprocess_config.get("output_field", "events")
     in_out_pairs            = postprocess_config.get("in_out", [])
     log_path_str            = postprocess_config.get("log")
+    merge_output_files_into = postprocess_config.get("merge_output_files_into")
 
-    summary_lines = process_files(
+    summary_lines = postprocess_files(
         raw_field    = raw_field,
         output_field = output_field,
         in_out_pairs = in_out_pairs,
         project_dir  = PROJECT_DIR,
+        schema_path  = SCHEMA_DIR,
     )
 
     if log_path_str:
-        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, _SCHEMA_PATH)
+        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, SCHEMA_DIR)
+
+    if merge_output_files_into:
+        out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
+        process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)

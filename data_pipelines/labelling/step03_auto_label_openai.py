@@ -14,9 +14,7 @@ _PROJECT_ROOT = Path(__file__).parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 from data_pipelines.utils.dir_processor import get_project_abs_dir_str_from_env
-from data_pipelines.utils.file_processor import process_write_run_log
-
-_SCHEMA_PATH = Path(__file__).parent / "data_schema.json"
+from data_pipelines.utils.file_processor import process_write_run_log, process_merge_output_files
 
 
 def _get_existing_ids(out_path: Path) -> set[str]:
@@ -108,7 +106,7 @@ def _get_response_from_openai_api(
                 raise
 
 
-def _process_file(
+def _label_file(
     in_path:         Path,
     out_path:        Path,
     client:          OpenAI,
@@ -164,7 +162,7 @@ def _process_file(
     return summary
 
 
-def process_files(
+def label_files(
     in_out_pairs:    list,
     project_dir:     str,
     client:          OpenAI,
@@ -175,7 +173,7 @@ def process_files(
     """
     - Summary:
         1. Resolve đường dẫn từng cặp in/out.
-        2. Xử lý từng file (_process_file()).
+        2. Xử lý từng file (_label_file()).
     - Args:
         - in_out_pairs:    List các cặp [input_path_str, output_path_str].
         - project_dir:     Đường dẫn tuyệt đối thư mục gốc dự án.
@@ -199,7 +197,7 @@ def process_files(
             continue
 
         summary_lines.append(f'[{in_path.name}]')
-        summary_lines += _process_file(
+        summary_lines += _label_file(
             in_path         = in_path,
             out_path        = out_path,
             client          = client,
@@ -213,16 +211,18 @@ def process_files(
 
 if __name__ == "__main__":
     PROJECT_DIR = get_project_abs_dir_str_from_env(".env")
+    SCHEMA_DIR  = Path(__file__).parent / "data_schema.json"
     ENV_PATH    = Path(__file__).parent.parent / ".env"   # data_pipelines/.env
 
     _env           = dotenv_values(str(ENV_PATH))
     OPENAI_API_KEY = _env.get("OPENAI_KEY") or _env.get("OPENAI_API_KEY")
 
     label_config = {
-        "model":       "gpt-4o-mini",
-        "temperature": 0.2,
-        "prompt_file": "data_pipelines/labelling/prompts/prompt1.txt",  # chứa "{{content}}" sẽ được thay bằng content
-        "log":         "data_pipelines/labelling/logs/step03_auto_label_openai.log.txt",
+        "model":                    "gpt-4o-mini",
+        "temperature":              0.2,
+        "prompt_file":              "data_pipelines/labelling/prompts/prompt1.txt",  # chứa "{{content}}" sẽ được thay bằng content
+        "log":                      "data_pipelines/labelling/logs/step03_auto_label_openai.log.txt",
+        "merge_output_files_into":  "",
         "in_out": [
             #["data_pipelines/labelling/samples/vietstock_preprocessed_20260601_20260601_CHUAN.jsonl",
             # "data_pipelines/labelling/samples/vietstock_labeled_raw_prompt1_20260601_20260601_CHUAN.jsonl"],
@@ -231,13 +231,14 @@ if __name__ == "__main__":
         ]
     }
 
-    model, temperature = label_config.get("model", "gpt-4o-mini"), label_config.get("temperature", 0.2)
-    in_out_pairs       = label_config.get("in_out", [])
-    log_path_str       = label_config.get("log")
-    prompt_template    = (Path(PROJECT_DIR) / label_config["prompt_file"]).read_text(encoding='utf-8')
-    client             = OpenAI(api_key=OPENAI_API_KEY)
+    model, temperature      = label_config.get("model", "gpt-4o-mini"), label_config.get("temperature", 0.2)
+    in_out_pairs            = label_config.get("in_out", [])
+    log_path_str            = label_config.get("log")
+    merge_output_files_into = label_config.get("merge_output_files_into")
+    prompt_template         = (Path(PROJECT_DIR) / label_config["prompt_file"]).read_text(encoding='utf-8')
+    client                  = OpenAI(api_key=OPENAI_API_KEY)
 
-    summary_lines = process_files(
+    summary_lines = label_files(
         in_out_pairs    = in_out_pairs,
         project_dir     = PROJECT_DIR,
         client          = client,
@@ -247,4 +248,8 @@ if __name__ == "__main__":
     )
 
     if log_path_str:
-        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, _SCHEMA_PATH)
+        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, SCHEMA_DIR)
+
+    if merge_output_files_into:
+        out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
+        process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)

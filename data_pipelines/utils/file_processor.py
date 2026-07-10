@@ -7,25 +7,6 @@ if sys.stdout.encoding != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8')
 
 
-def build_run_log_text(summary_lines: list[str], schema_path: Path) -> str:
-    """
-    - Summary: Ghép log tóm tắt kèm snapshot data_schema.json.
-    - Args:
-        - summary_lines: List dòng log tóm tắt của step.
-        - schema_path:   Đường dẫn data_schema.json tại thời điểm chạy.
-    - Output:
-        - str: Log tóm tắt, kèm snapshot nội dung schema ở cuối.
-    """
-    schema_snapshot = schema_path.read_text(encoding='utf-8')
-    return (
-        '\n'.join(summary_lines)
-        + '\n\n' + '=' * 60
-        + f'\nSnapshot {schema_path.name} tại thời điểm chạy:\n'
-        + '=' * 60 + '\n'
-        + schema_snapshot
-    )
-
-
 def process_write_run_log(log_path: Path, summary_lines: list[str], schema_path: Path):
     """
     - Summary: Ghi log tóm tắt + snapshot schema ra file.
@@ -36,66 +17,44 @@ def process_write_run_log(log_path: Path, summary_lines: list[str], schema_path:
     - Output:
         - None. Ghi file tại log_path.
     """
+    def _build_run_log_text(summary_lines: list[str], schema_path: Path) -> str:
+        """
+        - Summary: Ghép log tóm tắt kèm snapshot data_schema.json.
+        - Args:
+            - summary_lines: List dòng log tóm tắt của step.
+            - schema_path:   Đường dẫn data_schema.json tại thời điểm chạy.
+        - Output:
+            - str: Log tóm tắt, kèm snapshot nội dung schema ở cuối.
+        """
+        schema_snapshot = schema_path.read_text(encoding='utf-8')
+        return (
+            '\n'.join(summary_lines)
+            + '\n\n' + '=' * 60
+            + f'\nSnapshot {schema_path.name} tại thời điểm chạy:\n'
+            + '=' * 60 + '\n'
+            + schema_snapshot
+        )
+
     log_path.parent.mkdir(parents=True, exist_ok=True)
-    log_path.write_text(build_run_log_text(summary_lines, schema_path), encoding='utf-8')
+    log_path.write_text(_build_run_log_text(summary_lines, schema_path), encoding='utf-8')
     print(f'Log đã ghi: {log_path}')
 
 
-def _get_records(in_path: Path) -> list[dict]:
+def process_merge_output_files(out_paths: list[Path], merge_path: Path):
     """
-    - Summary: Đọc toàn bộ record hợp lệ từ file JSONL.
+    - Summary: Gộp toàn bộ file output thành 1 file.
     - Args:
-        - in_path: Đường dẫn file input JSONL.
+        - out_paths:  List đường dẫn file output cần gộp.
+        - merge_path: Đường dẫn file gộp kết quả.
     - Output:
-        - list[dict]: Danh sách các record hợp lệ.
+        - None. Ghi file gộp tại merge_path.
     """
-    records: list[dict] = []
-    with in_path.open(encoding='utf-8') as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                try:
-                    records.append(json.loads(line))
-                except Exception:
-                    pass
-    return records
-
-
-def _build_split_output_paths(input_file: Path, output_dir: Path, parts: int) -> list[Path]:
-    """
-    - Summary: Tạo list đường dẫn output cho từng phần.
-    - Args:
-        - input_file: Đường dẫn file JSONL gốc.
-        - output_dir: Thư mục chứa các file sau khi chia.
-        - parts:      Số phần cần chia.
-    - Output:
-        - list[Path]: List đường dẫn output, tên dạng "{tên gốc}_PART_{i}.jsonl".
-    """
-    return [
-        output_dir / f"{input_file.stem}_PART_{i}{input_file.suffix}"
-        for i in range(1, parts + 1)
-    ]
-
-
-def _build_split_chunks(records: list[dict], parts: int) -> list[list[dict]]:
-    """
-    - Summary: Chia list record thành `parts` phần gần bằng nhau.
-    - Args:
-        - records: List record cần chia.
-        - parts:   Số phần cần chia.
-    - Output:
-        - list[list[dict]]: List các phần, phần đầu nhận thêm record dư (nếu có).
-    """
-    total_records        = len(records)
-    base_size, remainder = divmod(total_records, parts)
-
-    chunks = []
-    start  = 0
-    for i in range(parts):
-        chunk_size = base_size + (1 if i < remainder else 0)
-        chunks.append(records[start:start + chunk_size])
-        start += chunk_size
-    return chunks
+    merge_path.parent.mkdir(parents=True, exist_ok=True)
+    with merge_path.open('w', encoding='utf-8') as f_out:
+        for out_path in out_paths:
+            if out_path.exists():
+                f_out.write(out_path.read_text(encoding='utf-8'))
+    print(f'Đã gộp {len(out_paths)} file → {merge_path}')
 
 
 def process_split_jsonl_file(input_file: str, output_dir: str, parts: int):
@@ -112,6 +71,60 @@ def process_split_jsonl_file(input_file: str, output_dir: str, parts: int):
     - Output:
         - None. Ghi `parts` file JSONL vào output_dir.
     """
+    def _get_records(in_path: Path) -> list[dict]:
+        """
+        - Summary: Đọc toàn bộ record hợp lệ từ file JSONL.
+        - Args:
+            - in_path: Đường dẫn file input JSONL.
+        - Output:
+            - list[dict]: Danh sách các record hợp lệ.
+        """
+        records: list[dict] = []
+        with in_path.open(encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    try:
+                        records.append(json.loads(line))
+                    except Exception:
+                        pass
+        return records
+
+    def _build_split_chunks(records: list[dict], parts: int) -> list[list[dict]]:
+        """
+        - Summary: Chia list record thành `parts` phần gần bằng nhau.
+        - Args:
+            - records: List record cần chia.
+            - parts:   Số phần cần chia.
+        - Output:
+            - list[list[dict]]: List các phần, phần đầu nhận thêm record dư (nếu có).
+        """
+        total_records        = len(records)
+        base_size, remainder = divmod(total_records, parts)
+
+        chunks = []
+        start  = 0
+        for i in range(parts):
+            chunk_size = base_size + (1 if i < remainder else 0)
+            chunks.append(records[start:start + chunk_size])
+            start += chunk_size
+        return chunks
+
+    def _build_split_output_paths(input_file: Path, output_dir: Path, parts: int) -> list[Path]:
+        """
+        - Summary: Tạo list đường dẫn output cho từng phần.
+        - Args:
+            - input_file: Đường dẫn file JSONL gốc.
+            - output_dir: Thư mục chứa các file sau khi chia.
+            - parts:      Số phần cần chia.
+        - Output:
+            - list[Path]: List đường dẫn output, tên dạng "{tên gốc}_PART_{i}.jsonl".
+        """
+        return [
+            output_dir / f"{input_file.stem}_PART_{i}{input_file.suffix}"
+            for i in range(1, parts + 1)
+        ]
+
     input_path  = Path(input_file)
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)

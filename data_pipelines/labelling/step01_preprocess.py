@@ -11,9 +11,7 @@ _PROJECT_ROOT = Path(__file__).parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 from data_pipelines.utils.dir_processor import get_project_abs_dir_str_from_env
-from data_pipelines.utils.file_processor import process_write_run_log
-
-_SCHEMA_PATH = Path(__file__).parent / "data_schema.json"
+from data_pipelines.utils.file_processor import process_write_run_log, process_merge_output_files
 
 
 def _get_dataset_schema(schema_path: Path) -> tuple[list[str], str]:
@@ -96,7 +94,7 @@ def _get_field_diff(record: dict, schema: list[str]) -> tuple[set[str], set[str]
     return expected_fields - actual_fields, actual_fields - expected_fields
 
 
-def _process_file(
+def _preprocess_file(
     in_path:          Path,
     out_path:         Path,
     schema:           list[str],
@@ -144,16 +142,16 @@ def _process_file(
     return [summary]
 
 
-def process_files(
-    in_out_pairs:    list,
-    project_dir:     str,
-    schema_path:     Path = _SCHEMA_PATH,
+def preprocess_files(
+    in_out_pairs: list,
+    project_dir:  str,
+    schema_path:  Path,
 ):
     """
     - Summary:
         1. Đọc dataset schema (_get_dataset_schema()).
         2. Resolve đường dẫn từng cặp in/out.
-        3. Xử lý từng file (_process_file()).
+        3. Xử lý từng file (_preprocess_file()).
     - Args:
         - in_out_pairs: List các cặp [input_path_str, output_path_str].
         - project_dir:  Đường dẫn tuyệt đối thư mục gốc dự án.
@@ -175,7 +173,7 @@ def process_files(
             continue
 
         summary_lines.append(f'[{in_path.name}]')
-        summary_lines += _process_file(
+        summary_lines += _preprocess_file(
             in_path         = in_path,
             out_path        = out_path,
             schema          = schema,
@@ -187,24 +185,59 @@ def process_files(
 
 if __name__ == "__main__":
     PROJECT_DIR = get_project_abs_dir_str_from_env(".env")
+    SCHEMA_DIR  = Path(__file__).parent / "data_schema.json"
 
-    preprocess_config = {
-        "log": "data_pipelines/labelling/logs/step01_preprocess.log.txt",
+    # TEST
+    preprocess_config_test = {
+        "log":                      "data_pipelines/samples/vietstock_labelling_step01_20260601_20260601_CHUAN.log.txt",
+        "merge_output_files_into":  "",
         "in_out": [
-            #["data_pipelines/labelling/samples/vietstock_crawled_data_20260601_20260601_CHUAN.jsonl",
-            # "data_pipelines/labelling/samples/vietstock_preprocessed_20260601_20260601_CHUAN.jsonl"],
-            ["data/processing/filter/config1/vietstock_filter_2023_2026.jsonl",
-             "data/processing/preprocess/vietstock_preprocessed_filter_config1_2023_2026.jsonl"]
+            ["data_pipelines/samples/vietstock_data_20260601_20260601_CHUAN.jsonl",
+             "data_pipelines/samples/vietstock_labelling_step01_20260601_20260601_CHUAN.jsonl"]
         ]
     }
 
-    in_out_pairs = preprocess_config.get("in_out", [])
-    log_path_str = preprocess_config.get("log")
+    in_out_pairs             = preprocess_config_test.get("in_out", [])
+    log_path_str             = preprocess_config_test.get("log")
+    merge_output_files_into  = preprocess_config_test.get("merge_output_files_into")
 
-    summary_lines = process_files(
+    summary_lines = preprocess_files(
         in_out_pairs = in_out_pairs,
         project_dir  = PROJECT_DIR,
+        schema_path  = SCHEMA_DIR,
     )
 
     if log_path_str:
-        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, _SCHEMA_PATH)
+        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, SCHEMA_DIR)
+
+    if merge_output_files_into:
+        out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
+        process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)
+
+
+    # PROD 23-26
+    preprocess_config_23_26 = {
+        "log":                      "data/processing/preprocess/vietstock_labelling_step01_2023_2026.log.txt",
+        "merge_output_files_into":  "",
+        "in_out": [
+            ["data/raw/vietstock/vietstock_data_2023_2026.jsonl",
+             "data/processing/preprocess/vietstock_labelling_step01_2023_2026.jsonl"]
+        ]
+    }
+
+    in_out_pairs             = preprocess_config_23_26.get("in_out", [])
+    log_path_str             = preprocess_config_23_26.get("log")
+    merge_output_files_into  = preprocess_config_23_26.get("merge_output_files_into")
+
+    summary_lines = preprocess_files(
+        in_out_pairs = in_out_pairs,
+        project_dir  = PROJECT_DIR,
+        schema_path  = SCHEMA_DIR,
+    )
+
+    if log_path_str:
+        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, SCHEMA_DIR)
+
+    if merge_output_files_into:
+        out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
+        process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)

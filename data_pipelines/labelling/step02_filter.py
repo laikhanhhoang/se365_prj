@@ -11,9 +11,7 @@ _PROJECT_ROOT = Path(__file__).parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 from data_pipelines.utils.dir_processor import get_project_abs_dir_str_from_env
-from data_pipelines.utils.file_processor import process_write_run_log
-
-_SCHEMA_PATH = Path(__file__).parent / "data_schema.json"
+from data_pipelines.utils.file_processor import process_write_run_log, process_merge_output_files
 
 
 def _get_event_keywords(schema_path: Path) -> dict[str, list[str]]:
@@ -73,7 +71,7 @@ def _get_records(in_path: Path) -> list[dict]:
     return records
 
 
-def _process_file(
+def _filter_file(
     in_path:  Path,
     out_path: Path,
     keyword:  dict[str, list[str]],
@@ -98,15 +96,13 @@ def _process_file(
     event_count: dict[str, int] = {}
 
     for record in tqdm.tqdm(records, desc=f'filtering {in_path.name}', ncols=100):
-        title = record.get('title', '') or ''
-        head  = record.get('head',  '') or ''
-        body  = record.get('body',  '') or ''
+        content = record.get('content', '') or ''
 
-        if not title and not body:
+        if not content:
             filtered.append(record)
             continue
 
-        matched_events = filter_by_keywords([title, head, body], keyword)
+        matched_events = filter_by_keywords(content, keyword)
 
         if matched_events:
             for event_name in matched_events:
@@ -146,23 +142,20 @@ def _build_event_table_lines(by_event: dict[str, int], event_names: list[str]) -
     return lines
 
 
-def process_files(
+def filter_files(
     in_out_pairs: list,
     project_dir:  str,
     keyword:      dict[str, list[str]],
-    combine_path: str | None = None,
 ) -> list[str]:
     """
     - Summary:
         1. Resolve đường dẫn từng cặp in/out.
-        2. Xử lý từng file (_process_file()).
-        3. Gộp toàn bộ output thành 1 file (nếu có combine_path).
-        4. Build bảng tổng kết theo loại sự kiện (_build_event_table_lines()).
+        2. Xử lý từng file (_filter_file()).
+        3. Build bảng tổng kết theo loại sự kiện (_build_event_table_lines()).
     - Args:
         - in_out_pairs: List các cặp [input_path_str, output_path_str].
         - project_dir:  Đường dẫn tuyệt đối thư mục gốc dự án.
         - keyword:      Dict tên sự kiện → list keyword.
-        - combine_path: Đường dẫn file gộp toàn bộ output (None nếu không gộp).
     - Output:
         - list[str]: List dòng log tóm tắt của toàn bộ lần chạy.
     """
@@ -181,7 +174,7 @@ def process_files(
             summary_lines.append(f'[SKIP] Không tìm thấy: {in_path}')
             continue
 
-        result = _process_file(in_path, out_path, keyword)
+        result = _filter_file(in_path, out_path, keyword)
         total_hit += result['hit']
         total_all += result['total']
         for event_name, count in result['by_event'].items():
@@ -199,66 +192,67 @@ def process_files(
 
     print('\n'.join(summary_lines))
 
-    if combine_path is not None:
-        combined = project_path / combine_path
-        combined.parent.mkdir(parents=True, exist_ok=True)
-        with combined.open('w', encoding='utf-8') as f_out:
-            for _, out_path_str in in_out_pairs:
-                out_file = project_path / out_path_str
-                if out_file.exists():
-                    f_out.write(out_file.read_text(encoding='utf-8'))
-        print(f'Đã gộp {len(in_out_pairs)} file → {combined}')
-        summary_lines.append(f'Đã gộp {len(in_out_pairs)} file → {combined}')
-
     return summary_lines
 
 
 if __name__ == "__main__":
     PROJECT_DIR = get_project_abs_dir_str_from_env(".env")
+    SCHEMA_DIR  = Path(__file__).parent / "data_schema.json"
 
-    filter_config = {
-        "combine": "data/processing/filter/config1/vietstock_filter_2023_2026.jsonl",
-        "log":     "data_pipelines/labelling/logs/step02_filter.log.txt",
+    # TEST
+    filter_config_test = {
+        "merge_output_files_into": "",
+        "log": "data_pipelines/samples/vietstock_labelling_step02_20260601_20260601_CHUAN.log.txt",
         "in_out": [
-            ["data/raw/vietstock/vietstock_crawled_data_20230101_20230430.jsonl", "data/processing/filter/config1/vietstock_filter_20230101_20230430.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20230501_20230831.jsonl", "data/processing/filter/config1/vietstock_filter_20230501_20230831.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20230901_20231231.jsonl", "data/processing/filter/config1/vietstock_filter_20230901_20231231.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20240101_20240131.jsonl", "data/processing/filter/config1/vietstock_filter_20240101_20240131.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20240201_20240229.jsonl", "data/processing/filter/config1/vietstock_filter_20240201_20240229.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20240301_20240331.jsonl", "data/processing/filter/config1/vietstock_filter_20240301_20240331.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20240401_20240430.jsonl", "data/processing/filter/config1/vietstock_filter_20240401_20240430.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20240501_20240630.jsonl", "data/processing/filter/config1/vietstock_filter_20240501_20240630.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20240701_20240831.jsonl", "data/processing/filter/config1/vietstock_filter_20240701_20240831.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20240901_20241031.jsonl", "data/processing/filter/config1/vietstock_filter_20240901_20241031.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20241101_20241231.jsonl", "data/processing/filter/config1/vietstock_filter_20241101_20241231.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20250101_20250131.jsonl", "data/processing/filter/config1/vietstock_filter_20250101_20250131.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20250201_20250228.jsonl", "data/processing/filter/config1/vietstock_filter_20250201_20250228.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20250301_20250331.jsonl", "data/processing/filter/config1/vietstock_filter_20250301_20250331.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20250401_20250430.jsonl", "data/processing/filter/config1/vietstock_filter_20250401_20250430.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20250501_20250531.jsonl", "data/processing/filter/config1/vietstock_filter_20250501_20250531.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20250601_20250630.jsonl", "data/processing/filter/config1/vietstock_filter_20250601_20250630.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20250701_20250731.jsonl", "data/processing/filter/config1/vietstock_filter_20250701_20250731.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20250801_20251231.jsonl", "data/processing/filter/config1/vietstock_filter_20250801_20251231.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20260101_20260131.jsonl", "data/processing/filter/config1/vietstock_filter_20260101_20260131.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20260201_20260228.jsonl", "data/processing/filter/config1/vietstock_filter_20260201_20260228.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20260301_20260331.jsonl", "data/processing/filter/config1/vietstock_filter_20260301_20260331.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20260401_20260430.jsonl", "data/processing/filter/config1/vietstock_filter_20260401_20260430.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20260501_20260531.jsonl", "data/processing/filter/config1/vietstock_filter_20260501_20260531.jsonl"],
-            ["data/raw/vietstock/vietstock_crawled_data_20260601_20260620.jsonl", "data/processing/filter/config1/vietstock_filter_20260601_20260620.jsonl"]
+            ["data_pipelines/samples/vietstock_labelling_step01_20260601_20260601_CHUAN.jsonl", 
+             "data_pipelines/samples/vietstock_labelling_step02_20260601_20260601_CHUAN.jsonl"],
         ]
     }
 
-    in_out_pairs = filter_config.get("in_out", [])
-    combine_path = filter_config.get("combine")
-    log_path_str = filter_config.get("log")
-    keyword      = _get_event_keywords(_SCHEMA_PATH)
+    in_out_pairs            = filter_config_test.get("in_out", [])
+    merge_output_files_into = filter_config_test.get("merge_output_files_into")
+    log_path_str            = filter_config_test.get("log")
+    keyword                 = _get_event_keywords(SCHEMA_DIR)
 
-    summary_lines = process_files(
+    summary_lines = filter_files(
         in_out_pairs = in_out_pairs,
         project_dir  = PROJECT_DIR,
         keyword      = keyword,
-        combine_path = combine_path,
     )
 
     if log_path_str:
-        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, _SCHEMA_PATH)
+        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, SCHEMA_DIR)
+
+    if merge_output_files_into:
+        out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
+        process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)    
+
+    
+
+    # PROD 23-26
+    filter_config = {
+        "log":                     "data/processing/filter/vietstock_labelling_step02_2023_2026.log.txt",
+        "in_out": [
+            ["data/processing/preprocess/vietstock_labelling_step01_2023_2026.jsonl",
+             "data/processing/filter/vietstock_labelling_step02_2023_2026.jsonl"]
+        ],
+        "merge_output_files_into": "",
+    }
+
+    in_out_pairs            = filter_config.get("in_out", [])
+    merge_output_files_into = filter_config.get("merge_output_files_into")
+    log_path_str            = filter_config.get("log")
+    keyword                 = _get_event_keywords(SCHEMA_DIR)
+
+    summary_lines = filter_files(
+        in_out_pairs = in_out_pairs,
+        project_dir  = PROJECT_DIR,
+        keyword      = keyword,
+    )
+
+    if log_path_str:
+        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, SCHEMA_DIR)
+
+    if merge_output_files_into:
+        out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
+        process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)
