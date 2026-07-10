@@ -7,6 +7,40 @@ if sys.stdout.encoding != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8')
 
 
+def build_run_log_text(summary_lines: list[str], schema_path: Path) -> str:
+    """
+    - Summary: Ghép log tóm tắt kèm snapshot data_schema.json.
+    - Args:
+        - summary_lines: List dòng log tóm tắt của step.
+        - schema_path:   Đường dẫn data_schema.json tại thời điểm chạy.
+    - Output:
+        - str: Log tóm tắt, kèm snapshot nội dung schema ở cuối.
+    """
+    schema_snapshot = schema_path.read_text(encoding='utf-8')
+    return (
+        '\n'.join(summary_lines)
+        + '\n\n' + '=' * 60
+        + f'\nSnapshot {schema_path.name} tại thời điểm chạy:\n'
+        + '=' * 60 + '\n'
+        + schema_snapshot
+    )
+
+
+def process_write_run_log(log_path: Path, summary_lines: list[str], schema_path: Path):
+    """
+    - Summary: Ghi log tóm tắt + snapshot schema ra file.
+    - Args:
+        - log_path:      Đường dẫn file log cần ghi.
+        - summary_lines: List dòng log tóm tắt của step.
+        - schema_path:   Đường dẫn data_schema.json tại thời điểm chạy.
+    - Output:
+        - None. Ghi file tại log_path.
+    """
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    log_path.write_text(build_run_log_text(summary_lines, schema_path), encoding='utf-8')
+    print(f'Log đã ghi: {log_path}')
+
+
 def _get_records(in_path: Path) -> list[dict]:
     """
     - Summary: Đọc toàn bộ record hợp lệ từ file JSONL.

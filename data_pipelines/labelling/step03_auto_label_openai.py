@@ -14,6 +14,9 @@ _PROJECT_ROOT = Path(__file__).parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 from data_pipelines.utils.dir_processor import get_project_abs_dir_str_from_env
+from data_pipelines.utils.file_processor import process_write_run_log
+
+_SCHEMA_PATH = Path(__file__).parent / "data_schema.json"
 
 
 def _get_existing_ids(out_path: Path) -> set[str]:
@@ -112,7 +115,7 @@ def _process_file(
     model:           str,
     temperature:     float,
     prompt_template: str,
-):
+) -> list[str]:
     """
     - Summary:
         1. Tải id đã xử lý (_get_existing_ids()).
@@ -128,7 +131,7 @@ def _process_file(
         - temperature:     Độ ngẫu nhiên của model.
         - prompt_template: Template prompt có "{{content}}".
     - Output:
-        - None. Ghi kết quả vào out_path (append).
+        - list[str]: List dòng log tóm tắt của file này.
     """
     existing_ids = _get_existing_ids(out_path)
     records      = _get_records(in_path)
@@ -144,17 +147,21 @@ def _process_file(
                 continue
 
             print(f"bắt đầu xử lí sample {sample_id}...")
-            prompt                    = _build_prompt(prompt_template, record.get("content", ""))
-            label_raw, used_token     = _get_response_from_openai_api(client, model, temperature, prompt)
-            record["label_raw"]       = label_raw
-            total_token              += used_token
+            prompt                = _build_prompt(prompt_template, record.get("content", ""))
+            label_raw, used_token = _get_response_from_openai_api(client, model, temperature, prompt)
+            record["label_raw"]   = label_raw
+            total_token           += used_token
             fout.write(json.dumps(record, ensure_ascii=False) + '\n')
             new_count += 1
             print(f"đã xử lí xong sample {sample_id}, tốn {used_token} token")
 
     elapsed_seconds = time.time() - start_time
-    print(f'  label: {new_count} mới / {len(records)} tổng (đã có: {len(existing_ids)}) → {out_path.name}')
-    print(f'  thời gian xử lý: {elapsed_seconds:.2f}s, tổng token đã dùng: {total_token}')
+    summary = [
+        f'  label: {new_count} mới / {len(records)} tổng (đã có: {len(existing_ids)}) → {out_path.name}',
+        f'  thời gian xử lý: {elapsed_seconds:.2f}s, tổng token đã dùng: {total_token}',
+    ]
+    print('\n'.join(summary))
+    return summary
 
 
 def process_files(
@@ -164,7 +171,7 @@ def process_files(
     model:           str,
     temperature:     float,
     prompt_template: str,
-):
+) -> list[str]:
     """
     - Summary:
         1. Resolve đường dẫn từng cặp in/out.
@@ -177,9 +184,10 @@ def process_files(
         - temperature:     Độ ngẫu nhiên của model.
         - prompt_template: Template prompt có "{{content}}".
     - Output:
-        - None. Ghi kết quả ra các file JSONL output.
+        - list[str]: List dòng log tóm tắt của toàn bộ lần chạy.
     """
-    project_path = Path(project_dir)
+    project_path  = Path(project_dir)
+    summary_lines: list[str] = []
 
     for in_path_str, out_path_str in in_out_pairs:
         in_path  = project_path / in_path_str
@@ -187,9 +195,11 @@ def process_files(
 
         if not in_path.exists():
             print(f"[SKIP] Không tìm thấy: {in_path}")
+            summary_lines.append(f'[SKIP] Không tìm thấy: {in_path}')
             continue
 
-        _process_file(
+        summary_lines.append(f'[{in_path.name}]')
+        summary_lines += _process_file(
             in_path         = in_path,
             out_path        = out_path,
             client          = client,
@@ -197,6 +207,8 @@ def process_files(
             temperature     = temperature,
             prompt_template = prompt_template,
         )
+
+    return summary_lines
 
 
 if __name__ == "__main__":
@@ -209,10 +221,11 @@ if __name__ == "__main__":
     label_config = {
         "model":       "gpt-4o-mini",
         "temperature": 0.2,
-        "prompt_file": "data_pipelines/label/prompt1.txt",  # chứa "{{content}}" sẽ được thay bằng content
+        "prompt_file": "data_pipelines/labelling/prompts/prompt1.txt",  # chứa "{{content}}" sẽ được thay bằng content
+        "log":         "data_pipelines/labelling/logs/step03_auto_label_openai.log.txt",
         "in_out": [
-            #["data_pipelines/label/vietstock_preprocessed_20260601_20260601_CHUAN.jsonl",
-            # "data_pipelines/label/vietstock_labeled_raw_prompt1_20260601_20260601_CHUAN.jsonl"],
+            #["data_pipelines/labelling/samples/vietstock_preprocessed_20260601_20260601_CHUAN.jsonl",
+            # "data_pipelines/labelling/samples/vietstock_labeled_raw_prompt1_20260601_20260601_CHUAN.jsonl"],
             ["data/processing/preprocess/vietstock_preprocessed_filter_config1_2023_2026_PART_1.jsonl",
              "data/processing/label/prompt1/vietstock_labeled_raw_prompt1_filter_config1_2023_2026_PART_1.jsonl"]
         ]
@@ -220,10 +233,11 @@ if __name__ == "__main__":
 
     model, temperature = label_config.get("model", "gpt-4o-mini"), label_config.get("temperature", 0.2)
     in_out_pairs       = label_config.get("in_out", [])
+    log_path_str       = label_config.get("log")
     prompt_template    = (Path(PROJECT_DIR) / label_config["prompt_file"]).read_text(encoding='utf-8')
     client             = OpenAI(api_key=OPENAI_API_KEY)
 
-    process_files(
+    summary_lines = process_files(
         in_out_pairs    = in_out_pairs,
         project_dir     = PROJECT_DIR,
         client          = client,
@@ -231,3 +245,6 @@ if __name__ == "__main__":
         temperature     = temperature,
         prompt_template = prompt_template,
     )
+
+    if log_path_str:
+        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, _SCHEMA_PATH)

@@ -12,6 +12,8 @@
 # Dataset
 ## Schema
 
+> Nguồn chuẩn (single source of truth): [`data_pipelines/labelling/data_schema.json`](data_pipelines/labelling/data_schema.json) — bảng dưới đây chỉ để đọc cho dễ, có thể lệch nếu schema đổi mà chưa cập nhật lại README.
+
 | Loại sự kiện | Các trường trích xuất |
 | :--- | :--- |
 | **META (có trong mọi sự kiện)** | `source_url` · `published_date` · `event_type` · `confidence` (high/medium/low) · `event_date` |
@@ -84,6 +86,19 @@
     python3 data_pipelines/crawl/vietstock_crawl_data_from_links.py \
         --links_file data_pipelines/crawl/vietstock_links_01062026_05062026.txt
     ```
+
+## 2. Chuẩn hoá, lọc, gán nhãn, hậu xử lý
+
+> Chi tiết tham số xem tại [data_pipelines/_HOW_TO_RUN.md](data_pipelines/_HOW_TO_RUN.md)
+
+Toàn bộ 4 bước còn lại nằm trong [data_pipelines/labelling/](data_pipelines/labelling/), đọc taxonomy sự kiện trực tiếp từ `data_schema.json`:
+
+```bash
+python data_pipelines/labelling/step01_preprocess.py          # chuẩn hoá dataset (id, content)
+python data_pipelines/labelling/step02_filter.py               # lọc bài viết theo keyword
+python data_pipelines/labelling/step03_auto_label_openai.py    # gán nhãn bằng OpenAI
+python data_pipelines/labelling/step04_postprocess.py          # parse + validate output
+```
 
 
 # Tài liệu tham khảo
