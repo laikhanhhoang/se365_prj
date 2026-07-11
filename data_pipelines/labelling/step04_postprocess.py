@@ -30,6 +30,18 @@ def _get_events_fields(schema_path: Path) -> dict[str, list[str]]:
     return {event["name"]: event["fields"] for event in events}
 
 
+def _get_output_schema_fields(schema_path: Path) -> list[str]:
+    """
+    - Summary: Đọc output_schema từ data_schema.json.
+    - Args:
+        - schema_path: Đường dẫn data_schema.json.
+    - Output:
+        - list[str]: List tên field được giữ lại ở record output.
+    """
+    dataset = json.loads(schema_path.read_text(encoding='utf-8'))["dataset"]
+    return dataset["output_schema"]
+
+
 def _get_records(in_path: Path) -> list[dict]:
     """
     - Summary: Đọc toàn bộ record hợp lệ từ file JSONL.
@@ -105,11 +117,12 @@ def _build_formatted_record(record: dict, raw_field: str, output_field: str) -> 
 
 
 def _postprocess_file(
-    in_path:       Path,
-    out_path:      Path,
-    raw_field:     str,
-    output_field:  str,
-    events_fields: dict[str, list[str]],
+    in_path:              Path,
+    out_path:             Path,
+    raw_field:            str,
+    output_field:         str,
+    events_fields:        dict[str, list[str]],
+    output_schema_fields: list[str],
 ) -> list[str]:
     """
     - Summary:
@@ -117,12 +130,14 @@ def _postprocess_file(
         2. Parse và ghi từng record (_build_formatted_record()).
         3. Bỏ event có event_type lạ, không có trong data_schema.json.
         4. Check field thiếu/thừa từng event còn lại (_get_field_diff()).
+        5. Lọc record, chỉ giữ field trong output_schema.
     - Args:
-        - in_path:       Đường dẫn file input JSONL.
-        - out_path:      Đường dẫn file output JSONL.
-        - raw_field:     Tên trường chứa JSON thô cần parse.
-        - output_field:  Tên trường sẽ chứa kết quả đã parse.
-        - events_fields: Dict tên sự kiện → list field kỳ vọng.
+        - in_path:              Đường dẫn file input JSONL.
+        - out_path:             Đường dẫn file output JSONL.
+        - raw_field:            Tên trường chứa JSON thô cần parse.
+        - output_field:         Tên trường sẽ chứa kết quả đã parse.
+        - events_fields:        Dict tên sự kiện → list field kỳ vọng.
+        - output_schema_fields: List field được giữ lại ở record output.
     - Output:
         - list[str]: List dòng log tóm tắt của file này.
     """
@@ -155,6 +170,7 @@ def _postprocess_file(
                               f"thiếu {missing_fields or '{}'}, thừa {extra_fields or '{}'}")
                     known_events.append(event)
                 formatted_record[output_field] = known_events
+            formatted_record = {field: formatted_record[field] for field in output_schema_fields if field in formatted_record}
             fout.write(json.dumps(formatted_record, ensure_ascii=False) + '\n')
 
     summary = (
@@ -175,8 +191,9 @@ def postprocess_files(
     """
     - Summary:
         1. Đọc field từng loại sự kiện (_get_events_fields()).
-        2. Resolve đường dẫn từng cặp in/out.
-        3. Xử lý từng file (_postprocess_file()).
+        2. Đọc output_schema (_get_output_schema_fields()).
+        3. Resolve đường dẫn từng cặp in/out.
+        4. Xử lý từng file (_postprocess_file()).
     - Args:
         - raw_field:    Tên trường chứa JSON thô cần parse.
         - output_field: Tên trường sẽ chứa kết quả đã parse.
@@ -186,8 +203,9 @@ def postprocess_files(
     - Output:
         - list[str]: List dòng log tóm tắt của toàn bộ lần chạy.
     """
-    project_path  = Path(project_dir)
-    events_fields = _get_events_fields(schema_path)
+    project_path         = Path(project_dir)
+    events_fields        = _get_events_fields(schema_path)
+    output_schema_fields = _get_output_schema_fields(schema_path)
 
     summary_lines: list[str] = []
     for in_path_str, out_path_str in in_out_pairs:
@@ -201,11 +219,12 @@ def postprocess_files(
 
         summary_lines.append(f'[{in_path.name}]')
         summary_lines += _postprocess_file(
-            in_path       = in_path,
-            out_path      = out_path,
-            raw_field     = raw_field,
-            output_field  = output_field,
-            events_fields = events_fields,
+            in_path              = in_path,
+            out_path             = out_path,
+            raw_field            = raw_field,
+            output_field         = output_field,
+            events_fields        = events_fields,
+            output_schema_fields = output_schema_fields,
         )
 
     return summary_lines
@@ -215,16 +234,49 @@ if __name__ == "__main__":
     PROJECT_DIR = get_project_abs_dir_str_from_env(".env")
     SCHEMA_DIR  = Path(__file__).parent / "data_schema.json"
 
+    # TEST
+    postprocess_config_test = {
+        "raw_field":                "label_raw",
+        "output_field":             "events",
+        "log":                      "data_pipelines/samples/vietstock_labelling_step04_20260601_20260601_CHUAN.log.txt",
+        "merge_output_files_into":  "",
+        "in_out": [
+            ["data_pipelines/samples/vietstock_labelling_step03_20260601_20260601_CHUAN.jsonl",
+             "data_pipelines/samples/vietstock_labelling_step04_20260601_20260601_CHUAN.jsonl"]
+        ]
+    }
+
+    raw_field, output_field = postprocess_config_test.get("raw_field", "label_raw"), postprocess_config_test.get("output_field", "events")
+    in_out_pairs            = postprocess_config_test.get("in_out", [])
+    log_path_str            = postprocess_config_test.get("log")
+    merge_output_files_into = postprocess_config_test.get("merge_output_files_into")
+
+    summary_lines = postprocess_files(
+        raw_field    = raw_field,
+        output_field = output_field,
+        in_out_pairs = in_out_pairs,
+        project_dir  = PROJECT_DIR,
+        schema_path  = SCHEMA_DIR,
+    )
+
+    if log_path_str:
+        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, SCHEMA_DIR)
+
+    if merge_output_files_into:
+        out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
+        process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)
+
+
+
+    # PROD 23-26
     postprocess_config = {
         "raw_field":                "label_raw",
         "output_field":             "events",
         "log":                      "data_pipelines/labelling/logs/step04_postprocess.log.txt",
         "merge_output_files_into":  "",
         "in_out": [
-            #["data_pipelines/labelling/samples/vietstock_labeled_raw_prompt1_20260601_20260601_CHUAN.jsonl",
-            # "data_pipelines/labelling/samples/vietstock_labeled_20260601_20260601_CHUAN.jsonl"],
-            ["data/processing/label/prompt1/vietstock_labeled_raw_prompt1_filter_config1_2023_2026_PART_1.jsonl",
-             "data/processing/label/prompt1/vietstock_labeled_2023_2026_PART_1.jsonl"]
+            ["data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026.jsonl",
+             "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026.jsonl"]
         ]
     }
 

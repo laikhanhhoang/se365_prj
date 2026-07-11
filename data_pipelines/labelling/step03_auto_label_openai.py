@@ -222,11 +222,57 @@ if __name__ == "__main__":
         "model":                    "gpt-4o-mini",
         "temperature":              0.2,
         "prompt_file":              "data_pipelines/labelling/prompts/prompt2.txt",  # chứa "{{content}}" sẽ được thay bằng content
-        "log":                      "data_pipelines/labelling/logs/step03_auto_label_openai.log.txt",
+        "log":                      "data_pipelines/samples/vietstock_labelling_step03_20260601_20260601_CHUAN.log.txt",
         "merge_output_files_into":  "",
         "in_out": [
-            ["data/processing/preprocess/vietstock_preprocessed_filter_config1_2023_2026_PART_1.jsonl",
-             "data/processing/label/prompt1/vietstock_labeled_raw_prompt1_filter_config1_2023_2026_PART_1.jsonl"]
+            ["data_pipelines/samples/vietstock_labelling_step02_20260601_20260601_CHUAN.jsonl",
+             "data_pipelines/samples/vietstock_labelling_step03_20260601_20260601_CHUAN.jsonl"]
+        ]
+    }
+
+    model, temperature      = label_config_test.get("model", "gpt-4o-mini"), label_config_test.get("temperature", 0.2)
+    in_out_pairs            = label_config_test.get("in_out", [])
+    log_path_str            = label_config_test.get("log")
+    merge_output_files_into = label_config_test.get("merge_output_files_into")
+    prompt_template         = (Path(PROJECT_DIR) / label_config_test["prompt_file"]).read_text(encoding='utf-8')
+    client                  = OpenAI(api_key=OPENAI_API_KEY)
+
+    summary_lines = label_files(
+        in_out_pairs    = in_out_pairs,
+        project_dir     = PROJECT_DIR,
+        client          = client,
+        model           = model,
+        temperature     = temperature,
+        prompt_template = prompt_template,
+    )
+
+    if log_path_str:
+        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, SCHEMA_DIR)
+
+    if merge_output_files_into:
+        out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
+        process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)
+
+
+
+    # PROD 23 - 26
+    label_config = {
+        "model":                    "gpt-4o-mini",
+        "temperature":              0.2,
+        "prompt_file":              "data_pipelines/labelling/prompts/prompt1.txt",  # chứa "{{content}}" sẽ được thay bằng content
+        "log":                      "data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026.log.txt",
+        "merge_output_files_into":  "data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026.jsonl",
+        "in_out": [
+            ["data/processing/step02_filter/vietstock_labelling_step02_2023_2026_PART_1.jsonl",
+             "data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_1.jsonl"],
+            ["data/processing/step02_filter/vietstock_labelling_step02_2023_2026_PART_2.jsonl",
+             "data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_2.jsonl"],
+            ["data/processing/step02_filter/vietstock_labelling_step02_2023_2026_PART_3.jsonl",
+             "data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_3.jsonl"],
+            ["data/processing/step02_filter/vietstock_labelling_step02_2023_2026_PART_4.jsonl",
+             "data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_4.jsonl"],
+            ["data/processing/step02_filter/vietstock_labelling_step02_2023_2026_PART_5.jsonl",
+             "data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_5.jsonl"]
         ]
     }
 
@@ -252,41 +298,3 @@ if __name__ == "__main__":
     if merge_output_files_into:
         out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
         process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)
-
-
-
-#    # PROD 23 - 26
-#    label_config = {
-#        "model":                    "gpt-4o-mini",
-#        "temperature":              0.2,
-#        "prompt_file":              "data_pipelines/labelling/prompts/prompt1.txt",  # chứa "{{content}}" sẽ được thay bằng content
-#        "log":                      "data_pipelines/labelling/logs/step03_auto_label_openai.log.txt",
-#        "merge_output_files_into":  "",
-#        "in_out": [
-#            ["data/processing/preprocess/vietstock_preprocessed_filter_config1_2023_2026_PART_1.jsonl",
-#             "data/processing/label/prompt1/vietstock_labeled_raw_prompt1_filter_config1_2023_2026_PART_1.jsonl"]
-#        ]
-#    }
-#
-#    model, temperature      = label_config.get("model", "gpt-4o-mini"), label_config.get("temperature", 0.2)
-#    in_out_pairs            = label_config.get("in_out", [])
-#    log_path_str            = label_config.get("log")
-#    merge_output_files_into = label_config.get("merge_output_files_into")
-#    prompt_template         = (Path(PROJECT_DIR) / label_config["prompt_file"]).read_text(encoding='utf-8')
-#    client                  = OpenAI(api_key=OPENAI_API_KEY)
-#
-#    summary_lines = label_files(
-#        in_out_pairs    = in_out_pairs,
-#        project_dir     = PROJECT_DIR,
-#        client          = client,
-#        model           = model,
-#        temperature     = temperature,
-#        prompt_template = prompt_template,
-#    )
-#
-#    if log_path_str:
-#        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, SCHEMA_DIR)
-#
-#    if merge_output_files_into:
-#        out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
-#        process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)

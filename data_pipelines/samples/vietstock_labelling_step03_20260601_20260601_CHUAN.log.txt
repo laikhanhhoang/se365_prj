@@ -1,3 +1,10 @@
+[vietstock_labelling_step02_20260601_20260601_CHUAN.jsonl]
+  label: 0 mới / 13 tổng (đã có: 13) → vietstock_labelling_step03_20260601_20260601_CHUAN.jsonl
+  thời gian xử lý: 0.02s, tổng token đã dùng: 0
+
+============================================================
+Snapshot data_schema.json tại thời điểm chạy:
+============================================================
 {
   "dataset": {
     "schema": ["id", "content"],
