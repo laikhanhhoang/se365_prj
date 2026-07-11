@@ -10,43 +10,40 @@
     - Chuẩn hóa thông tin thành dạng có cấu trúc phục vụ phân tích đầu tư.
 ---
 # Dataset
-## Schema
+## Output schema
 
-> Nguồn chuẩn (single source of truth): [`data_pipelines/labelling/data_schema.json`](data_pipelines/labelling/data_schema.json) — bảng dưới đây chỉ để đọc cho dễ, có thể lệch nếu schema đổi mà chưa cập nhật lại README.
+> JSON Format [`data_pipelines/labelling/data_schema.json`](data_pipelines/labelling/data_schema.json) luôn phải được cập nhật theo config bên dưới.
 
-| Loại sự kiện | Các trường trích xuất |
-| :--- | :--- |
-| **META (có trong mọi sự kiện)** | `source_url` · `published_date` · `event_type` · `confidence` (high/medium/low) · `event_date` |
-| **— Cổ tức —** | |
-| **01. Chi trả cổ tức** | `ten_to_chuc` · `hinh_thuc_co_tuc` (tiền mặt/cổ phiếu/hỗn hợp) · `ty_le` · `ngay_gd_khong_huong_quyen` · `ngay_thanh_toan` |
-| **— Cổ phiếu —** | |
-| **02. Phát hành thêm cổ phiếu** | `ten_to_chuc` · `phuong_thuc_phat_hanh` · `loai_co_phieu` (phổ thông/ưu đãi) · `so_luong` · `gia_phat_hanh` · `tong_gia_tri` · `ngay_chot_quyen` |
-| **03. Chia tách cổ phiếu** | `ten_to_chuc` · `ty_le_thuc_hien` · `ngay_gd_khong_huong_quyen` |
-| **04. Gộp cổ phiếu** | `ten_to_chuc` · `ty_le_thuc_hien` · `ngay_gd_khong_huong_quyen` |
-| **05. Niêm yết** | `ten_to_chuc` · `ma_co_phieu` · `san_giao_dich` (HOSE/HNX/UPCoM) · `so_luong_co_phieu` · `ngay_hieu_luc` |
-| **06. Hủy niêm yết** | `ten_to_chuc` · `ma_co_phieu` · `san_giao_dich` (HOSE/HNX/UPCoM) · `ngay_hieu_luc` |
-| **07. Chuyển sàn** | `ten_to_chuc` · `ma_co_phieu` · `san_giao_dich` (sàn mới) · `san_giao_dich_cu` · `so_luong_co_phieu` · `ngay_hieu_luc` |
-| **— Trái phiếu —** | |
-| **08. Phát hành trái phiếu** | `ten_to_chuc` · `loai_trai_phieu` (doanh nghiệp/chuyển đổi/có bảo đảm) · `tong_gia_tri` · `lai_suat` · `ky_han` · `ngay_phat_hanh` |
-| **— Cổ đông —** | |
-| **09. Cổ đông thay đổi tỷ lệ sở hữu** | `ten_to_chuc` · `ten_co_dong` · `chieu_thay_doi` (tăng/giảm) · `ty_le_truoc` · `ty_le_sau` · `so_cp_thay_doi` · `ngay_bat_dau` |
-| **10. Cổ đông cầm cố cổ phiếu** | `ten_to_chuc` · `ben_cam_co` · `ben_nhan_cam_co` · `so_luong_cp` · `ngay_bat_dau` · `ngay_ket_thuc` |
-| **11. Cổ đông phong tỏa cổ phiếu** | `ten_to_chuc` · `ten_co_dong` · `so_luong_cp` · `ngay_bat_dau` · `ngay_ket_thuc` · `co_quan_ra_lenh` |
-| **— Nhân sự —** | |
-| **12. Thay đổi nhân sự chủ chốt** | `ten_to_chuc` · `ten_nhan_su` · `trang_thai` (bổ nhiệm/từ chức/miễn nhiệm/bầu) · `chuc_vu` · `nguoi_thay_the` |
-| **13. Lãnh đạo cấp cao qua đời** | `ten_to_chuc` · `ten_lanh_dao` · `chuc_vu` · `con_lien_quan` (bool) · `ngay_ghi_nhan` |
-| **— Đầu tư / Kiếm tiền —** | |
-| **14. M&A** | `ben_mua` · `ten_to_chuc` · `loai_giao_dich` (mua lại/sáp nhập) · `ty_le_so_huu_truoc` · `ty_le_so_huu_sau` · `gia_tri_thuong_vu` · `ngay_hoan_tat` |
-| **15. Đầu tư** | `ten_to_chuc` · `ten_cong_ty_dau_tu_vao` · `ty_le_so_huu` · `gia_tri_dau_tu` · `muc_dich` · `ngay_thuc_hien` |
-| **16. Hợp đồng lớn** | `ten_to_chuc` · `ten_doi_tac` · `loai_hop_dong` (EPC/tư vấn/cung cấp...) · `ten_du_an` · `gia_tri_hop_dong` · `thoi_gian_thuc_hien` · `ngay_ky` |
-| **17. Vay vốn** | `ten_to_chuc` · `ben_cho_vay` · `tong_gia_tri_khoan_vay` · `muc_dich` · `ky_han` · `ben_bao_lanh` · `ngay_ky` |
-| **— Tổn thất —** | |
-| **18. Tổn thất tài sản nghiêm trọng** | `ten_to_chuc` · `mo_ta_su_co` · `gia_tri_ton_that` · `bao_hiem_boi_thuong` (có/không/một phần) · `ngay_cong_bo` |
-| **19. Bồi thường lớn cho bên ngoài** | `ten_to_chuc` · `ben_nhan_boi_thuong` · `so_tien` · `ly_do` · `ngay_cong_bo` |
-| **— Pháp lý —** | |
-| **20. Vấn đề pháp lý với tổ chức** | `thuc_the_bi_xu_ly` · `co_quan_xu_phat` · `ly_do_vi_pham` · `hinh_thuc_xu_phat` (phạt tiền/đình chỉ/thu hồi GCN...) · `so_tien_phat` · `ngay_quyet_dinh` |
-| **21. Vấn đề pháp lý với cá nhân** | `ten_ca_nhan` · `ten_to_chuc` · `chuc_vu` · `toi_danh` · `loai_hanh_dong` (khởi tố/tạm giam/bắt tạm giam/tuyên án/kháng cáo) · `co_quan_thuc_thi` · `ngay_thuc_thi` |
-| **22. Phá sản** | `ten_to_chuc` · `loai_hanh_dong` (phá sản/tái cơ cấu/thanh lý tự nguyện) · `nganh_nghe` · `toa_an_thu_ly` · `ngay_cong_bo` · `ngay_phan_quyet` |
+- Trường bắt buộc với từng sự kiện xác định được: 
+    - `event_type`: loại sự kiện
+    - `confidence` (high/medium/low): độ tin cậy của thông tin trích xuất được. Cụ thể, high **/** medium **/** low tương ứng với sự kiện được xác nhận đã xảy ra **/** sự kiện là kế hoạch, dự kiến do người viết dự báo, chưa xảy ra hoặc chưa được phê duyệt chính thức **/** sự kiện chỉ là lời đồn hoặc do model suy luận từ ngữ cảnh, không được nêu trực tiếp.
+
+- Với từng loại sự kiện phát hiện, cần trích xuất kèm theo các trường thông tin sau:
+    | Loại sự kiện (`event_type`) | Các trường trích xuất |
+    | :--- | :--- |
+    | **— Cổ tức —** | |
+    | **01. Chi trả cổ tức** | `ten_to_chuc` · `hinh_thuc_co_tuc` (tiền mặt/cổ phiếu/hỗn hợp) · `ty_le` · `ngay_gd_khong_huong_quyen` · `ngay_thanh_toan` |
+    | **— Cổ phiếu —** | |
+    | **02. Phát hành thêm cổ phiếu** | `ten_to_chuc` · `phuong_thuc_phat_hanh` · `loai_co_phieu` (phổ thông/ưu đãi) · `so_luong` · `gia_phat_hanh` · `ngay_chot_quyen` |
+    | **03. Niêm yết** | `ten_to_chuc` · `ma_co_phieu` · `san_giao_dich` (HOSE/HNX/UPCoM) · `so_luong_co_phieu` · `ngay_hieu_luc` |
+    | **04. Hủy niêm yết** | `ten_to_chuc` · `ma_co_phieu` · `san_giao_dich` (HOSE/HNX/UPCoM) · `ngay_hieu_luc` |
+    | **— Trái phiếu —** | |
+    | **05. Phát hành trái phiếu** | `ten_to_chuc` · `loai_trai_phieu` (doanh nghiệp/chuyển đổi/có bảo đảm) · `tong_gia_tri` · `lai_suat` · `ky_han` · `ngay_phat_hanh` |
+    | **— Cổ đông —** | |
+    | **06. Cổ đông thay đổi tỷ lệ sở hữu** | `ten_to_chuc` · `ten_co_dong` · `chieu_thay_doi` (tăng/giảm) · `ty_le_truoc` · `ty_le_sau` · `so_cp_thay_doi` · `ngay_bat_dau` |
+    | **— Nhân sự —** | |
+    | **07. Thay đổi nhân sự chủ chốt** | `ten_to_chuc` · `ten_nhan_su` · `trang_thai` (bổ nhiệm/từ chức/miễn nhiệm/bầu) · `chuc_vu` · `nguoi_thay_the` |
+    | **— Đầu tư / Kiếm tiền —** | |
+    | **08. M&A** | `ten_to_chuc` · `ben_mua` · `loai_giao_dich` (mua lại/sáp nhập) · `ty_le_so_huu_truoc` · `ty_le_so_huu_sau` · `gia_tri_thuong_vu` · `ngay_hoan_tat` |
+    | **09. Đầu tư** | `ten_to_chuc` · `ten_cong_ty_dau_tu_vao` · `ty_le_so_huu` · `gia_tri_dau_tu` · `muc_dich` · `ngay_thuc_hien` |
+    | **10. Hợp đồng lớn** | `ten_to_chuc` · `ten_doi_tac` · `loai_hop_dong` (EPC/tư vấn/cung cấp...) · `ten_du_an` · `gia_tri_hop_dong` ·  `ngay_ky` |
+    | **11. Vay vốn** | `ten_to_chuc` · `ben_cho_vay` · `tong_gia_tri_khoan_vay` · `muc_dich` · `ky_han` · `ben_bao_lanh` · `ngay_ky` |
+    | **— Tổn thất —** | |
+    | **12. Tổn thất tài sản nghiêm trọng** | `ten_to_chuc` · `mo_ta_su_co` · `gia_tri_ton_that` · `ngay_cong_bo` |
+    | **13. Bồi thường lớn cho bên ngoài** | `ten_to_chuc` · `ben_nhan_boi_thuong` · `so_tien` · `ly_do` · `ngay_cong_bo` |
+    | **— Pháp lý —** | |
+    | **14. Vấn đề pháp lý** | `ten_to_chuc` · `ca_nhan_chiu_trach_nhiem` (dạng: "Tên - Chức vụ", nhiều người cách nhau bởi dấu phẩy) · `noi_dung_vi_pham` · `co_quan_xu_ly` · `hinh_thuc_xu_phat` (phạt tiền/đình chỉ/thu hồi GCN...) · `ngay_ra_quyet_dinh` |
+    | **15. Phá sản** | `ten_to_chuc` · `loai_hanh_dong` (phá sản/tái cơ cấu/thanh lý tự nguyện) · `nganh_nghe` · `toa_an_thu_ly` · `ngay_cong_bo` · `ngay_phan_quyet` |
 
 
 # Hướng dẫn chạy

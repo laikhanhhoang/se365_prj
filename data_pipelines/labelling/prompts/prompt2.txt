@@ -6,7 +6,7 @@ Vui lòng sử dụng văn bản gốc để trích xuất sự kiện.
 Mỗi sự kiện trích xuất được cần được trả về dưới dạng từ điển JSON. Với các trường không xuất hiện hoặc không được đề cập trong bài báo, hãy điền giá trị "null", không tự suy diễn hoặc bịa thông tin.
 Đồng thời, bổ sung trường "confidence" nhận một trong các giá trị high/medium/low tương ứng với sự kiện được xác nhận đã xảy ra/sự kiện là kế hoạch, dự kiến do người viết dự báo, chưa xảy ra hoặc chưa được phê duyệt chính thức/sự kiện chỉ là lời đồn hoặc do model suy luận từ ngữ cảnh, không được nêu trực tiếp.
 Nếu không có sự kiện nào thuộc về các loại sự kiện được đề cập, trả về list rỗng.
-Nếu trong bài có nhiều cá nhân/tổ chức khác nhau cùng liên quan đến 1 loại sự kiện (VD: nhiều cá nhân trong cùng một vụ án) và mỗi cá nhân/tổ chức đều có đủ thông tin rõ ràng để điền các trường, hãy trích xuất riêng từng cá nhân/tổ chức thành một sự kiện độc lập, không chỉ trích xuất nhân vật/tổ chức chính được nhắc ở tiêu đề.
+Nếu trong bài có nhiều cá nhân/tổ chức khác nhau cùng liên quan đến 1 loại sự kiện (VD: nhiều cá nhân trong cùng một vụ án) và mỗi cá nhân/tổ chức đều có đủ thông tin rõ ràng để điền các trường, hãy trích xuất riêng từng cá nhân/tổ chức thành một sự kiện độc lập, không chỉ trích xuất nhân vật/tổ chức chính được nhắc ở tiêu đề. (Ngoại lệ: với sự kiện "Vấn đề pháp lý", nếu nhiều cá nhân cùng liên quan đến 1 vụ việc pháp lý duy nhất, gộp chung tất cả vào 1 sự kiện qua trường ca_nhan_chiu_trach_nhiem thay vì tách thành nhiều sự kiện riêng — xem chi tiết mục 14.)
 Nếu 1 sự kiện được nhắc lại nhiều lần trong bài với thông tin bị điều chỉnh/thay đổi (VD: thay đổi lịch áp dụng, cập nhật lại số liệu, tỷ lệ...), hãy đọc toàn bộ bài trước khi điền trường, chỉ lấy giá trị mới nhất/đã được xác nhận sau cùng, không lấy giá trị ban đầu đã bị thay thế.
 
 Các loại sự kiện và các thành phần được định nghĩa như sau:
@@ -24,41 +24,22 @@ Các loại sự kiện và các thành phần được định nghĩa như sau:
     - loai_co_phieu: Loại cổ phiếu phát hành (phổ thông/ưu đãi).
     - so_luong: Số lượng cổ phiếu dự kiến hoặc đã phát hành.
     - gia_phat_hanh: Giá phát hành cho mỗi cổ phiếu.
-    - tong_gia_tri: Tổng giá trị đợt phát hành (số lượng cổ phiếu nhân giá phát hành).
     - ngay_chot_quyen: Ngày chốt danh sách cổ đông được hưởng quyền mua cổ phiếu phát hành thêm.
 
-03. Chia tách cổ phiếu: là việc doanh nghiệp chia một cổ phiếu đang lưu hành thành nhiều cổ phiếu mới theo một tỷ lệ nhất định, nhằm tăng số lượng cổ phiếu lưu hành mà không làm thay đổi tổng vốn điều lệ. Hành động này thường làm giảm thị giá cổ phiếu tương ứng với tỷ lệ chia tách, giúp tăng thanh khoản và mở rộng khả năng tiếp cận của nhà đầu tư nhỏ lẻ.
-    - ten_to_chuc: Tên tổ chức thực hiện chia tách cổ phiếu.
-    - ty_le_thuc_hien: Tỷ lệ chia tách cổ phiếu (VD: 1:2, nghĩa là 1 cổ phiếu cũ được chia thành 2 cổ phiếu mới).
-    - ngay_gd_khong_huong_quyen: Ngày giao dịch không hưởng quyền, nhà đầu tư mua cổ phiếu từ ngày này trở đi sẽ không được nhận cổ phiếu chia tách.
-
-04. Gộp cổ phiếu: là việc doanh nghiệp gộp nhiều cổ phiếu đang lưu hành thành một số lượng cổ phiếu mới ít hơn theo một tỷ lệ nhất định, nhằm giảm số lượng cổ phiếu lưu hành mà không làm thay đổi tổng vốn điều lệ. Hành động này thường làm tăng thị giá cổ phiếu tương ứng với tỷ lệ gộp, thường được thực hiện để tránh bị hủy niêm yết do thị giá quá thấp hoặc để tái cấu trúc cổ phiếu.
-    - ten_to_chuc: Tên tổ chức thực hiện gộp cổ phiếu.
-    - ty_le_thuc_hien: Tỷ lệ gộp cổ phiếu (VD: 10:1, nghĩa là 10 cổ phiếu cũ được gộp thành 1 cổ phiếu mới).
-    - ngay_gd_khong_huong_quyen: Ngày giao dịch không hưởng quyền, nhà đầu tư mua cổ phiếu từ ngày này trở đi sẽ không được thực hiện quyền gộp cổ phiếu.
-
-05. Niêm yết: là việc cổ phiếu của doanh nghiệp được cơ quan quản lý chấp thuận đưa vào giao dịch chính thức trên một sở giao dịch chứng khoán (HOSE/HNX/UPCoM). Đây là bước ngoặt quan trọng giúp doanh nghiệp tăng khả năng huy động vốn, nâng cao uy tín và minh bạch thông tin, đồng thời cho phép cổ đông hiện hữu giao dịch cổ phiếu dễ dàng hơn trên thị trường tập trung.
+03. Niêm yết: là việc cổ phiếu của doanh nghiệp được cơ quan quản lý chấp thuận đưa vào giao dịch chính thức trên một sở giao dịch chứng khoán (HOSE/HNX/UPCoM). Đây là bước ngoặt quan trọng giúp doanh nghiệp tăng khả năng huy động vốn, nâng cao uy tín và minh bạch thông tin, đồng thời cho phép cổ đông hiện hữu giao dịch cổ phiếu dễ dàng hơn trên thị trường tập trung.
     - ten_to_chuc: Tên tổ chức thực hiện niêm yết.
     - ma_co_phieu: Mã cổ phiếu được cấp khi niêm yết (VD: BVB).
     - san_giao_dich: Sàn giao dịch nơi cổ phiếu được niêm yết (HOSE/HNX/UPCoM).
     - so_luong_co_phieu: Số lượng cổ phiếu được niêm yết.
     - ngay_hieu_luc: Ngày cổ phiếu chính thức được niêm yết và giao dịch.
 
-06. Hủy niêm yết: là việc cổ phiếu của doanh nghiệp bị đưa ra khỏi sở giao dịch chứng khoán, không còn được giao dịch chính thức trên sàn đó nữa. Việc hủy niêm yết thường xuất phát từ vi phạm nghĩa vụ công bố thông tin, thua lỗ kéo dài, không đáp ứng điều kiện niêm yết hoặc doanh nghiệp tự nguyện rút khỏi sàn để tái cấu trúc, có tác động lớn đến thanh khoản và quyền lợi của cổ đông.
+04. Hủy niêm yết: là việc cổ phiếu của doanh nghiệp bị đưa ra khỏi sở giao dịch chứng khoán, không còn được giao dịch chính thức trên sàn đó nữa. Việc hủy niêm yết thường xuất phát từ vi phạm nghĩa vụ công bố thông tin, thua lỗ kéo dài, không đáp ứng điều kiện niêm yết hoặc doanh nghiệp tự nguyện rút khỏi sàn để tái cấu trúc, có tác động lớn đến thanh khoản và quyền lợi của cổ đông.
     - ten_to_chuc: Tên tổ chức bị hủy niêm yết.
     - ma_co_phieu: Mã cổ phiếu bị hủy niêm yết.
     - san_giao_dich: Sàn giao dịch mà cổ phiếu bị hủy niêm yết (HOSE/HNX/UPCoM).
     - ngay_hieu_luc: Ngày cổ phiếu chính thức bị hủy niêm yết.
 
-07. Chuyển sàn: là việc cổ phiếu của doanh nghiệp được chuyển từ sàn giao dịch này sang sàn giao dịch khác (VD: từ UPCoM lên HOSE), thường nhằm đáp ứng tiêu chuẩn niêm yết cao hơn, tăng uy tín và khả năng tiếp cận nhà đầu tư. Đây là sự kiện tích cực phản ánh sự phát triển và tuân thủ chuẩn mực của doanh nghiệp.
-    - ten_to_chuc: Tên tổ chức thực hiện chuyển sàn.
-    - ma_co_phieu: Mã cổ phiếu thực hiện chuyển sàn.
-    - san_giao_dich: Sàn giao dịch mới mà cổ phiếu chuyển đến.
-    - san_giao_dich_cu: Sàn giao dịch cũ mà cổ phiếu rời đi.
-    - so_luong_co_phieu: Số lượng cổ phiếu được chuyển sàn.
-    - ngay_hieu_luc: Ngày cổ phiếu chính thức giao dịch trên sàn mới.
-
-08. Phát hành trái phiếu: là việc doanh nghiệp huy động vốn vay bằng cách phát hành trái phiếu cho nhà đầu tư, cam kết trả lãi định kỳ và hoàn trả gốc khi đáo hạn. Đây là kênh huy động vốn nợ phổ biến bên cạnh vay ngân hàng, phản ánh nhu cầu vốn cho hoạt động kinh doanh, đầu tư dự án hoặc tái cơ cấu nợ, đồng thời làm tăng đòn bẩy tài chính của doanh nghiệp.
+05. Phát hành trái phiếu: là việc doanh nghiệp huy động vốn vay bằng cách phát hành trái phiếu cho nhà đầu tư, cam kết trả lãi định kỳ và hoàn trả gốc khi đáo hạn. Đây là kênh huy động vốn nợ phổ biến bên cạnh vay ngân hàng, phản ánh nhu cầu vốn cho hoạt động kinh doanh, đầu tư dự án hoặc tái cơ cấu nợ, đồng thời làm tăng đòn bẩy tài chính của doanh nghiệp.
     - ten_to_chuc: Tên tổ chức phát hành trái phiếu.
     - loai_trai_phieu: Loại trái phiếu phát hành (doanh nghiệp/chuyển đổi/có bảo đảm).
     - tong_gia_tri: Tổng giá trị đợt phát hành trái phiếu.
@@ -66,7 +47,7 @@ Các loại sự kiện và các thành phần được định nghĩa như sau:
     - ky_han: Kỳ hạn của trái phiếu (VD: 3 năm, 5 năm).
     - ngay_phat_hanh: Ngày phát hành trái phiếu.
 
-09. Cổ đông thay đổi tỷ lệ sở hữu: là việc một cổ đông của doanh nghiệp mua vào hoặc bán ra cổ phiếu, làm thay đổi tỷ lệ sở hữu của cổ đông đó tại doanh nghiệp. Đây là thông tin quan trọng để theo dõi động thái của cổ đông lớn, ban lãnh đạo hoặc người có liên quan, có thể phản ánh kỳ vọng của họ về triển vọng doanh nghiệp.
+06. Cổ đông thay đổi tỷ lệ sở hữu: là việc một cổ đông của doanh nghiệp mua vào hoặc bán ra cổ phiếu, làm thay đổi tỷ lệ sở hữu của cổ đông đó tại doanh nghiệp. Đây là thông tin quan trọng để theo dõi động thái của cổ đông lớn, ban lãnh đạo hoặc người có liên quan, có thể phản ánh kỳ vọng của họ về triển vọng doanh nghiệp.
     - ten_to_chuc: Tên tổ chức có cổ đông thay đổi tỷ lệ sở hữu.
     - ten_co_dong: Tên cổ đông thực hiện giao dịch.
     - chieu_thay_doi: Chiều thay đổi tỷ lệ sở hữu (tăng/giảm).
@@ -75,46 +56,23 @@ Các loại sự kiện và các thành phần được định nghĩa như sau:
     - so_cp_thay_doi: Số lượng cổ phiếu được giao dịch.
     - ngay_bat_dau: Ngày dự kiến hoặc thực hiện giao dịch.
 
-10. Cổ đông cầm cố cổ phiếu: là việc cổ đông dùng cổ phiếu đang sở hữu làm tài sản đảm bảo để vay vốn hoặc bảo đảm cho một nghĩa vụ tài chính khác tại tổ chức tín dụng hoặc công ty chứng khoán. Đây là thông tin đáng chú ý vì có thể tiềm ẩn rủi ro bị giải chấp, bán tháo cổ phiếu nếu giá giảm mạnh.
-    - ten_to_chuc: Tên tổ chức có cổ đông thực hiện cầm cố cổ phiếu.
-    - ben_cam_co: Cổ đông thực hiện cầm cố cổ phiếu.
-    - ben_nhan_cam_co: Tổ chức nhận cầm cố (ngân hàng, công ty chứng khoán...).
-    - so_luong_cp: Số lượng cổ phiếu được cầm cố.
-    - ngay_bat_dau: Ngày bắt đầu cầm cố.
-    - ngay_ket_thuc: Ngày kết thúc cầm cố.
-
-11. Cổ đông phong tỏa cổ phiếu: là việc cổ phiếu của một cổ đông bị cơ quan có thẩm quyền ra lệnh tạm ngừng chuyển nhượng, thường liên quan đến nghĩa vụ tài chính, tranh chấp pháp lý hoặc yêu cầu cưỡng chế thi hành án. Đây là tín hiệu rủi ro liên quan đến cổ đông đó và có thể ảnh hưởng đến tính thanh khoản của cổ phiếu liên quan.
-    - ten_to_chuc: Tên tổ chức có cổ đông bị phong tỏa cổ phiếu.
-    - ten_co_dong: Tên cổ đông bị phong tỏa cổ phiếu.
-    - so_luong_cp: Số lượng cổ phiếu bị phong tỏa.
-    - ngay_bat_dau: Ngày bắt đầu phong tỏa.
-    - ngay_ket_thuc: Ngày kết thúc phong tỏa.
-    - co_quan_ra_lenh: Cơ quan ra lệnh phong tỏa.
-
-12. Thay đổi nhân sự chủ chốt: là việc doanh nghiệp bổ nhiệm, miễn nhiệm, cho từ chức hoặc bầu lại nhân sự giữ vị trí lãnh đạo chủ chốt (Hội đồng quản trị, Ban Tổng giám đốc, Ban kiểm soát...). Thay đổi nhân sự cấp cao có thể ảnh hưởng đến định hướng chiến lược, niềm tin của nhà đầu tư và giá cổ phiếu của doanh nghiệp.
+07. Thay đổi nhân sự chủ chốt: là việc doanh nghiệp bổ nhiệm, miễn nhiệm, cho từ chức hoặc bầu lại nhân sự giữ vị trí lãnh đạo chủ chốt (Hội đồng quản trị, Ban Tổng giám đốc, Ban kiểm soát...). Thay đổi nhân sự cấp cao có thể ảnh hưởng đến định hướng chiến lược, niềm tin của nhà đầu tư và giá cổ phiếu của doanh nghiệp.
     - ten_to_chuc: Tên tổ chức có thay đổi nhân sự.
     - ten_nhan_su: Tên nhân sự được thay đổi.
     - trang_thai: Trạng thái thay đổi (bổ nhiệm/từ chức/miễn nhiệm/bầu).
     - chuc_vu: Chức vụ liên quan đến thay đổi nhân sự.
     - nguoi_thay_the: Tên người thay thế (nếu có).
 
-13. Lãnh đạo cấp cao qua đời: là việc một lãnh đạo cấp cao hoặc người có liên quan mật thiết đến doanh nghiệp (cổ đông lớn, sáng lập viên, cố vấn chính thức) qua đời. Sự kiện này chỉ được ghi nhận khi người qua đời còn liên quan trực tiếp đến doanh nghiệp tại thời điểm qua đời, vì có thể ảnh hưởng đến ổn định quản trị hoặc tâm lý nhà đầu tư.
-    - ten_to_chuc: Tên tổ chức có lãnh đạo qua đời.
-    - ten_lanh_dao: Tên lãnh đạo qua đời.
-    - chuc_vu: Chức vụ hoặc vai trò của người qua đời tại doanh nghiệp.
-    - con_lien_quan: Xác nhận người qua đời còn liên quan đến doanh nghiệp tại thời điểm qua đời hay không (true/false) — chỉ tính là còn liên quan nếu còn là cổ đông lớn, sáng lập viên hoặc cố vấn chính thức.
-    - ngay_ghi_nhan: Ngày ghi nhận thông tin qua đời.
-
-14. M&A: là việc một tổ chức bên ngoài mua lại hoặc sáp nhập vào doanh nghiệp, dẫn đến thay đổi quyền kiểm soát doanh nghiệp. Đây là hoạt động phản ánh sự thay đổi lớn trong cơ cấu sở hữu, thường xuất phát từ nhu cầu tái cấu trúc, mở rộng thị phần hoặc thâu tóm chiến lược của bên mua, có tác động đáng kể đến giá cổ phiếu và định hướng kinh doanh của doanh nghiệp bị mua.
-    - ben_mua: Bên mua, thực hiện mua lại hoặc sáp nhập vào doanh nghiệp.
+08. M&A: là việc một tổ chức bên ngoài mua lại hoặc sáp nhập vào doanh nghiệp, dẫn đến thay đổi quyền kiểm soát doanh nghiệp. Đây là hoạt động phản ánh sự thay đổi lớn trong cơ cấu sở hữu, thường xuất phát từ nhu cầu tái cấu trúc, mở rộng thị phần hoặc thâu tóm chiến lược của bên mua, có tác động đáng kể đến giá cổ phiếu và định hướng kinh doanh của doanh nghiệp bị mua.
     - ten_to_chuc: Tên doanh nghiệp bị mua lại hoặc sáp nhập.
+    - ben_mua: Bên mua, thực hiện mua lại hoặc sáp nhập vào doanh nghiệp.
     - loai_giao_dich: Loại giao dịch (mua lại/sáp nhập).
     - ty_le_so_huu_truoc: Tỷ lệ sở hữu của bên mua tại doanh nghiệp trước khi giao dịch diễn ra.
     - ty_le_so_huu_sau: Tỷ lệ sở hữu của bên mua tại doanh nghiệp sau khi giao dịch hoàn tất.
     - gia_tri_thuong_vu: Giá trị của thương vụ M&A.
     - ngay_hoan_tat: Ngày giao dịch chính thức hoàn tất.
 
-15. Đầu tư: là việc doanh nghiệp dùng vốn để đầu tư hoặc góp vốn vào một công ty khác, nhằm mở rộng lĩnh vực kinh doanh, tìm kiếm lợi nhuận hoặc thiết lập quan hệ hợp tác chiến lược. Hoạt động này phản ánh chiến lược phân bổ vốn và định hướng phát triển của doanh nghiệp, có thể ảnh hưởng đến dòng tiền và cơ cấu tài sản của doanh nghiệp.
+09. Đầu tư: là việc doanh nghiệp dùng vốn để đầu tư hoặc góp vốn vào một công ty khác, nhằm mở rộng lĩnh vực kinh doanh, tìm kiếm lợi nhuận hoặc thiết lập quan hệ hợp tác chiến lược. Hoạt động này phản ánh chiến lược phân bổ vốn và định hướng phát triển của doanh nghiệp, có thể ảnh hưởng đến dòng tiền và cơ cấu tài sản của doanh nghiệp.
     - ten_to_chuc: Tên doanh nghiệp thực hiện đầu tư/góp vốn ra ngoài.
     - ten_cong_ty_dau_tu_vao: Tên công ty được đầu tư hoặc nhận vốn góp.
     - ty_le_so_huu: Tỷ lệ sở hữu của doanh nghiệp tại công ty được đầu tư sau giao dịch.
@@ -122,16 +80,15 @@ Các loại sự kiện và các thành phần được định nghĩa như sau:
     - muc_dich: Mục đích của việc đầu tư/góp vốn.
     - ngay_thuc_hien: Ngày thực hiện giao dịch đầu tư/góp vốn.
 
-16. Hợp đồng lớn: là việc doanh nghiệp trúng thầu hoặc ký kết hợp đồng có giá trị lớn với đối tác, phản ánh năng lực cạnh tranh và triển vọng doanh thu trong tương lai. Đây là thông tin tích cực thường được công bố khi hợp đồng có quy mô đáng kể so với hoạt động kinh doanh hiện tại của doanh nghiệp.
+10. Hợp đồng lớn: là việc doanh nghiệp trúng thầu hoặc ký kết hợp đồng có giá trị lớn với đối tác, phản ánh năng lực cạnh tranh và triển vọng doanh thu trong tương lai. Đây là thông tin tích cực thường được công bố khi hợp đồng có quy mô đáng kể so với hoạt động kinh doanh hiện tại của doanh nghiệp.
     - ten_to_chuc: Tên tổ chức trúng thầu hoặc ký hợp đồng.
     - ten_doi_tac: Tên đối tác trong hợp đồng.
     - loai_hop_dong: Loại hợp đồng (EPC/tư vấn/cung cấp...).
     - ten_du_an: Tên dự án liên quan đến hợp đồng.
     - gia_tri_hop_dong: Giá trị hợp đồng.
-    - thoi_gian_thuc_hien: Thời gian thực hiện hợp đồng.
     - ngay_ky: Ngày ký kết hợp đồng.
 
-17. Vay vốn: là việc doanh nghiệp vay vốn từ ngân hàng hoặc tổ chức tín dụng để phục vụ hoạt động kinh doanh, đầu tư dự án hoặc tái cơ cấu nợ. Khoản vay có thể được bảo lãnh bởi công ty mẹ, công ty liên quan hoặc bên thứ ba. Đây là kênh huy động vốn nợ phổ biến bên cạnh phát hành trái phiếu, phản ánh nhu cầu vốn và mức độ đòn bẩy tài chính của doanh nghiệp.
+11. Vay vốn: là việc doanh nghiệp vay vốn từ ngân hàng hoặc tổ chức tín dụng để phục vụ hoạt động kinh doanh, đầu tư dự án hoặc tái cơ cấu nợ. Khoản vay có thể được bảo lãnh bởi công ty mẹ, công ty liên quan hoặc bên thứ ba. Đây là kênh huy động vốn nợ phổ biến bên cạnh phát hành trái phiếu, phản ánh nhu cầu vốn và mức độ đòn bẩy tài chính của doanh nghiệp.
     - ten_to_chuc: Tên tổ chức thực hiện vay vốn.
     - ben_cho_vay: Bên cho vay (ngân hàng, tổ chức tín dụng).
     - tong_gia_tri_khoan_vay: Tổng giá trị khoản vay.
@@ -140,38 +97,28 @@ Các loại sự kiện và các thành phần được định nghĩa như sau:
     - ben_bao_lanh: Bên bảo lãnh cho khoản vay (nếu có).
     - ngay_ky: Ngày ký kết hoặc công bố thông tin khoản vay.
 
-18. Tổn thất tài sản nghiêm trọng: là việc doanh nghiệp gặp phải thiệt hại tài sản nghiêm trọng do sự cố như cháy nổ, hỏa hoạn, thiên tai hoặc tai nạn lao động, có thể kèm theo thương vong. Sự kiện này thường ảnh hưởng tiêu cực đến hoạt động sản xuất kinh doanh và kết quả tài chính của doanh nghiệp trong ngắn hạn.
+12. Tổn thất tài sản nghiêm trọng: là việc doanh nghiệp gặp phải thiệt hại tài sản nghiêm trọng do sự cố như cháy nổ, hỏa hoạn, thiên tai hoặc tai nạn lao động, có thể kèm theo thương vong. Sự kiện này thường ảnh hưởng tiêu cực đến hoạt động sản xuất kinh doanh và kết quả tài chính của doanh nghiệp trong ngắn hạn.
     - ten_to_chuc: Tên tổ chức gặp tổn thất tài sản.
     - mo_ta_su_co: Mô tả ngắn gọn về sự cố gây tổn thất.
     - gia_tri_ton_that: Giá trị thiệt hại ước tính.
-    - bao_hiem_boi_thuong: Tình trạng được bảo hiểm bồi thường (có/không/một phần).
     - ngay_cong_bo: Ngày công bố thông tin về sự cố.
 
-19. Bồi thường lớn cho bên ngoài: là việc doanh nghiệp phải chi trả một khoản bồi thường lớn cho bên thứ ba, do vi phạm hợp đồng, gây thiệt hại hoặc theo phán quyết của tòa án/trọng tài. Khoản bồi thường lớn có thể ảnh hưởng đáng kể đến kết quả kinh doanh của doanh nghiệp.
+13. Bồi thường lớn cho bên ngoài: là việc doanh nghiệp phải chi trả một khoản bồi thường lớn cho bên thứ ba, do vi phạm hợp đồng, gây thiệt hại hoặc theo phán quyết của tòa án/trọng tài. Khoản bồi thường lớn có thể ảnh hưởng đáng kể đến kết quả kinh doanh của doanh nghiệp.
     - ten_to_chuc: Tên tổ chức phải chi trả bồi thường.
     - ben_nhan_boi_thuong: Bên nhận khoản bồi thường.
     - so_tien: Số tiền bồi thường.
     - ly_do: Lý do dẫn đến việc bồi thường.
     - ngay_cong_bo: Ngày công bố thông tin bồi thường.
 
-20. Vấn đề pháp lý với tổ chức: là việc doanh nghiệp bị cơ quan quản lý nhà nước xử phạt vi phạm hành chính, thanh tra hoặc cưỡng chế do vi phạm quy định pháp luật trong hoạt động kinh doanh, công bố thông tin hoặc thuế. Đây là thông tin phản ánh rủi ro tuân thủ của doanh nghiệp.
-    - thuc_the_bi_xu_ly: Tên tổ chức bị xử lý vi phạm.
-    - co_quan_xu_phat: Cơ quan ra quyết định xử phạt hoặc thanh tra.
-    - ly_do_vi_pham: Lý do dẫn đến vi phạm.
-    - hinh_thuc_xu_phat: Hình thức xử phạt (phạt tiền/đình chỉ/thu hồi giấy chứng nhận...).
-    - so_tien_phat: Số tiền phạt (nếu có).
-    - ngay_quyet_dinh: Ngày ra quyết định xử phạt.
+14. Vấn đề pháp lý: là việc một tổ chức và/hoặc cá nhân liên quan đến doanh nghiệp (lãnh đạo, cổ đông...) bị cơ quan quản lý nhà nước hoặc cơ quan thực thi pháp luật xử phạt, thanh tra, cưỡng chế, khởi tố, bắt tạm giam, điều tra hoặc xét xử do vi phạm quy định pháp luật trong hoạt động kinh doanh, công bố thông tin, thuế hoặc các hành vi vi phạm pháp luật khác. Đây là thông tin phản ánh rủi ro tuân thủ và uy tín của doanh nghiệp cũng như cá nhân liên quan.
+    - ten_to_chuc: Tên tổ chức liên quan đến vấn đề pháp lý (tổ chức bị xử lý, hoặc tổ chức có cá nhân liên quan bị xử lý).
+    - ca_nhan_chiu_trach_nhiem: Cá nhân (nếu có) chịu trách nhiệm hoặc liên quan trực tiếp đến vấn đề pháp lý, ghi theo dạng "Tên - Chức vụ"; nếu có nhiều cá nhân cùng liên quan đến 1 vụ việc, liệt kê từng người cách nhau bởi dấu phẩy (VD: "Nguyễn Văn A - Tổng giám đốc, Trần Thị B - Kế toán trưởng"). Null nếu vấn đề pháp lý chỉ liên quan đến tổ chức, không có cá nhân cụ thể nào được nêu tên.
+    - noi_dung_vi_pham: Nội dung vi phạm, tội danh hoặc vấn đề pháp lý đang mắc phải (VD: vi phạm công bố thông tin, thao túng thị trường chứng khoán, trốn thuế).
+    - co_quan_xu_ly: Cơ quan xử lý vụ việc (cơ quan quản lý nhà nước, cơ quan thực thi pháp luật, tòa án...).
+    - hinh_thuc_xu_phat: Hình thức xử phạt hoặc chế tài (phạt tiền/đình chỉ/thu hồi giấy chứng nhận/khởi tố/tạm giam/tuyên án/kháng cáo...); nếu nhiều cá nhân nhận hình thức xử phạt khác nhau, có thể liệt kê tương ứng theo từng người trong cùng trường này.
+    - ngay_ra_quyet_dinh: Ngày cơ quan có thẩm quyền ra quyết định xử lý.
 
-21. Vấn đề pháp lý với cá nhân: là việc một cá nhân liên quan đến doanh nghiệp (lãnh đạo, cổ đông...) bị cơ quan thực thi pháp luật khởi tố, bắt tạm giam hoặc điều tra do liên quan đến hành vi vi phạm pháp luật. Sự kiện này thường tác động mạnh đến uy tín và giá cổ phiếu của doanh nghiệp liên quan.
-    - ten_ca_nhan: Tên cá nhân liên quan đến vụ việc pháp lý.
-    - ten_to_chuc: Tên tổ chức mà cá nhân đó liên quan.
-    - chuc_vu: Chức vụ của cá nhân tại tổ chức.
-    - toi_danh: Tội danh hoặc hành vi vi phạm bị cáo buộc.
-    - loai_hanh_dong: Loại hành động pháp lý (khởi tố/tạm giam/bắt tạm giam/tuyên án/kháng cáo).
-    - co_quan_thuc_thi: Cơ quan thực thi pháp luật xử lý vụ việc.
-    - ngay_thuc_thi: Ngày thực hiện hành động pháp lý.
-
-22. Phá sản: là việc doanh nghiệp mất khả năng thanh toán các khoản nợ đến hạn và bị tòa án ra quyết định mở thủ tục phá sản, tái cơ cấu bắt buộc hoặc tự nguyện thanh lý. Đây là sự kiện nghiêm trọng nhất, thường đánh dấu sự chấm dứt hoạt động hoặc tái cấu trúc toàn diện của doanh nghiệp.
+15. Phá sản: là việc doanh nghiệp mất khả năng thanh toán các khoản nợ đến hạn và bị tòa án ra quyết định mở thủ tục phá sản, tái cơ cấu bắt buộc hoặc tự nguyện thanh lý. Đây là sự kiện nghiêm trọng nhất, thường đánh dấu sự chấm dứt hoạt động hoặc tái cấu trúc toàn diện của doanh nghiệp.
     - ten_to_chuc: Tên tổ chức phá sản.
     - loai_hanh_dong: Loại hành động (phá sản/tái cơ cấu/thanh lý tự nguyện).
     - nganh_nghe: Ngành nghề kinh doanh chính của doanh nghiệp.
@@ -202,7 +149,7 @@ Tiêu đề: SeABank chính thức bổ nhiệm ông Loic Faussier làm Tổng G
 
 OUTPUT:
 [
-{"event_type": "Thay đổi nhân sự chủ chốt", "ten_to_chuc": "Ngân hàng TMCP Đông Nam Á (SeABank, SSB)", "ten_nhan_su": "Loic Faussier", "trang_thai": bổ nhiệm, "chuc_vu": "Tổng Giám đốc", "nguoi_thay_the": null, "confidence": "high"}
+{"event_type": "Thay đổi nhân sự chủ chốt", "ten_to_chuc": "Ngân hàng TMCP Đông Nam Á (SeABank, SSB)", "ten_nhan_su": "Loic Faussier", "trang_thai": "bổ nhiệm", "chuc_vu": "Tổng Giám đốc", "nguoi_thay_the": null, "confidence": "high"}
 ]
 
 
@@ -211,14 +158,7 @@ Tiêu đề: Ông Đỗ Thành Nhân kháng cáo, cho rằng mình bị lợi d�
 
 OUTPUT:
 [
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Đỗ Thành Nhân", "ten_to_chuc": "Công ty Cổ phần Louis Holdings", "chuc_vu": "cựu Chủ tịch HĐQT", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": kháng cáo, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"},
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Phạm Thanh Tùng", "ten_to_chuc": "Công ty Chứng khoán Trí Việt", "chuc_vu": "cựu Chủ tịch HĐQT", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"},
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Đỗ Đức Nam", "ten_to_chuc": "Công ty CP Chứng khoán Trí Việt", "chuc_vu": "cựu Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"},
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Lê Thị Thu Hương", "ten_to_chuc": "Công ty CP Chứng khoán Trí Việt", "chuc_vu": "nguyên Phó Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"},
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Lê Thị Thùy Liên", "ten_to_chuc": "Công ty CP Chứng khoán Trí Việt", "chuc_vu": "nhân viên dịch vụ tài chính", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"},
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Trịnh Thị Thùy Linh", "ten_to_chuc": "Công ty Louis Holdings", "chuc_vu": "cựu Giám đốc hành chính", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"},
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Vũ Ngọc Long", "ten_to_chuc": "Công ty Louis Holdings", "chuc_vu": "nguyên Phó Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"},
-{"event_type": "Vấn đề pháp lý với cá nhân", "ten_ca_nhan": "Ngô Thục Vũ", "ten_to_chuc": "Công ty CP Louis Capital", "chuc_vu": "nguyên Tổng Giám đốc", "toi_danh": "Thao túng thị trường chứng khoán", "loai_hanh_dong": tuyên án, "co_quan_thuc_thi": "Tòa án", "ngay_thuc_thi": null, "confidence": "high"}
+{"event_type": "Vấn đề pháp lý", "ten_to_chuc": "Công ty Cổ phần Louis Holdings, Công ty Cổ phần Louis Capital, Công ty CP Chứng khoán Trí Việt", "ca_nhan_chiu_trach_nhiem": "Đỗ Thành Nhân - cựu Chủ tịch HĐQT Louis Holdings, Phạm Thanh Tùng - cựu Chủ tịch HĐQT Chứng khoán Trí Việt, Đỗ Đức Nam - cựu Tổng Giám đốc Chứng khoán Trí Việt, Lê Thị Thu Hương - nguyên Phó Tổng Giám đốc Chứng khoán Trí Việt, Lê Thị Thùy Liên - nhân viên dịch vụ tài chính Chứng khoán Trí Việt, Trịnh Thị Thùy Linh - cựu Giám đốc hành chính Louis Holdings, Vũ Ngọc Long - nguyên Phó Tổng Giám đốc Louis Holdings, Ngô Thục Vũ - nguyên Tổng Giám đốc Louis Capital", "noi_dung_vi_pham": "Thao túng thị trường chứng khoán (mã cổ phiếu BII, TGG)", "co_quan_xu_ly": "Tòa án", "hinh_thuc_xu_phat": "Đỗ Thành Nhân: 5 năm 6 tháng tù (đang kháng cáo); Phạm Thanh Tùng: 3 năm tù treo; Đỗ Đức Nam: 4 năm tù; Lê Thị Thu Hương: 15 tháng tù; Lê Thị Thùy Liên và Trịnh Thị Thùy Linh: 12 tháng 22 ngày tù; Vũ Ngọc Long và Ngô Thục Vũ: 6 tháng tù", "ngay_ra_quyet_dinh": null, "confidence": "high"}
 ]
 
 
@@ -227,22 +167,22 @@ Tiêu đề: IPO 2022: “Nhỏ giọt”\nNội dung:Theo thống kê, thị tr
 
 OUTPUT:
 [
-{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tôn Đông Á", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": null, "so_luong": "12.4 triệu cp", "gia_phat_hanh": "40,000 đồng/cp", "tong_gia_tri": "496 tỷ đồng", "ngay_chot_quyen": null, "confidence": "high"},
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tôn Đông Á", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": null, "so_luong": "12.4 triệu cp", "gia_phat_hanh": "40,000 đồng/cp", "ngay_chot_quyen": null, "confidence": "high"},
 {"event_type": "Niêm yết", "ten_to_chuc": "CTCP Tôn Đông Á", "ma_co_phieu": null, "san_giao_dich": "HOSE", "so_luong_co_phieu": null, "ngay_hieu_luc": null, "confidence": "medium"},
-{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tập đoàn Nova Consumer", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": null, "so_luong": "10.9 triệu cp", "gia_phat_hanh": "44,000 đồng/cp", "tong_gia_tri": "479 tỷ đồng", "ngay_chot_quyen": null, "confidence": "high"},
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tập đoàn Nova Consumer", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": null, "so_luong": "10.9 triệu cp", "gia_phat_hanh": "44,000 đồng/cp", "ngay_chot_quyen": null, "confidence": "high"},
 {"event_type": "Đầu tư", "ten_to_chuc": "CTCP Tập đoàn Nova Consumer", "ten_cong_ty_dau_tu_vao": "Công ty TNHH Thực phẩm Mặt trời mọc", "ty_le_so_huu": null, "gia_tri_dau_tu": "465 tỷ đồng", "muc_dich": "mua lại vốn góp và góp vốn để mở rộng kinh doanh", "ngay_thuc_hien": null, "confidence": "medium"},
 {"event_type": "Niêm yết", "ten_to_chuc": "CTCP Tập đoàn Nova Consumer", "ma_co_phieu": "NCG", "san_giao_dich": "HOSE", "so_luong_co_phieu": null, "ngay_hieu_luc": null, "confidence": "low"},
-{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tập đoàn Green+", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": null, "so_luong": "9.59 triệu cp", "gia_phat_hanh": "16,000 đồng/cp", "tong_gia_tri": "153.6 tỷ đồng", "ngay_chot_quyen": null, "confidence": "high"},
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Tập đoàn Green+", "phuong_thuc_phat_hanh": "chào bán ra công chúng", "loai_co_phieu": null, "so_luong": "9.59 triệu cp", "gia_phat_hanh": "16,000 đồng/cp", "ngay_chot_quyen": null, "confidence": "high"},
 {"event_type": "Niêm yết", "ten_to_chuc": "CTCP Tập đoàn Green+", "ma_co_phieu": null, "san_giao_dich": "HNX", "so_luong_co_phieu": null, "ngay_hieu_luc": null, "confidence": "medium"},
-{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Nhựa Picomat", "phuong_thuc_phat_hanh": "đấu giá công khai", "loai_co_phieu": null, "so_luong": "gần 2.7 triệu cp", "gia_phat_hanh": "10,934 đồng/cp", "tong_gia_tri": "29.4 tỷ đồng", "ngay_chot_quyen": null, "confidence": "high"},
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "CTCP Nhựa Picomat", "phuong_thuc_phat_hanh": "đấu giá công khai", "loai_co_phieu": null, "so_luong": "gần 2.7 triệu cp", "gia_phat_hanh": "10,934 đồng/cp", "ngay_chot_quyen": null, "confidence": "high"},
 {"event_type": "Niêm yết", "ten_to_chuc": "CTCP Nhựa Picomat", "ma_co_phieu": "PCH", "san_giao_dich": "HNX", "so_luong_co_phieu": "20 triệu cp", "ngay_hieu_luc": "28/07/2022", "confidence": "high"},
-{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "Công ty TNHH MTV Xây dựng Công trình Tân Cảng", "phuong_thuc_phat_hanh": "đấu giá công khai", "loai_co_phieu": null, "so_luong": "8,200 cp", "gia_phat_hanh": "15,502 đồng/cp", "tong_gia_tri": "127 triệu đồng", "ngay_chot_quyen": null, "confidence": "high"},
+{"event_type": "Phát hành thêm cổ phiếu", "ten_to_chuc": "Công ty TNHH MTV Xây dựng Công trình Tân Cảng", "phuong_thuc_phat_hanh": "đấu giá công khai", "loai_co_phieu": null, "so_luong": "8,200 cp", "gia_phat_hanh": "15,502 đồng/cp", "ngay_chot_quyen": null, "confidence": "high"},
 {"event_type": "Niêm yết", "ten_to_chuc": "Công ty TNHH MTV Xây dựng Công trình Tân Cảng", "ma_co_phieu": "XDC", "san_giao_dich": "UPCoM", "so_luong_co_phieu": "8,200 cp", "ngay_hieu_luc": "01/12/2022", "confidence": "high"}
 ]
 
 
 Bây giờ bắt đầu với văn bản gốc cần trích xuất! 
-Chỉ tập trung vào 22 loại sự kiện sau: [Chi trả cổ tức, Phát hành thêm cổ phiếu, Chia tách cổ phiếu, Gộp cổ phiếu, Niêm yết, Hủy niêm yết, Chuyển sàn, Phát hành trái phiếu, Cổ đông thay đổi tỷ lệ sở hữu, Cổ đông cầm cố cổ phiếu, Cổ đông phong tỏa cổ phiếu, Thay đổi nhân sự chủ chốt, Lãnh đạo cấp cao qua đời, M&A, Đầu tư, Hợp đồng lớn, Vay vốn, Tổn thất tài sản nghiêm trọng, Bồi thường lớn cho bên ngoài, Vấn đề pháp lý với tổ chức, Vấn đề pháp lý với cá nhân, Phá sản].
+Chỉ tập trung vào 15 loại sự kiện sau: [Chi trả cổ tức, Phát hành thêm cổ phiếu, Niêm yết, Hủy niêm yết, Phát hành trái phiếu, Cổ đông thay đổi tỷ lệ sở hữu, Thay đổi nhân sự chủ chốt, M&A, Đầu tư, Hợp đồng lớn, Vay vốn, Tổn thất tài sản nghiêm trọng, Bồi thường lớn cho bên ngoài, Vấn đề pháp lý, Phá sản].
 Lưu ý văn bản có thể chứa nhiều loại sự kiện trong các loại sự kiện cần trích xuất. Còn nếu không có sự kiện nào, hãy xuất ra danh sách rỗng.
 
 

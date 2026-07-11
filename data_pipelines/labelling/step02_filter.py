@@ -11,7 +11,7 @@ _PROJECT_ROOT = Path(__file__).parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 from data_pipelines.utils.dir_processor import get_project_abs_dir_str_from_env
-from data_pipelines.utils.file_processor import process_write_run_log, process_merge_output_files
+from data_pipelines.utils.file_processor import process_write_run_log, process_merge_output_files, process_split_jsonl_file
 
 
 def _get_event_keywords(schema_path: Path) -> dict[str, list[str]]:
@@ -231,18 +231,20 @@ if __name__ == "__main__":
 
     # PROD 23-26
     filter_config = {
-        "log": "data/processing/filter/vietstock_labelling_step02_2023_2026.log1.txt",
-        "in_out": [
-            ["data/processing/preprocess/vietstock_labelling_step01_2023_2026.jsonl",
-             "data/processing/filter/vietstock_labelling_step02_2023_2026.jsonl"]
-        ],
         "merge_output_files_into": "",
+        "split_merged_file_into_parts": 5,
+        "log": "data/processing/step02_filter/vietstock_labelling_step02_2023_2026.log.txt",
+        "in_out": [
+            ["data/processing/step01_preprocess/vietstock_labelling_step01_2023_2026.jsonl",
+             "data/processing/step02_filter/vietstock_labelling_step02_2023_2026.jsonl"]
+        ],
     }
 
-    in_out_pairs            = filter_config.get("in_out", [])
-    merge_output_files_into = filter_config.get("merge_output_files_into")
-    log_path_str            = filter_config.get("log")
-    keyword                 = _get_event_keywords(SCHEMA_DIR)
+    in_out_pairs                    = filter_config.get("in_out", [])
+    merge_output_files_into         = filter_config.get("merge_output_files_into")
+    split_merged_file_into_parts    = filter_config.get("split_merged_file_into_parts")
+    log_path_str                    = filter_config.get("log")
+    keyword                         = _get_event_keywords(SCHEMA_DIR)
 
     summary_lines = filter_files(
         in_out_pairs = in_out_pairs,
@@ -256,3 +258,11 @@ if __name__ == "__main__":
     if merge_output_files_into:
         out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
         process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)
+
+    if split_merged_file_into_parts:
+        merged_file_path = Path(PROJECT_DIR) / "data/processing/step02_filter/vietstock_labelling_step02_2023_2026.jsonl"
+        split_merged_file_dir = Path(PROJECT_DIR) / "data/processing/step02_filter"
+        if merged_file_path.exists():
+            process_split_jsonl_file(merged_file_path, split_merged_file_dir, split_merged_file_into_parts)
+        else:
+            print(f"[SKIP] Không tìm thấy file merged: {merged_file_path}")

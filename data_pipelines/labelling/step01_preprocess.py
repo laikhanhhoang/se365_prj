@@ -217,11 +217,11 @@ if __name__ == "__main__":
 
     # PROD 23-26
     preprocess_config_23_26 = {
-        "log":                      "data/processing/preprocess/vietstock_labelling_step01_2023_2026.log.txt",
+        "log":                      "data/processing/step01_preprocess/vietstock_labelling_step01_2023_2026.log.txt",
         "merge_output_files_into":  "",
         "in_out": [
             ["data/raw/vietstock/vietstock_data_2023_2026.jsonl",
-             "data/processing/preprocess/vietstock_labelling_step01_2023_2026.jsonl"]
+             "data/processing/step01_preprocess/vietstock_labelling_step01_2023_2026.jsonl"]
         ]
     }
 

@@ -18,18 +18,8 @@ Snapshot data_schema.json tại thời điểm chạy:
     },
     {
       "name": "Phát hành thêm cổ phiếu",
-      "fields": ["ten_to_chuc", "phuong_thuc_phat_hanh", "loai_co_phieu", "so_luong", "gia_phat_hanh", "tong_gia_tri", "ngay_chot_quyen"],
+      "fields": ["ten_to_chuc", "phuong_thuc_phat_hanh", "loai_co_phieu", "so_luong", "gia_phat_hanh", "ngay_chot_quyen"],
       "keywords": ["phát hành thêm cổ phiếu", "chào bán cổ phiếu", "phát hành riêng lẻ", "phát hành ra công chúng", "ESOP", "quyền mua cổ phần", "phát hành cổ phiếu tăng vốn"]
-    },
-    {
-      "name": "Chia tách cổ phiếu",
-      "fields": ["ten_to_chuc", "ty_le_thuc_hien", "ngay_gd_khong_huong_quyen"],
-      "keywords": ["chia tách cổ phiếu", "tách cổ phiếu", "tỷ lệ chia tách"]
-    },
-    {
-      "name": "Gộp cổ phiếu",
-      "fields": ["ten_to_chuc", "ty_le_thuc_hien", "ngay_gd_khong_huong_quyen"],
-      "keywords": ["gộp cổ phiếu", "hoán đổi cổ phiếu", "tỷ lệ gộp cổ phiếu"]
     },
     {
       "name": "Niêm yết",
@@ -42,11 +32,6 @@ Snapshot data_schema.json tại thời điểm chạy:
       "keywords": ["hủy niêm yết", "hủy đăng ký giao dịch", "rời sàn", "bị hủy niêm yết", "delisting"]
     },
     {
-      "name": "Chuyển sàn",
-      "fields": ["ten_to_chuc", "ma_co_phieu", "san_giao_dich", "san_giao_dich_cu", "so_luong_co_phieu", "ngay_hieu_luc"],
-      "keywords": ["chuyển sàn", "chuyển niêm yết", "từ UPCoM lên HOSE", "từ UPCoM lên HNX", "từ HNX sang HOSE", "chuyển sang sàn"]
-    },
-    {
       "name": "Phát hành trái phiếu",
       "fields": ["ten_to_chuc", "loai_trai_phieu", "tong_gia_tri", "lai_suat", "ky_han", "ngay_phat_hanh"],
       "keywords": ["phát hành trái phiếu", "chào bán trái phiếu", "trái phiếu doanh nghiệp", "lô trái phiếu", "trái phiếu riêng lẻ"]
@@ -57,28 +42,13 @@ Snapshot data_schema.json tại thời điểm chạy:
       "keywords": ["đăng ký mua cổ phiếu", "đăng ký bán cổ phiếu", "mua thêm cổ phần", "bán bớt cổ phần", "thay đổi tỷ lệ sở hữu", "giao dịch nội bộ", "cổ đông lớn đăng ký"]
     },
     {
-      "name": "Cổ đông cầm cố cổ phiếu",
-      "fields": ["ten_to_chuc", "ben_cam_co", "ben_nhan_cam_co", "so_luong_cp", "ngay_bat_dau", "ngay_ket_thuc"],
-      "keywords": ["cầm cố cổ phiếu", "thế chấp cổ phiếu", "cầm cố cổ phần"]
-    },
-    {
-      "name": "Cổ đông phong tỏa cổ phiếu",
-      "fields": ["ten_to_chuc", "ten_co_dong", "so_luong_cp", "ngay_bat_dau", "ngay_ket_thuc", "co_quan_ra_lenh"],
-      "keywords": ["phong tỏa cổ phiếu", "phong tỏa cổ phần", "bị phong tỏa cổ phiếu"]
-    },
-    {
       "name": "Thay đổi nhân sự chủ chốt",
       "fields": ["ten_to_chuc", "ten_nhan_su", "trang_thai", "chuc_vu", "nguoi_thay_the"],
       "keywords": ["bổ nhiệm", "miễn nhiệm", "từ nhiệm", "thôi chức", "thay đổi nhân sự", "thay đổi lãnh đạo", "bầu lại HĐQT", "bầu lại ban kiểm soát"]
     },
     {
-      "name": "Lãnh đạo cấp cao qua đời",
-      "fields": ["ten_to_chuc", "ten_lanh_dao", "chuc_vu", "con_lien_quan", "ngay_ghi_nhan"],
-      "keywords": ["qua đời", "từ trần", "tử vong", "qua đời đột ngột", "lãnh đạo qua đời"]
-    },
-    {
       "name": "M&A",
-      "fields": ["ben_mua", "ten_to_chuc", "loai_giao_dich", "ty_le_so_huu_truoc", "ty_le_so_huu_sau", "gia_tri_thuong_vu", "ngay_hoan_tat"],
+      "fields": ["ten_to_chuc", "ben_mua", "loai_giao_dich", "ty_le_so_huu_truoc", "ty_le_so_huu_sau", "gia_tri_thuong_vu", "ngay_hoan_tat"],
       "keywords": ["mua lại", "sáp nhập", "thâu tóm", "thay đổi quyền kiểm soát", "nhà đầu tư chiến lược mua", "mua cổ phần chi phối"]
     },
     {
@@ -88,17 +58,17 @@ Snapshot data_schema.json tại thời điểm chạy:
     },
     {
       "name": "Hợp đồng lớn",
-      "fields": ["ten_to_chuc", "ten_doi_tac", "loai_hop_dong", "ten_du_an", "gia_tri_hop_dong", "thoi_gian_thuc_hien", "ngay_ky"],
+      "fields": ["ten_to_chuc", "ten_doi_tac", "loai_hop_dong", "ten_du_an", "gia_tri_hop_dong", "ngay_ky"],
       "keywords": ["ký kết hợp đồng", "trúng thầu", "hợp đồng hợp tác", "ký kết thỏa thuận", "ký hợp đồng"]
     },
     {
       "name": "Vay vốn",
       "fields": ["ten_to_chuc", "ben_cho_vay", "tong_gia_tri_khoan_vay", "muc_dich", "ky_han", "ben_bao_lanh", "ngay_ky"],
-      "keywords": ["vay"]
+      "keywords": ["vay vốn"]
     },
     {
       "name": "Tổn thất tài sản nghiêm trọng",
-      "fields": ["ten_to_chuc", "mo_ta_su_co", "gia_tri_ton_that", "bao_hiem_boi_thuong", "ngay_cong_bo"],
+      "fields": ["ten_to_chuc", "mo_ta_su_co", "gia_tri_ton_that", "ngay_cong_bo"],
       "keywords": ["thiệt hại tài sản", "cháy nổ", "hỏa hoạn", "tai nạn nghiêm trọng", "sự cố lớn", "mất mát tài sản"]
     },
     {
@@ -107,14 +77,9 @@ Snapshot data_schema.json tại thời điểm chạy:
       "keywords": ["bồi thường", "bồi hoàn", "đền bù thiệt hại", "thanh toán bồi thường"]
     },
     {
-      "name": "Vấn đề pháp lý với tổ chức",
-      "fields": ["thuc_the_bi_xu_ly", "co_quan_xu_phat", "ly_do_vi_pham", "hinh_thuc_xu_phat", "so_tien_phat", "ngay_quyet_dinh"],
-      "keywords": ["bị xử phạt", "bị thanh tra", "bị kiện", "vi phạm hành chính", "bị cưỡng chế", "tranh chấp pháp lý"]
-    },
-    {
-      "name": "Vấn đề pháp lý với cá nhân",
-      "fields": ["ten_ca_nhan", "ten_to_chuc", "chuc_vu", "toi_danh", "loai_hanh_dong", "co_quan_thuc_thi", "ngay_thuc_thi"],
-      "keywords": ["bị khởi tố", "bị bắt", "bị tạm giam", "bị điều tra", "bị tuyên phạt", "bị kết tội"]
+      "name": "Vấn đề pháp lý",
+      "fields": ["ten_to_chuc", "ca_nhan_chiu_trach_nhiem", "noi_dung_vi_pham", "co_quan_xu_ly", "hinh_thuc_xu_phat", "ngay_ra_quyet_dinh"],
+      "keywords": ["bị xử phạt", "bị thanh tra", "bị kiện", "vi phạm hành chính", "bị cưỡng chế", "tranh chấp pháp lý", "bị khởi tố", "bị bắt", "bị tạm giam", "bị điều tra", "bị tuyên phạt", "bị kết tội"]
     },
     {
       "name": "Phá sản",
