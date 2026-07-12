@@ -72,7 +72,7 @@ Các loại sự kiện và các thành phần được định nghĩa như sau:
     - gia_tri_thuong_vu: Giá trị của thương vụ M&A.
     - ngay_hoan_tat: Ngày giao dịch chính thức hoàn tất.
 
-09. Đầu tư: là việc doanh nghiệp dùng vốn để đầu tư hoặc góp vốn vào một công ty khác, nhằm mở rộng lĩnh vực kinh doanh, tìm kiếm lợi nhuận hoặc thiết lập quan hệ hợp tác chiến lược. Hoạt động này phản ánh chiến lược phân bổ vốn và định hướng phát triển của doanh nghiệp, có thể ảnh hưởng đến dòng tiền và cơ cấu tài sản của doanh nghiệp.
+09. Đầu tư: là việc doanh nghiệp dùng vốn để đầu tư hoặc góp vốn vào một công ty khác, nhằm mở rộng lĩnh vực kinh doanh, tìm kiếm lợi nhuận hoặc thiết lập quan hệ hợp tác chiến lược. Hoạt động này phản ánh chiến lược phân bổ vốn và định hướng phát triển của doanh nghiệp, có thể ảnh hưởng đến dòng tiền và cơ cấu tài sản của doanh nghiệp. (Phân biệt với mục 10 - Hợp đồng lớn: mục này chỉ áp dụng khi doanh nghiệp có được tỷ lệ sở hữu/cổ phần trong công ty hoặc dự án được đầu tư; nếu doanh nghiệp chỉ ký hợp đồng cung cấp dịch vụ/thi công cho dự án mà không sở hữu cổ phần, xem mục 10.)
     - ten_to_chuc: Tên doanh nghiệp thực hiện đầu tư/góp vốn ra ngoài.
     - ten_cong_ty_dau_tu_vao: Tên công ty được đầu tư hoặc nhận vốn góp.
     - ty_le_so_huu: Tỷ lệ sở hữu của doanh nghiệp tại công ty được đầu tư sau giao dịch.
@@ -80,7 +80,7 @@ Các loại sự kiện và các thành phần được định nghĩa như sau:
     - muc_dich: Mục đích của việc đầu tư/góp vốn.
     - ngay_thuc_hien: Ngày thực hiện giao dịch đầu tư/góp vốn.
 
-10. Hợp đồng lớn: là việc doanh nghiệp trúng thầu hoặc ký kết hợp đồng có giá trị lớn với đối tác, phản ánh năng lực cạnh tranh và triển vọng doanh thu trong tương lai. Đây là thông tin tích cực thường được công bố khi hợp đồng có quy mô đáng kể so với hoạt động kinh doanh hiện tại của doanh nghiệp.
+10. Hợp đồng lớn: là việc doanh nghiệp trúng thầu hoặc ký kết hợp đồng có giá trị lớn với đối tác, phản ánh năng lực cạnh tranh và triển vọng doanh thu trong tương lai. Đây là thông tin tích cực thường được công bố khi hợp đồng có quy mô đáng kể so với hoạt động kinh doanh hiện tại của doanh nghiệp. (Phân biệt với mục 09 - Đầu tư: mục này áp dụng khi doanh nghiệp là bên thực hiện/cung cấp dịch vụ theo hợp đồng, không sở hữu cổ phần trong dự án/đối tác; nếu doanh nghiệp góp vốn/mua cổ phần để sở hữu một phần dự án hoặc công ty, xem mục 09.)
     - ten_to_chuc: Tên tổ chức trúng thầu hoặc ký hợp đồng.
     - ten_doi_tac: Tên đối tác trong hợp đồng.
     - loai_hop_dong: Loại hợp đồng (EPC/tư vấn/cung cấp...).
@@ -97,7 +97,7 @@ Các loại sự kiện và các thành phần được định nghĩa như sau:
     - ben_bao_lanh: Bên bảo lãnh cho khoản vay (nếu có).
     - ngay_ky: Ngày ký kết hoặc công bố thông tin khoản vay.
 
-12. Tổn thất tài sản nghiêm trọng: là việc doanh nghiệp gặp phải thiệt hại tài sản nghiêm trọng do sự cố như cháy nổ, hỏa hoạn, thiên tai hoặc tai nạn lao động, có thể kèm theo thương vong. Sự kiện này thường ảnh hưởng tiêu cực đến hoạt động sản xuất kinh doanh và kết quả tài chính của doanh nghiệp trong ngắn hạn.
+12. Tổn thất tài sản nghiêm trọng: là việc doanh nghiệp phải chịu một khoản thiệt hại/tổn thất tài sản hoặc tài chính có giá trị lớn, phát sinh từ một sự cố hoặc biến cố cụ thể, xác định được nguyên nhân — khác với kết quả kinh doanh thua lỗ thông thường theo chu kỳ (VD: doanh thu giảm do thị trường xấu). Nguyên nhân có thể là vật chất (cháy nổ, hỏa hoạn, thiên tai, tai nạn lao động, có thể kèm theo thương vong) hoặc phi vật chất (không thu hồi được công nợ, phán quyết bất lợi từ tòa án/trọng tài, tài sản hoặc khoản đầu tư bị giảm giá trị nghiêm trọng), miễn là gắn với 1 sự cố/biến cố xác định được thay vì là xu hướng kinh doanh chung. Sự kiện này thường ảnh hưởng tiêu cực đến hoạt động sản xuất kinh doanh và kết quả tài chính của doanh nghiệp trong ngắn hạn.
     - ten_to_chuc: Tên tổ chức gặp tổn thất tài sản.
     - mo_ta_su_co: Mô tả ngắn gọn về sự cố gây tổn thất.
     - gia_tri_ton_that: Giá trị thiệt hại ước tính.
@@ -184,7 +184,7 @@ OUTPUT:
 Bây giờ bắt đầu với văn bản gốc cần trích xuất! 
 Chỉ tập trung vào 15 loại sự kiện sau: [Chi trả cổ tức, Phát hành thêm cổ phiếu, Niêm yết, Hủy niêm yết, Phát hành trái phiếu, Cổ đông thay đổi tỷ lệ sở hữu, Thay đổi nhân sự chủ chốt, M&A, Đầu tư, Hợp đồng lớn, Vay vốn, Tổn thất tài sản nghiêm trọng, Bồi thường lớn cho bên ngoài, Vấn đề pháp lý, Phá sản].
 Lưu ý văn bản có thể chứa nhiều loại sự kiện trong các loại sự kiện cần trích xuất. Còn nếu không có sự kiện nào, hãy xuất ra danh sách rỗng.
-
+Nhắc lại: mỗi sự kiện trích xuất được PHẢI có đầy đủ trường "confidence" (high/medium/low) — đây là trường bắt buộc ở mọi sự kiện, không được bỏ sót.
 
 NỘI DUNG:
 {{content}}

@@ -11,7 +11,7 @@ SE365_Prj/                       # repo root
     utils/                       # thuần kỹ thuật, KHÔNG biết domain (không import từ data_pipelines/utils)
       device.py                  # resolve_device()
     common/                      # domain logic dùng chung mọi approach (không phải "tiện ích")
-      dataset_schema.json        # schema event_type -> fields (tự chứa, không import từ data_pipelines)
+      dataset_schema.yaml        # schema event_type -> fields (tự chứa, không import từ data_pipelines)
       schema.py                  # đọc dataset_schema.json -> field mapping theo event_type
       data_loader.py              # step04 jsonl -> training format
       prompts.py                  # prompt template chung (nếu cần)

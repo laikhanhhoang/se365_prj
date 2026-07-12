@@ -7,7 +7,7 @@ import tqdm
 from dotenv import dotenv_values
 from openai import OpenAI
 
-if sys.stdout.encoding != 'utf-8':
+if hasattr(sys.stdout, 'reconfigure') and sys.stdout.encoding != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8')
 
 _PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -221,7 +221,7 @@ if __name__ == "__main__":
     label_config_test = {
         "model":                    "gpt-4o-mini",
         "temperature":              0.2,
-        "prompt_file":              "data_pipelines/labelling/prompts/prompt2.txt",  # chứa "{{content}}" sẽ được thay bằng content
+        "prompt_file":              "data_pipelines/labelling/prompts/prompt.v2.txt",  # chứa "{{content}}" sẽ được thay bằng content        
         "log":                      "data_pipelines/samples/vietstock_labelling_step03_20260601_20260601_CHUAN.log.txt",
         "merge_output_files_into":  "",
         "in_out": [
@@ -259,20 +259,20 @@ if __name__ == "__main__":
     label_config = {
         "model":                    "gpt-4o-mini",
         "temperature":              0.2,
-        "prompt_file":              "data_pipelines/labelling/prompts/prompt1.txt",  # chứa "{{content}}" sẽ được thay bằng content
-        "log":                      "data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026.log.txt",
-        "merge_output_files_into":  "data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026.jsonl",
+        "prompt_file":              "data_pipelines/labelling/prompts/prompt.v2.txt",  # chứa "{{content}}" sẽ được thay bằng content
+        "log":                      "data/processing/step03_autolabel_v2/vietstock_labelling_step03_2023_2026.log.txt",
+        "merge_output_files_into":  "data/processing/step03_autolabel_v2/vietstock_labelling_step03_2023_2026.jsonl",
         "in_out": [
             ["data/processing/step02_filter/vietstock_labelling_step02_2023_2026_PART_1.jsonl",
-             "data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_1.jsonl"],
+             "data/processing/step03_autolabel_v2/vietstock_labelling_step03_2023_2026_PART_1.jsonl"],
             ["data/processing/step02_filter/vietstock_labelling_step02_2023_2026_PART_2.jsonl",
-             "data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_2.jsonl"],
+             "data/processing/step03_autolabel_v2/vietstock_labelling_step03_2023_2026_PART_2.jsonl"],
             ["data/processing/step02_filter/vietstock_labelling_step02_2023_2026_PART_3.jsonl",
-             "data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_3.jsonl"],
+             "data/processing/step03_autolabel_v2/vietstock_labelling_step03_2023_2026_PART_3.jsonl"],
             ["data/processing/step02_filter/vietstock_labelling_step02_2023_2026_PART_4.jsonl",
-             "data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_4.jsonl"],
+             "data/processing/step03_autolabel_v2/vietstock_labelling_step03_2023_2026_PART_4.jsonl"],
             ["data/processing/step02_filter/vietstock_labelling_step02_2023_2026_PART_5.jsonl",
-             "data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_5.jsonl"]
+             "data/processing/step03_autolabel_v2/vietstock_labelling_step03_2023_2026_PART_5.jsonl"]
         ]
     }
 

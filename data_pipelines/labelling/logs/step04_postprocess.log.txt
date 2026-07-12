@@ -1,6 +1,5 @@
-[vietstock_labelling_step02_20260601_20260601_CHUAN.jsonl]
-  label: 0 mới / 13 tổng (đã có: 13) → vietstock_labelling_step03_20260601_20260601_CHUAN.jsonl
-  thời gian xử lý: 0.01s, tổng token đã dùng: 0
+[vietstock_labelling_step03_2023_2026.jsonl]
+  postprocess: 8887 record (lỗi parse: 0, event_type lạ: 61, lệch field: 405) → vietstock_labelling_step04_2023_2026.jsonl
 
 ============================================================
 Snapshot data_schema.json tại thời điểm chạy:

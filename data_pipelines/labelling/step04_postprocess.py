@@ -5,7 +5,7 @@ from pathlib import Path
 
 import tqdm
 
-if sys.stdout.encoding != 'utf-8':
+if hasattr(sys.stdout, 'reconfigure') and sys.stdout.encoding != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8')
 
 _PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -16,6 +16,12 @@ from data_pipelines.utils.file_processor import process_write_run_log, process_m
 
 _CODE_FENCE    = "```"
 _COMMON_FIELDS = ["event_type", "confidence"]  # có ở mọi event, không tính riêng theo events_fields
+
+_RECHECK_CATEGORY_LABELS = {
+    "parse":      "lỗi parse",
+    "event_type": "event_type lạ",
+    "field":      "lệch field",
+}  # thứ tự dict cũng là thứ tự ưu tiên phân loại 1 sample vào đúng 1 category
 
 
 def _get_events_fields(schema_path: Path) -> dict[str, list[str]]:
@@ -115,6 +121,26 @@ def _build_formatted_record(record: dict, raw_field: str, output_field: str) -> 
     record[output_field] = _build_parsed_events(label_raw)
     return record
 
+def _recheck_record(written_events: list[dict] | None, events_fields: dict[str, list[str]]) -> str | None:
+    """
+    - Summary: Recheck record sau khi đã ghi ra output, không tác động vào workflow chính.
+    - Args:
+        - written_events: List event đã ghi ra output (post-filter), None nếu parse lỗi.
+        - events_fields:  Dict tên sự kiện → list field kỳ vọng.
+    - Output:
+        - str | None: Category lỗi phát hiện được ("parse"/"event_type"/"field"), None nếu record hợp lệ.
+    """
+    if written_events is None:
+        return "parse"
+    for event in written_events:
+        if event.get("event_type") not in events_fields:
+            return "event_type"  # về lý thuyết không xảy ra vì đã lọc trước khi ghi, giữ lại để phòng regression
+    for event in written_events:
+        missing_fields, extra_fields = _get_field_diff(event, events_fields)
+        if missing_fields or extra_fields:
+            return "field"
+    return None
+
 
 def _postprocess_file(
     in_path:              Path,
@@ -130,7 +156,9 @@ def _postprocess_file(
         2. Parse và ghi từng record (_build_formatted_record()).
         3. Bỏ event có event_type lạ, không có trong data_schema.json.
         4. Check field thiếu/thừa từng event còn lại (_get_field_diff()).
-        5. Lọc record, chỉ giữ field trong output_schema.
+        5. Lọc record, chỉ giữ field trong output_schema và ghi ra file output.
+        6. Recheck độc lập record sau khi đã ghi (_recheck_record()), phân loại lỗi theo category.
+        7. Trả về log tóm tắt, kèm id từng sample lỗi theo từng category recheck.
     - Args:
         - in_path:              Đường dẫn file input JSONL.
         - out_path:             Đường dẫn file output JSONL.
@@ -147,6 +175,7 @@ def _postprocess_file(
     failed_count       = 0
     unknown_type_count = 0
     field_issue_count  = 0
+    recheck_ids_by_category: dict[str, list[str]] = {category: [] for category in _RECHECK_CATEGORY_LABELS}
     with out_path.open('w', encoding='utf-8') as fout:
         for record in tqdm.tqdm(records, desc=f'postprocess {in_path.name}', ncols=100):
             formatted_record = _build_formatted_record(dict(record), raw_field, output_field)
@@ -173,12 +202,26 @@ def _postprocess_file(
             formatted_record = {field: formatted_record[field] for field in output_schema_fields if field in formatted_record}
             fout.write(json.dumps(formatted_record, ensure_ascii=False) + '\n')
 
-    summary = (
+            recheck_category = _recheck_record(formatted_record.get(output_field), events_fields)
+            if recheck_category:
+                recheck_ids_by_category[recheck_category].append(str(record.get('id')))
+                print(f"[WARN] Recheck lỗi sample {record.get('id')}: {_RECHECK_CATEGORY_LABELS[recheck_category]}")
+
+    total_recheck_count = sum(len(ids) for ids in recheck_ids_by_category.values())
+    summary_lines = [
         f'  postprocess: {len(records)} record '
         f'(lỗi parse: {failed_count}, event_type lạ: {unknown_type_count}, lệch field: {field_issue_count}) → {out_path.name}'
-    )
-    print(summary)
-    return [summary]
+    ]
+    if total_recheck_count:
+        counts_str = ', '.join(f'{label}: {len(recheck_ids_by_category[category])}'
+                                for category, label in _RECHECK_CATEGORY_LABELS.items())
+        summary_lines.append(f'  recheck lỗi ({total_recheck_count} sample) ({counts_str})')
+        for category, label in _RECHECK_CATEGORY_LABELS.items():
+            ids = recheck_ids_by_category[category]
+            if ids:
+                summary_lines.append(f'      {label}: {", ".join(ids)}')
+    print('\n'.join(summary_lines))
+    return summary_lines
 
 
 def postprocess_files(
@@ -272,11 +315,19 @@ if __name__ == "__main__":
     postprocess_config = {
         "raw_field":                "label_raw",
         "output_field":             "events",
-        "log":                      "data_pipelines/labelling/logs/step04_postprocess.log.txt",
-        "merge_output_files_into":  "",
+        "log":                      "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026.log.txt",
+        "merge_output_files_into":  "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026.jsonl",
         "in_out": [
-            ["data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026.jsonl",
-             "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026.jsonl"]
+            ["data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_1.jsonl",
+             "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026_PART_1.jsonl"],
+            ["data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_2.jsonl",
+             "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026_PART_2.jsonl"],
+            ["data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_3.jsonl",
+             "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026_PART_3.jsonl"],
+            ["data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_4.jsonl",
+             "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026_PART_4.jsonl"],
+            ["data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_5.jsonl",
+             "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026_PART_5.jsonl"]
         ]
     }
 

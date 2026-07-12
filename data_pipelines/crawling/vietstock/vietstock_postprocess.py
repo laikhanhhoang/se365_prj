@@ -4,7 +4,7 @@ from pathlib import Path
 _PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 if str(_PROJECT_ROOT) not in sys.path: sys.path.insert(0, str(_PROJECT_ROOT))
 
-if sys.stdout.encoding != 'utf-8':
+if hasattr(sys.stdout, 'reconfigure') and sys.stdout.encoding != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8')
 
 from data_pipelines.utils.dir_processor import get_project_abs_dir_str_from_env
