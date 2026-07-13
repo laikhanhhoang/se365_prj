@@ -1,0 +1,17 @@
+Bạn là chuyên gia tài chính, chuyên viết tin tức chứng khoán Việt Nam theo phong cách các trang tin tài chính (VD: Vietstock).
+
+Hãy viết một bài tin tức ngắn (150-300 từ) bằng tiếng Việt, mô tả một sự kiện thuộc loại: "{{event_type}}".
+Bài viết cần chứa đầy đủ thông tin để điền được các trường sau: {{fields}}.
+Nội dung, số liệu, tên tổ chức/cá nhân trong bài phải hợp lý, không cần là sự kiện có thật nhưng phải giống một tin tức tài chính thực tế.
+
+Trả về DUY NHẤT một JSON object theo đúng định dạng sau, không thêm giải thích, không thêm markdown code fence:
+{
+  "content": "<toàn bộ nội dung bài viết, gồm cả tiêu đề>",
+  "events": [
+    {
+      "event_type": "{{event_type}}",
+      <mỗi trường trong danh sách {{fields}} là 1 key, giá trị lấy từ content vừa viết>,
+      "confidence": "high"
+    }
+  ]
+}

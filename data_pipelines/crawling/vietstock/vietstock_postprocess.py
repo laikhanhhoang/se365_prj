@@ -124,64 +124,90 @@ if __name__ == "__main__":
 
     
     # PROD
-    vietstock_postprocess_config_23_26 = {
+#    vietstock_postprocess_config_23_26 = {
+#        "in_out": [
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20230101_20230430.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20230101_20230430.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20230501_20230831.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20230501_20230831.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20230901_20231231.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20230901_20231231.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20240101_20240131.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20240101_20240131.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20240201_20240229.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20240201_20240229.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20240301_20240331.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20240301_20240331.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20240401_20240430.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20240401_20240430.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20240501_20240630.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20240501_20240630.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20240701_20240831.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20240701_20240831.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20240901_20241031.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20240901_20241031.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20241101_20241231.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20241101_20241231.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250101_20250131.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250101_20250131.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250201_20250228.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250201_20250228.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250301_20250331.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250301_20250331.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250401_20250430.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250401_20250430.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250501_20250531.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250501_20250531.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250601_20250630.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250601_20250630.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250701_20250731.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250701_20250731.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250801_20251231.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250801_20251231.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20260101_20260131.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20260101_20260131.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20260201_20260228.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20260201_20260228.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20260301_20260331.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20260301_20260331.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20260401_20260430.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20260401_20260430.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20260501_20260531.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20260501_20260531.jsonl"],
+#            ["data/raw/vietstock/crawled/vietstock_crawled_data_20260601_20260620.jsonl", 
+#             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20260601_20260620.jsonl"]
+#        ],
+#        "merge_output_files_into": "data/raw/vietstock/vietstock_data_2023_2026.jsonl"
+#    }
+#    
+#    in_out_pairs             = vietstock_postprocess_config_23_26.get("in_out", [])
+#    merge_output_files_into  = vietstock_postprocess_config_23_26.get("merge_output_files_into", )
+#
+#    postprocess_crawled_data_files(
+#        in_out_pairs = in_out_pairs,
+#        project_dir  = PROJECT_DIR,
+#    )
+#
+#    if merge_output_files_into:
+#        out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
+#        process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)
+
+    # EXTERNAL - 22
+
+    vietstock_postprocess_config_22 = {
         "in_out": [
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20230101_20230430.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20230101_20230430.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20230501_20230831.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20230501_20230831.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20230901_20231231.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20230901_20231231.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20240101_20240131.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20240101_20240131.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20240201_20240229.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20240201_20240229.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20240301_20240331.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20240301_20240331.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20240401_20240430.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20240401_20240430.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20240501_20240630.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20240501_20240630.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20240701_20240831.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20240701_20240831.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20240901_20241031.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20240901_20241031.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20241101_20241231.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20241101_20241231.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250101_20250131.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250101_20250131.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250201_20250228.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250201_20250228.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250301_20250331.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250301_20250331.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250401_20250430.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250401_20250430.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250501_20250531.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250501_20250531.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250601_20250630.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250601_20250630.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250701_20250731.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250701_20250731.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20250801_20251231.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20250801_20251231.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20260101_20260131.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20260101_20260131.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20260201_20260228.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20260201_20260228.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20260301_20260331.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20260301_20260331.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20260401_20260430.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20260401_20260430.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20260501_20260531.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20260501_20260531.jsonl"],
-            ["data/raw/vietstock/crawled/vietstock_crawled_data_20260601_20260620.jsonl", 
-             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20260601_20260620.jsonl"]
+            ["data/raw/vietstock/crawled/vietstock_crawled_data_20220101_20220430.jsonl", 
+             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20220101_20220430.jsonl"],
+            ["data/raw/vietstock/crawled/vietstock_crawled_data_20220501_20220831.jsonl", 
+             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20220501_20220831.jsonl"],
+            ["data/raw/vietstock/crawled/vietstock_crawled_data_20220901_20221231.jsonl", 
+             "data/raw/vietstock/post_crawled/vietstock_post_crawled_data_20220901_20221231.jsonl"]
         ],
-        "merge_output_files_into": "data/raw/vietstock/vietstock_data_2023_2026.jsonl"
+        "merge_output_files_into": "data/raw/vietstock/vietstock_data_2022.jsonl"
     }
-    
-    in_out_pairs             = vietstock_postprocess_config_23_26.get("in_out", [])
-    merge_output_files_into  = vietstock_postprocess_config_23_26.get("merge_output_files_into", )
+
+    in_out_pairs             = vietstock_postprocess_config_22.get("in_out", [])
+    merge_output_files_into  = vietstock_postprocess_config_22.get("merge_output_files_into", )
 
     postprocess_crawled_data_files(
         in_out_pairs = in_out_pairs,

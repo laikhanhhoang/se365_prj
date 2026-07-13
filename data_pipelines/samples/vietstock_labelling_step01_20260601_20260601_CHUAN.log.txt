@@ -8,7 +8,8 @@ Snapshot data_schema.json tại thời điểm chạy:
 {
   "dataset": {
     "schema": ["id", "content"],
-    "strict_required": "yes"
+    "strict_required": "yes",
+    "output_schema": ["id", "content", "events"]
   },
   "events": [
     {

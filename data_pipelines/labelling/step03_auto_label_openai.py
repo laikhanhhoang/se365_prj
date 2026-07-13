@@ -298,3 +298,40 @@ if __name__ == "__main__":
     if merge_output_files_into:
         out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
         process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)
+
+
+    # EXTERNAL (22)
+    label_config_22 = {
+        "model":                    "gpt-4o-mini",
+        "temperature":              0.2,
+        "prompt_file":              "data_pipelines/labelling/prompts/prompt.v2.txt",  # chứa "{{content}}" sẽ được thay bằng content
+        "log":                      "data/processing/step03_autolabel_v2/vietstock_labelling_step03_2022.log.txt",
+        "merge_output_files_into":  "",
+        "in_out": [
+            ["data/processing/step02_filter/vietstock_labelling_step02_2022.jsonl",
+             "data/processing/step03_autolabel_v2/vietstock_labelling_step03_2022.jsonl"]
+        ]
+    }
+
+    model, temperature      = label_config_22.get("model", "gpt-4o-mini"), label_config_22.get("temperature", 0.2)
+    in_out_pairs            = label_config_22.get("in_out", [])
+    log_path_str            = label_config_22.get("log")
+    merge_output_files_into = label_config_22.get("merge_output_files_into")
+    prompt_template         = (Path(PROJECT_DIR) / label_config_22["prompt_file"]).read_text(encoding='utf-8')
+    client                  = OpenAI(api_key=OPENAI_API_KEY)
+
+    summary_lines = label_files(
+        in_out_pairs    = in_out_pairs,
+        project_dir     = PROJECT_DIR,
+        client          = client,
+        model           = model,
+        temperature     = temperature,
+        prompt_template = prompt_template,
+    )
+
+    if log_path_str:
+        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, SCHEMA_DIR)
+
+    if merge_output_files_into:
+        out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
+        process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)

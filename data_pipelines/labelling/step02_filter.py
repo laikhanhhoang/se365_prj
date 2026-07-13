@@ -266,3 +266,31 @@ if __name__ == "__main__":
             process_split_jsonl_file(merged_file_path, split_merged_file_dir, split_merged_file_into_parts)
         else:
             print(f"[SKIP] Không tìm thấy file merged: {merged_file_path}")
+
+    # EXTERNAL (22)
+    filter_config_22 = {
+        "merge_output_files_into": "",
+        "log": "data/processing/step02_filter/vietstock_labelling_step02_2022.log.txt",
+        "in_out": [
+            ["data/processing/step01_preprocess/vietstock_labelling_step01_2022.jsonl",
+             "data/processing/step02_filter/vietstock_labelling_step02_2022.jsonl"]
+        ],
+    }
+
+    in_out_pairs             = filter_config_22.get("in_out", [])
+    merge_output_files_into  = filter_config_22.get("merge_output_files_into")
+    log_path_str             = filter_config_22.get("log")
+    keyword                  = _get_event_keywords(SCHEMA_DIR)
+
+    summary_lines = filter_files(
+        in_out_pairs = in_out_pairs,
+        project_dir  = PROJECT_DIR,
+        keyword      = keyword,
+    )
+
+    if log_path_str:
+        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, SCHEMA_DIR)
+
+    if merge_output_files_into:
+        out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
+        process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)

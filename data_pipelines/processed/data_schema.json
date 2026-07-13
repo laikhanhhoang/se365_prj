@@ -1,0 +1,68 @@
+{
+  "dataset": {
+    "schema": ["id", "content", "events"],
+    "strict_required": "yes"
+  },
+  "events": [
+    {
+      "name": "Chi trả cổ tức",
+      "fields": ["ten_to_chuc", "hinh_thuc_co_tuc", "ty_le", "ngay_gd_khong_huong_quyen", "ngay_thanh_toan"]
+    },
+    {
+      "name": "Phát hành thêm cổ phiếu",
+      "fields": ["ten_to_chuc", "phuong_thuc_phat_hanh", "loai_co_phieu", "so_luong", "gia_phat_hanh", "ngay_chot_quyen"]
+    },
+    {
+      "name": "Niêm yết",
+      "fields": ["ten_to_chuc", "ma_co_phieu", "san_giao_dich", "so_luong_co_phieu", "ngay_hieu_luc"]
+    },
+    {
+      "name": "Hủy niêm yết",
+      "fields": ["ten_to_chuc", "ma_co_phieu", "san_giao_dich", "ngay_hieu_luc"]
+    },
+    {
+      "name": "Phát hành trái phiếu",
+      "fields": ["ten_to_chuc", "loai_trai_phieu", "tong_gia_tri", "lai_suat", "ky_han", "ngay_phat_hanh"]
+    },
+    {
+      "name": "Cổ đông thay đổi tỷ lệ sở hữu",
+      "fields": ["ten_to_chuc", "ten_co_dong", "chieu_thay_doi", "ty_le_truoc", "ty_le_sau", "so_cp_thay_doi", "ngay_bat_dau"]
+    },
+    {
+      "name": "Thay đổi nhân sự chủ chốt",
+      "fields": ["ten_to_chuc", "ten_nhan_su", "trang_thai", "chuc_vu", "nguoi_thay_the"]
+    },
+    {
+      "name": "M&A",
+      "fields": ["ten_to_chuc", "ben_mua", "loai_giao_dich", "ty_le_so_huu_truoc", "ty_le_so_huu_sau", "gia_tri_thuong_vu", "ngay_hoan_tat"]
+    },
+    {
+      "name": "Đầu tư",
+      "fields": ["ten_to_chuc", "ten_cong_ty_dau_tu_vao", "ty_le_so_huu", "gia_tri_dau_tu", "muc_dich", "ngay_thuc_hien"]
+    },
+    {
+      "name": "Hợp đồng lớn",
+      "fields": ["ten_to_chuc", "ten_doi_tac", "loai_hop_dong", "ten_du_an", "gia_tri_hop_dong", "ngay_ky"]
+    },
+    {
+      "name": "Vay vốn",
+      "fields": ["ten_to_chuc", "ben_cho_vay", "tong_gia_tri_khoan_vay", "muc_dich", "ky_han", "ben_bao_lanh", "ngay_ky"]
+    },
+    {
+      "name": "Tổn thất tài sản nghiêm trọng",
+      "fields": ["ten_to_chuc", "mo_ta_su_co", "gia_tri_ton_that", "ngay_cong_bo"]
+    },
+    {
+      "name": "Bồi thường lớn cho bên ngoài",
+      "fields": ["ten_to_chuc", "ben_nhan_boi_thuong", "so_tien", "ly_do", "ngay_cong_bo"]
+    },
+    {
+      "name": "Vấn đề pháp lý",
+      "fields": ["ten_to_chuc", "ca_nhan_chiu_trach_nhiem", "noi_dung_vi_pham", "co_quan_xu_ly", "hinh_thuc_xu_phat", "ngay_ra_quyet_dinh"]
+    },
+    {
+      "name": "Phá sản",
+      "fields": ["ten_to_chuc", "loai_hanh_dong", "nganh_nghe", "toa_an_thu_ly", "ngay_cong_bo", "ngay_phan_quyet"]
+    }
+  ]
+}

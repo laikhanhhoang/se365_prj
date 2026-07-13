@@ -241,3 +241,30 @@ if __name__ == "__main__":
     if merge_output_files_into:
         out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
         process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)
+
+    # EXTERNAL (22)
+    preprocess_config_22 = {
+        "log":                      "data/processing/step01_preprocess/vietstock_labelling_step01_2022.log.txt",
+        "merge_output_files_into":  "",
+        "in_out": [
+            ["data/raw/vietstock/vietstock_data_2022.jsonl",
+             "data/processing/step01_preprocess/vietstock_labelling_step01_2022.jsonl"]
+        ]
+    }
+
+    in_out_pairs             = preprocess_config_22.get("in_out", [])
+    log_path_str             = preprocess_config_22.get("log")
+    merge_output_files_into  = preprocess_config_22.get("merge_output_files_into")
+
+    summary_lines = preprocess_files(
+        in_out_pairs = in_out_pairs,
+        project_dir  = PROJECT_DIR,
+        schema_path  = SCHEMA_DIR,
+    )
+
+    if log_path_str:
+        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, SCHEMA_DIR)
+
+    if merge_output_files_into:
+        out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
+        process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)

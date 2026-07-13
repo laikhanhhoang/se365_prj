@@ -1,0 +1,149 @@
+  validate: 8887 record, 0 record có event lỗi (event_type lạ hoặc thiếu/thừa field)
+
+[Tổng dataset] 8887 mẫu
+  Không sự kiện: 1051 (11.83% trên tổng 8887 mẫu)
+  Có sự kiện: 7836 mẫu — tỷ lệ từng loại tính trên 7836 mẫu này:
+    Chi trả cổ tức: 2785 (35.54%)
+    Phát hành thêm cổ phiếu: 2044 (26.08%)
+    Thay đổi nhân sự chủ chốt: 1917 (24.46%)
+    Đầu tư: 1653 (21.09%)
+    Phát hành trái phiếu: 1211 (15.45%)
+    Vấn đề pháp lý: 1114 (14.22%)
+    Vay vốn: 924 (11.79%)
+    Cổ đông thay đổi tỷ lệ sở hữu: 727 (9.28%)
+    M&A: 662 (8.45%)
+    Niêm yết: 459 (5.86%)
+    Tổn thất tài sản nghiêm trọng: 313 (3.99%)
+    Hợp đồng lớn: 306 (3.91%)
+    Hủy niêm yết: 260 (3.32%)
+    Phá sản: 94 (1.20%)
+    Bồi thường lớn cho bên ngoài: 87 (1.11%)
+
+[Train] 7115 mẫu
+  Không sự kiện: 841 (11.82% trên tổng 7115 mẫu)
+  Có sự kiện: 6274 mẫu — tỷ lệ từng loại tính trên 6274 mẫu này:
+    Chi trả cổ tức: 2228 (35.51%)
+    Phát hành thêm cổ phiếu: 1635 (26.06%)
+    Thay đổi nhân sự chủ chốt: 1534 (24.45%)
+    Đầu tư: 1323 (21.09%)
+    Phát hành trái phiếu: 969 (15.44%)
+    Vấn đề pháp lý: 891 (14.20%)
+    Vay vốn: 739 (11.78%)
+    Cổ đông thay đổi tỷ lệ sở hữu: 582 (9.28%)
+    M&A: 530 (8.45%)
+    Niêm yết: 367 (5.85%)
+    Tổn thất tài sản nghiêm trọng: 250 (3.98%)
+    Hợp đồng lớn: 245 (3.91%)
+    Hủy niêm yết: 208 (3.32%)
+    Phá sản: 75 (1.20%)
+    Bồi thường lớn cho bên ngoài: 70 (1.12%)
+
+[Val] 712 mẫu
+  Không sự kiện: 84 (11.80% trên tổng 712 mẫu)
+  Có sự kiện: 628 mẫu — tỷ lệ từng loại tính trên 628 mẫu này:
+    Chi trả cổ tức: 223 (35.51%)
+    Phát hành thêm cổ phiếu: 164 (26.11%)
+    Thay đổi nhân sự chủ chốt: 153 (24.36%)
+    Đầu tư: 132 (21.02%)
+    Phát hành trái phiếu: 97 (15.45%)
+    Vấn đề pháp lý: 89 (14.17%)
+    Vay vốn: 74 (11.78%)
+    Cổ đông thay đổi tỷ lệ sở hữu: 58 (9.24%)
+    M&A: 53 (8.44%)
+    Niêm yết: 37 (5.89%)
+    Tổn thất tài sản nghiêm trọng: 25 (3.98%)
+    Hợp đồng lớn: 24 (3.82%)
+    Hủy niêm yết: 21 (3.34%)
+    Phá sản: 8 (1.27%)
+    Bồi thường lớn cho bên ngoài: 7 (1.11%)
+
+[Test] 1060 mẫu
+  Không sự kiện: 126 (11.89% trên tổng 1060 mẫu)
+  Có sự kiện: 934 mẫu — tỷ lệ từng loại tính trên 934 mẫu này:
+    Chi trả cổ tức: 334 (35.76%)
+    Phát hành thêm cổ phiếu: 245 (26.23%)
+    Thay đổi nhân sự chủ chốt: 230 (24.63%)
+    Đầu tư: 198 (21.20%)
+    Phát hành trái phiếu: 145 (15.52%)
+    Vấn đề pháp lý: 134 (14.35%)
+    Vay vốn: 111 (11.88%)
+    Cổ đông thay đổi tỷ lệ sở hữu: 87 (9.31%)
+    M&A: 79 (8.46%)
+    Niêm yết: 55 (5.89%)
+    Tổn thất tài sản nghiêm trọng: 38 (4.07%)
+    Hợp đồng lớn: 37 (3.96%)
+    Hủy niêm yết: 31 (3.32%)
+    Phá sản: 11 (1.18%)
+    Bồi thường lớn cho bên ngoài: 10 (1.07%)
+
+============================================================
+Snapshot data_schema.json tại thời điểm chạy:
+============================================================
+{
+  "dataset": {
+    "schema": ["id", "content", "events"],
+    "strict_required": "yes"
+  },
+  "events": [
+    {
+      "name": "Chi trả cổ tức",
+      "fields": ["ten_to_chuc", "hinh_thuc_co_tuc", "ty_le", "ngay_gd_khong_huong_quyen", "ngay_thanh_toan"]
+    },
+    {
+      "name": "Phát hành thêm cổ phiếu",
+      "fields": ["ten_to_chuc", "phuong_thuc_phat_hanh", "loai_co_phieu", "so_luong", "gia_phat_hanh", "ngay_chot_quyen"]
+    },
+    {
+      "name": "Niêm yết",
+      "fields": ["ten_to_chuc", "ma_co_phieu", "san_giao_dich", "so_luong_co_phieu", "ngay_hieu_luc"]
+    },
+    {
+      "name": "Hủy niêm yết",
+      "fields": ["ten_to_chuc", "ma_co_phieu", "san_giao_dich", "ngay_hieu_luc"]
+    },
+    {
+      "name": "Phát hành trái phiếu",
+      "fields": ["ten_to_chuc", "loai_trai_phieu", "tong_gia_tri", "lai_suat", "ky_han", "ngay_phat_hanh"]
+    },
+    {
+      "name": "Cổ đông thay đổi tỷ lệ sở hữu",
+      "fields": ["ten_to_chuc", "ten_co_dong", "chieu_thay_doi", "ty_le_truoc", "ty_le_sau", "so_cp_thay_doi", "ngay_bat_dau"]
+    },
+    {
+      "name": "Thay đổi nhân sự chủ chốt",
+      "fields": ["ten_to_chuc", "ten_nhan_su", "trang_thai", "chuc_vu", "nguoi_thay_the"]
+    },
+    {
+      "name": "M&A",
+      "fields": ["ten_to_chuc", "ben_mua", "loai_giao_dich", "ty_le_so_huu_truoc", "ty_le_so_huu_sau", "gia_tri_thuong_vu", "ngay_hoan_tat"]
+    },
+    {
+      "name": "Đầu tư",
+      "fields": ["ten_to_chuc", "ten_cong_ty_dau_tu_vao", "ty_le_so_huu", "gia_tri_dau_tu", "muc_dich", "ngay_thuc_hien"]
+    },
+    {
+      "name": "Hợp đồng lớn",
+      "fields": ["ten_to_chuc", "ten_doi_tac", "loai_hop_dong", "ten_du_an", "gia_tri_hop_dong", "ngay_ky"]
+    },
+    {
+      "name": "Vay vốn",
+      "fields": ["ten_to_chuc", "ben_cho_vay", "tong_gia_tri_khoan_vay", "muc_dich", "ky_han", "ben_bao_lanh", "ngay_ky"]
+    },
+    {
+      "name": "Tổn thất tài sản nghiêm trọng",
+      "fields": ["ten_to_chuc", "mo_ta_su_co", "gia_tri_ton_that", "ngay_cong_bo"]
+    },
+    {
+      "name": "Bồi thường lớn cho bên ngoài",
+      "fields": ["ten_to_chuc", "ben_nhan_boi_thuong", "so_tien", "ly_do", "ngay_cong_bo"]
+    },
+    {
+      "name": "Vấn đề pháp lý",
+      "fields": ["ten_to_chuc", "ca_nhan_chiu_trach_nhiem", "noi_dung_vi_pham", "co_quan_xu_ly", "hinh_thuc_xu_phat", "ngay_ra_quyet_dinh"]
+    },
+    {
+      "name": "Phá sản",
+      "fields": ["ten_to_chuc", "loai_hanh_dong", "nganh_nghe", "toa_an_thu_ly", "ngay_cong_bo", "ngay_phan_quyet"]
+    }
+  ]
+}

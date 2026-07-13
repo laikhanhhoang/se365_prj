@@ -1,5 +1,6 @@
 [vietstock_labelling_step03_20260601_20260601_CHUAN.jsonl]
   postprocess: 13 record (lỗi parse: 0, event_type lạ: 0, lệch field: 0) → vietstock_labelling_step04_20260601_20260601_CHUAN.jsonl
+  RECHECK: không phát hiện lỗi
 
 ============================================================
 Snapshot data_schema.json tại thời điểm chạy:

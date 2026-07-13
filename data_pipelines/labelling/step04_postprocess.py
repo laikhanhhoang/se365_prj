@@ -107,6 +107,47 @@ def _get_field_diff(event: dict, events_fields: dict[str, list[str]]) -> tuple[s
     return expected_fields - actual_fields, actual_fields - expected_fields
 
 
+def _normalize_record_to_schema(
+    events:        list[dict],
+    events_fields: dict[str, list[str]],
+    sample_id:     str,
+) -> tuple[list[dict], int, int]:
+    """
+    - Summary: Chuẩn hoá list event theo schema, tự sửa field thiếu/thừa.
+    - Args:
+        - events:        List event đã parse từ model.
+        - events_fields: Dict tên sự kiện → list field kỳ vọng.
+        - sample_id:     Id sample, dùng để log warning.
+    - Output:
+        - tuple[list[dict], int, int]: List event đã chuẩn hoá, số event_type lạ bị bỏ, số event bị lệch field.
+    """
+    normalized_events: list[dict] = []
+    unknown_type_count            = 0
+    field_issue_count             = 0
+
+    for event in events:
+        event_type = event.get("event_type")
+        if event_type not in events_fields:
+            unknown_type_count += 1
+            print(f"[WARN] Sample {sample_id} - event_type lạ, không có trong schema: "
+                  f"'{event_type}' → đã bỏ")
+            continue
+
+        missing_fields, extra_fields = _get_field_diff(event, events_fields)
+        if missing_fields or extra_fields:
+            field_issue_count += 1
+            print(f"[WARN] Sample {sample_id} - event '{event_type}': "
+                  f"thiếu {missing_fields or '{}'}, thừa {extra_fields or '{}'}")
+
+        expected_fields  = set(_COMMON_FIELDS) | set(events_fields[event_type])
+        normalized_event = {field: value for field, value in event.items() if field in expected_fields}  # bỏ field thừa
+        for field in missing_fields:
+            normalized_event[field] = "medium" if field == "confidence" else None  # điền default cho field thiếu
+        normalized_events.append(normalized_event)
+
+    return normalized_events, unknown_type_count, field_issue_count
+
+
 def _build_formatted_record(record: dict, raw_field: str, output_field: str) -> dict:
     """
     - Summary: Parse raw_field trong record, gán vào output_field.
@@ -154,11 +195,9 @@ def _postprocess_file(
     - Summary:
         1. Tải records từ input (_get_records()).
         2. Parse và ghi từng record (_build_formatted_record()).
-        3. Bỏ event có event_type lạ, không có trong data_schema.json.
-        4. Check field thiếu/thừa từng event còn lại (_get_field_diff()).
-        5. Lọc record, chỉ giữ field trong output_schema và ghi ra file output.
-        6. Recheck độc lập record sau khi đã ghi (_recheck_record()), phân loại lỗi theo category.
-        7. Trả về log tóm tắt, kèm id từng sample lỗi theo từng category recheck.
+        3. Chuẩn hóa record theo schema (_normalize_record_to_schema()): Bỏ event có event_type lạ và field thừa trong từng event - Nếu thiếu "confidence", điền "medium'. Còn nếu field cần extracted nào bị thiếu thì điền null. 
+        4. Recheck độc lập record sau khi đã ghi (_recheck_record()), phân loại lỗi theo category.
+        5. Trả về log tóm tắt, kèm id từng sample lỗi theo từng category recheck.
     - Args:
         - in_path:              Đường dẫn file input JSONL.
         - out_path:             Đường dẫn file output JSONL.
@@ -184,21 +223,14 @@ def _postprocess_file(
                 failed_count += 1
                 print(f"[WARN] Parse lỗi sample {record.get('id')}")
             else:
-                known_events = []
-                for event in events:
-                    event_type = event.get("event_type")
-                    if event_type not in events_fields:
-                        unknown_type_count += 1
-                        print(f"[WARN] Sample {record.get('id')} - event_type lạ, không có trong schema: "
-                              f"'{event_type}' → đã bỏ")
-                        continue
-                    missing_fields, extra_fields = _get_field_diff(event, events_fields)
-                    if missing_fields or extra_fields:
-                        field_issue_count += 1
-                        print(f"[WARN] Sample {record.get('id')} - event '{event_type}': "
-                              f"thiếu {missing_fields or '{}'}, thừa {extra_fields or '{}'}")
-                    known_events.append(event)
-                formatted_record[output_field] = known_events
+                normalized_events, record_unknown_count, record_field_issue_count = _normalize_record_to_schema(
+                    events        = events,
+                    events_fields = events_fields,
+                    sample_id     = record.get('id'),
+                )
+                unknown_type_count             += record_unknown_count
+                field_issue_count              += record_field_issue_count
+                formatted_record[output_field]  = normalized_events
             formatted_record = {field: formatted_record[field] for field in output_schema_fields if field in formatted_record}
             fout.write(json.dumps(formatted_record, ensure_ascii=False) + '\n')
 
@@ -220,6 +252,8 @@ def _postprocess_file(
             ids = recheck_ids_by_category[category]
             if ids:
                 summary_lines.append(f'      {label}: {", ".join(ids)}')
+    else:
+        summary_lines.append(f'  RECHECK: không phát hiện lỗi')
     print('\n'.join(summary_lines))
     return summary_lines
 
@@ -318,15 +352,15 @@ if __name__ == "__main__":
         "log":                      "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026.log.txt",
         "merge_output_files_into":  "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026.jsonl",
         "in_out": [
-            ["data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_1.jsonl",
+            ["data/processing/step03_autolabel_v2/vietstock_labelling_step03_2023_2026_PART_1.jsonl",
              "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026_PART_1.jsonl"],
-            ["data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_2.jsonl",
+            ["data/processing/step03_autolabel_v2/vietstock_labelling_step03_2023_2026_PART_2.jsonl",
              "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026_PART_2.jsonl"],
-            ["data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_3.jsonl",
+            ["data/processing/step03_autolabel_v2/vietstock_labelling_step03_2023_2026_PART_3.jsonl",
              "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026_PART_3.jsonl"],
-            ["data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_4.jsonl",
+            ["data/processing/step03_autolabel_v2/vietstock_labelling_step03_2023_2026_PART_4.jsonl",
              "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026_PART_4.jsonl"],
-            ["data/processing/step03_autolabel/vietstock_labelling_step03_2023_2026_PART_5.jsonl",
+            ["data/processing/step03_autolabel_v2/vietstock_labelling_step03_2023_2026_PART_5.jsonl",
              "data/processing/step04_postprocess/vietstock_labelling_step04_2023_2026_PART_5.jsonl"]
         ]
     }
@@ -335,6 +369,39 @@ if __name__ == "__main__":
     in_out_pairs            = postprocess_config.get("in_out", [])
     log_path_str            = postprocess_config.get("log")
     merge_output_files_into = postprocess_config.get("merge_output_files_into")
+
+    summary_lines = postprocess_files(
+        raw_field    = raw_field,
+        output_field = output_field,
+        in_out_pairs = in_out_pairs,
+        project_dir  = PROJECT_DIR,
+        schema_path  = SCHEMA_DIR,
+    )
+
+    if log_path_str:
+        process_write_run_log(Path(PROJECT_DIR) / log_path_str, summary_lines, SCHEMA_DIR)
+
+    if merge_output_files_into:
+        out_paths = [Path(PROJECT_DIR) / out_path_str for _, out_path_str in in_out_pairs]
+        process_merge_output_files(out_paths, Path(PROJECT_DIR) / merge_output_files_into)
+
+
+    # EXTERNAL (22)
+    postprocess_config_22 = {
+        "raw_field":                "label_raw",
+        "output_field":             "events",
+        "log":                      "data/processing/step04_postprocess/vietstock_labelling_step04_2022.log.txt",
+        "merge_output_files_into":  "",
+        "in_out": [
+            ["data/processing/step03_autolabel_v2/vietstock_labelling_step03_2022.jsonl",
+             "data/processing/step04_postprocess/vietstock_labelling_step04_2022.jsonl"]
+        ]
+    }
+
+    raw_field, output_field = postprocess_config_22.get("raw_field", "label_raw"), postprocess_config_22.get("output_field", "events")
+    in_out_pairs            = postprocess_config_22.get("in_out", [])
+    log_path_str            = postprocess_config_22.get("log")
+    merge_output_files_into = postprocess_config_22.get("merge_output_files_into")
 
     summary_lines = postprocess_files(
         raw_field    = raw_field,
