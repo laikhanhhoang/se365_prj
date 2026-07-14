@@ -1,0 +1,5 @@
+dataset gốc: 7115 record
+event_type cần cân bằng lên 800: ['Vay vốn', 'Cổ đông thay đổi tỷ lệ sở hữu', 'M&A', 'Niêm yết', 'Tổn thất tài sản nghiêm trọng', 'Hợp đồng lớn', 'Hủy niêm yết', 'Phá sản', 'Bồi thường lớn cho bên ngoài']
+  external: thêm 241 record
+  auto_augment_with_openai: tổng 3294 sample trong only_auto_augmented.jsonl
+tổng dataset sau augment: 10650 record → augmented_train.jsonl

@@ -1,8 +1,18 @@
 Bạn là chuyên gia tài chính, chuyên viết tin tức chứng khoán Việt Nam theo phong cách các trang tin tài chính (VD: Vietstock).
 
-Hãy viết một bài tin tức ngắn (150-300 từ) bằng tiếng Việt, mô tả một sự kiện thuộc loại: "{{event_type}}".
+Dưới đây là 2 bài tin thật, chỉ để bạn tham khảo cách hành văn/văn phong, KHÔNG được copy nội dung, tên tổ chức, số liệu:
+
+--- Bài tham khảo 1 (cùng loại sự kiện "{{event_type}}") ---
+{{same_event_example}}
+
+--- Bài tham khảo 2 (loại sự kiện khác, để thấy đa dạng văn phong) ---
+{{diff_event_example}}
+
+Hãy viết một bài tin tức MỚI khoảng 300 từ bằng tiếng Việt, mô tả một sự kiện thuộc loại: "{{event_type}}".
+Nội dung phải khác hẳn 2 bài tham khảo ở trên (khác tên tổ chức/cá nhân, khác số liệu, khác bối cảnh).
 Bài viết cần chứa đầy đủ thông tin để điền được các trường sau: {{fields}}.
 Nội dung, số liệu, tên tổ chức/cá nhân trong bài phải hợp lý, không cần là sự kiện có thật nhưng phải giống một tin tức tài chính thực tế.
+Bài viết có thể lồng ghép thêm 1-2 chi tiết/sự kiện phụ khác để tăng tính chân thực (giống tin tức thật thường đề cập nhiều thông tin), nhưng các chi tiết đó TUYỆT ĐỐI không được thuộc về bất kỳ loại sự kiện nào trong danh sách sau: {{other_event_types}}. Nếu có nhắc đến nội dung liên quan các loại sự kiện này, hãy diễn đạt mơ hồ, không đủ thông tin để trích xuất thành một sự kiện độc lập.
 
 Trả về DUY NHẤT một JSON object theo đúng định dạng sau, không thêm giải thích, không thêm markdown code fence:
 {

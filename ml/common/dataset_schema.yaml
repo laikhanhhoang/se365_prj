@@ -6,31 +6,131 @@ dataset_fields:
 event_fields:
     - event_type: "Chi trả cổ tức"
       fields: ["ten_to_chuc", "hinh_thuc_co_tuc", "ty_le", "ngay_gd_khong_huong_quyen", "ngay_thanh_toan"]
+      field_descriptions:
+        ten_to_chuc: "Tên tổ chức công bố việc chi trả cổ tức."
+        hinh_thuc_co_tuc: "Hình thức chi trả cổ tức công ty khai báo (tiền mặt/cổ phiếu/tài sản khác)."
+        ty_le: "Tỷ lệ chi trả cổ tức (VD: 10% bằng tiền mặt tương ứng 1.000đ/cổ phiếu)."
+        ngay_gd_khong_huong_quyen: "Ngày giao dịch không hưởng quyền, nhà đầu tư mua cổ phiếu từ ngày này trở đi sẽ không được nhận cổ tức."
+        ngay_thanh_toan: "Ngày công ty thực hiện chi trả cổ tức cho cổ đông."
     - event_type: "Phát hành thêm cổ phiếu"
       fields: ["ten_to_chuc", "phuong_thuc_phat_hanh", "loai_co_phieu", "so_luong", "gia_phat_hanh", "ngay_chot_quyen"]
+      field_descriptions:
+        ten_to_chuc: "Tên tổ chức thực hiện phát hành thêm cổ phiếu."
+        phuong_thuc_phat_hanh: "Phương thức phát hành (chào bán ra công chúng/phát hành riêng lẻ/phát hành cho cổ đông hiện hữu/ESOP...)."
+        loai_co_phieu: "Loại cổ phiếu phát hành (phổ thông/ưu đãi)."
+        so_luong: "Số lượng cổ phiếu dự kiến hoặc đã phát hành."
+        gia_phat_hanh: "Giá phát hành cho mỗi cổ phiếu."
+        ngay_chot_quyen: "Ngày chốt danh sách cổ đông được hưởng quyền mua cổ phiếu phát hành thêm."
     - event_type: "Niêm yết"
       fields: ["ten_to_chuc", "ma_co_phieu", "san_giao_dich", "so_luong_co_phieu", "ngay_hieu_luc"]
+      field_descriptions:
+        ten_to_chuc: "Tên tổ chức thực hiện niêm yết."
+        ma_co_phieu: "Mã cổ phiếu được cấp khi niêm yết (VD: BVB)."
+        san_giao_dich: "Sàn giao dịch nơi cổ phiếu được niêm yết (HOSE/HNX/UPCoM)."
+        so_luong_co_phieu: "Số lượng cổ phiếu được niêm yết."
+        ngay_hieu_luc: "Ngày cổ phiếu chính thức được niêm yết và giao dịch."
     - event_type: "Hủy niêm yết"
       fields: ["ten_to_chuc", "ma_co_phieu", "san_giao_dich", "ngay_hieu_luc"]
+      field_descriptions:
+        ten_to_chuc: "Tên tổ chức bị hủy niêm yết."
+        ma_co_phieu: "Mã cổ phiếu bị hủy niêm yết."
+        san_giao_dich: "Sàn giao dịch mà cổ phiếu bị hủy niêm yết (HOSE/HNX/UPCoM)."
+        ngay_hieu_luc: "Ngày cổ phiếu chính thức bị hủy niêm yết."
     - event_type: "Phát hành trái phiếu"
       fields: ["ten_to_chuc", "loai_trai_phieu", "tong_gia_tri", "lai_suat", "ky_han", "ngay_phat_hanh"]
+      field_descriptions:
+        ten_to_chuc: "Tên tổ chức phát hành trái phiếu."
+        loai_trai_phieu: "Loại trái phiếu phát hành (doanh nghiệp/chuyển đổi/có bảo đảm)."
+        tong_gia_tri: "Tổng giá trị đợt phát hành trái phiếu."
+        lai_suat: "Lãi suất trái phiếu (%/năm), có thể là lãi suất cố định hoặc thả nổi."
+        ky_han: "Kỳ hạn của trái phiếu (VD: 3 năm, 5 năm)."
+        ngay_phat_hanh: "Ngày phát hành trái phiếu."
     - event_type: "Cổ đông thay đổi tỷ lệ sở hữu"
       fields: ["ten_to_chuc", "ten_co_dong", "chieu_thay_doi", "ty_le_truoc", "ty_le_sau", "so_cp_thay_doi", "ngay_bat_dau"]
+      field_descriptions:
+        ten_to_chuc: "Tên tổ chức có cổ đông thay đổi tỷ lệ sở hữu."
+        ten_co_dong: "Tên cổ đông thực hiện giao dịch."
+        chieu_thay_doi: "Chiều thay đổi tỷ lệ sở hữu (tăng/giảm)."
+        ty_le_truoc: "Tỷ lệ sở hữu của cổ đông trước khi giao dịch."
+        ty_le_sau: "Tỷ lệ sở hữu của cổ đông sau khi giao dịch."
+        so_cp_thay_doi: "Số lượng cổ phiếu được giao dịch."
+        ngay_bat_dau: "Ngày dự kiến hoặc thực hiện giao dịch."
     - event_type: "Thay đổi nhân sự chủ chốt"
       fields: ["ten_to_chuc", "ten_nhan_su", "trang_thai", "chuc_vu", "nguoi_thay_the"]
+      field_descriptions:
+        ten_to_chuc: "Tên tổ chức có thay đổi nhân sự."
+        ten_nhan_su: "Tên nhân sự được thay đổi."
+        trang_thai: "Trạng thái thay đổi (bổ nhiệm/từ chức/miễn nhiệm/bầu)."
+        chuc_vu: "Chức vụ liên quan đến thay đổi nhân sự."
+        nguoi_thay_the: "Tên người thay thế (nếu có)."
     - event_type: "M&A"
       fields: ["ten_to_chuc", "ben_mua", "loai_giao_dich", "ty_le_so_huu_truoc", "ty_le_so_huu_sau", "gia_tri_thuong_vu", "ngay_hoan_tat"]
+      field_descriptions:
+        ten_to_chuc: "Tên doanh nghiệp bị mua lại hoặc sáp nhập."
+        ben_mua: "Bên mua, thực hiện mua lại hoặc sáp nhập vào doanh nghiệp."
+        loai_giao_dich: "Loại giao dịch (mua lại/sáp nhập)."
+        ty_le_so_huu_truoc: "Tỷ lệ sở hữu của bên mua tại doanh nghiệp trước khi giao dịch diễn ra."
+        ty_le_so_huu_sau: "Tỷ lệ sở hữu của bên mua tại doanh nghiệp sau khi giao dịch hoàn tất."
+        gia_tri_thuong_vu: "Giá trị của thương vụ M&A."
+        ngay_hoan_tat: "Ngày giao dịch chính thức hoàn tất."
     - event_type: "Đầu tư"
       fields: ["ten_to_chuc", "ten_cong_ty_dau_tu_vao", "ty_le_so_huu", "gia_tri_dau_tu", "muc_dich", "ngay_thuc_hien"]
+      field_descriptions:
+        ten_to_chuc: "Tên doanh nghiệp thực hiện đầu tư/góp vốn ra ngoài."
+        ten_cong_ty_dau_tu_vao: "Tên công ty được đầu tư hoặc nhận vốn góp."
+        ty_le_so_huu: "Tỷ lệ sở hữu của doanh nghiệp tại công ty được đầu tư sau giao dịch."
+        gia_tri_dau_tu: "Giá trị khoản đầu tư/góp vốn."
+        muc_dich: "Mục đích của việc đầu tư/góp vốn."
+        ngay_thuc_hien: "Ngày thực hiện giao dịch đầu tư/góp vốn."
     - event_type: "Hợp đồng lớn"
       fields: ["ten_to_chuc", "ten_doi_tac", "loai_hop_dong", "ten_du_an", "gia_tri_hop_dong", "ngay_ky"]
+      field_descriptions:
+        ten_to_chuc: "Tên tổ chức trúng thầu hoặc ký hợp đồng."
+        ten_doi_tac: "Tên đối tác trong hợp đồng."
+        loai_hop_dong: "Loại hợp đồng (EPC/tư vấn/cung cấp...)."
+        ten_du_an: "Tên dự án liên quan đến hợp đồng."
+        gia_tri_hop_dong: "Giá trị hợp đồng."
+        ngay_ky: "Ngày ký kết hợp đồng."
     - event_type: "Vay vốn"
       fields: ["ten_to_chuc", "ben_cho_vay", "tong_gia_tri_khoan_vay", "muc_dich", "ky_han", "ben_bao_lanh", "ngay_ky"]
+      field_descriptions:
+        ten_to_chuc: "Tên tổ chức thực hiện vay vốn."
+        ben_cho_vay: "Bên cho vay (ngân hàng, tổ chức tín dụng)."
+        tong_gia_tri_khoan_vay: "Tổng giá trị khoản vay."
+        muc_dich: "Mục đích của khoản vay."
+        ky_han: "Kỳ hạn khoản vay."
+        ben_bao_lanh: "Bên bảo lãnh cho khoản vay (nếu có)."
+        ngay_ky: "Ngày ký kết hoặc công bố thông tin khoản vay."
     - event_type: "Tổn thất tài sản nghiêm trọng"
       fields: ["ten_to_chuc", "mo_ta_su_co", "gia_tri_ton_that", "ngay_cong_bo"]
+      field_descriptions:
+        ten_to_chuc: "Tên tổ chức gặp tổn thất tài sản."
+        mo_ta_su_co: "Mô tả ngắn gọn về sự cố gây tổn thất."
+        gia_tri_ton_that: "Giá trị thiệt hại ước tính."
+        ngay_cong_bo: "Ngày công bố thông tin về sự cố."
     - event_type: "Bồi thường lớn cho bên ngoài"
       fields: ["ten_to_chuc", "ben_nhan_boi_thuong", "so_tien", "ly_do", "ngay_cong_bo"]
+      field_descriptions:
+        ten_to_chuc: "Tên tổ chức phải chi trả bồi thường."
+        ben_nhan_boi_thuong: "Bên nhận khoản bồi thường."
+        so_tien: "Số tiền bồi thường."
+        ly_do: "Lý do dẫn đến việc bồi thường."
+        ngay_cong_bo: "Ngày công bố thông tin bồi thường."
     - event_type: "Vấn đề pháp lý"
       fields: ["ten_to_chuc", "ca_nhan_chiu_trach_nhiem", "noi_dung_vi_pham", "co_quan_xu_ly", "hinh_thuc_xu_phat", "ngay_ra_quyet_dinh"]
+      field_descriptions:
+        ten_to_chuc: "Tên tổ chức liên quan đến vấn đề pháp lý (tổ chức bị xử lý, hoặc tổ chức có cá nhân liên quan bị xử lý)."
+        ca_nhan_chiu_trach_nhiem: "Cá nhân (nếu có) chịu trách nhiệm hoặc liên quan trực tiếp đến vấn đề pháp lý, ghi theo dạng \"Tên - Chức vụ\"."
+        noi_dung_vi_pham: "Nội dung vi phạm, tội danh hoặc vấn đề pháp lý đang mắc phải (VD: vi phạm công bố thông tin, thao túng thị trường chứng khoán, trốn thuế)."
+        co_quan_xu_ly: "Cơ quan xử lý vụ việc (cơ quan quản lý nhà nước, cơ quan thực thi pháp luật, tòa án...)."
+        hinh_thuc_xu_phat: "Hình thức xử phạt hoặc chế tài (phạt tiền/đình chỉ/thu hồi giấy chứng nhận/khởi tố/tạm giam/tuyên án/kháng cáo...)."
+        ngay_ra_quyet_dinh: "Ngày cơ quan có thẩm quyền ra quyết định xử lý."
     - event_type: "Phá sản"
       fields: ["ten_to_chuc", "loai_hanh_dong", "nganh_nghe", "toa_an_thu_ly", "ngay_cong_bo", "ngay_phan_quyet"]
+      field_descriptions:
+        ten_to_chuc: "Tên tổ chức phá sản."
+        loai_hanh_dong: "Loại hành động (phá sản/tái cơ cấu/thanh lý tự nguyện)."
+        nganh_nghe: "Ngành nghề kinh doanh chính của doanh nghiệp."
+        toa_an_thu_ly: "Tòa án thụ lý vụ việc."
+        ngay_cong_bo: "Ngày công bố thông tin."
+        ngay_phan_quyet: "Ngày tòa án ra phán quyết."
