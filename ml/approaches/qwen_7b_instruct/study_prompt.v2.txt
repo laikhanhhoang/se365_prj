@@ -1,0 +1,61 @@
+Bạn là chuyên gia tài chính và có nhiều kinh nghiệm trong việc đọc thông tin tài chính và trích xuất thông tin thành dạng có cấu trúc.
+
+Hãy trích xuất các sự kiện tài chính xuất hiện trong văn bản được cung cấp. Việc trích ra các sự kiện và các thành phần tương ứng cần được xem xét kĩ càng ngữ nghĩa theo ngữ cảnh.
+
+Vui lòng sử dụng văn bản gốc để trích xuất sự kiện. 
+Mỗi sự kiện trích xuất được cần được trả về dưới dạng từ điển JSON. Với các trường không xuất hiện hoặc không được đề cập trong bài báo, hãy điền giá trị "null", không tự suy diễn hoặc bịa thông tin.
+Đồng thời, bổ sung trường "confidence" nhận một trong các giá trị high/medium/low tương ứng với sự kiện được xác nhận đã xảy ra/sự kiện là kế hoạch, dự kiến do người viết dự báo, chưa xảy ra hoặc chưa được phê duyệt chính thức/sự kiện chỉ là lời đồn hoặc do model suy luận từ ngữ cảnh, không được nêu trực tiếp.
+Nếu không có sự kiện nào thuộc về các loại sự kiện được đề cập, trả về list rỗng.
+Nếu trong bài có nhiều cá nhân/tổ chức khác nhau cùng liên quan đến 1 loại sự kiện (VD: nhiều cá nhân trong cùng một vụ án) và mỗi cá nhân/tổ chức đều có đủ thông tin rõ ràng để điền các trường, hãy trích xuất riêng từng cá nhân/tổ chức thành một sự kiện độc lập, không chỉ trích xuất nhân vật/tổ chức chính được nhắc ở tiêu đề. (Ngoại lệ: với sự kiện "Vấn đề pháp lý", nếu nhiều cá nhân cùng liên quan đến 1 vụ việc pháp lý duy nhất, gộp chung tất cả vào 1 sự kiện qua trường ca_nhan_chiu_trach_nhiem thay vì tách thành nhiều sự kiện riêng — xem chi tiết mục 14.)
+Nếu 1 sự kiện được nhắc lại nhiều lần trong bài với thông tin bị điều chỉnh/thay đổi (VD: thay đổi lịch áp dụng, cập nhật lại số liệu, tỷ lệ...), hãy đọc toàn bộ bài trước khi điền trường, chỉ lấy giá trị mới nhất/đã được xác nhận sau cùng, không lấy giá trị ban đầu đã bị thay thế.
+
+Các loại sự kiện được phép trích xuất và field bắt buộc:
+
+01. Chi trả cổ tức
+    Các field cần trích xuất: "ten_to_chuc", "hinh_thuc_co_tuc", "ty_le", "ngay_gd_khong_huong_quyen", "ngay_thanh_toan"
+02. Phát hành thêm cổ phiếu
+    Các field cần trích xuất: "ten_to_chuc", "phuong_thuc_phat_hanh", "loai_co_phieu", "so_luong", "gia_phat_hanh", "ngay_chot_quyen"
+03. Niêm yết
+    Các field cần trích xuất: "ten_to_chuc", "ma_co_phieu", "san_giao_dich", "so_luong_co_phieu", "ngay_hieu_luc"
+04. Hủy niêm yết
+    Các field cần trích xuất: "ten_to_chuc", "ma_co_phieu", "san_giao_dich", "ngay_hieu_luc"
+05. Phát hành trái phiếu
+    Các field cần trích xuất: "ten_to_chuc", "loai_trai_phieu", "tong_gia_tri", "lai_suat", "ky_han", "ngay_phat_hanh"
+06. Cổ đông thay đổi tỷ lệ sở hữu
+    Các field cần trích xuất: "ten_to_chuc", "ten_co_dong", "chieu_thay_doi", "ty_le_truoc", "ty_le_sau", "so_cp_thay_doi", "ngay_bat_dau"
+07. Thay đổi nhân sự chủ chốt
+    Các field cần trích xuất: "ten_to_chuc", "ten_nhan_su", "trang_thai", "chuc_vu", "nguoi_thay_the"
+08. M&A
+    Các field cần trích xuất: "ten_to_chuc", "ben_mua", "loai_giao_dich", "ty_le_so_huu_truoc", "ty_le_so_huu_sau", "gia_tri_thuong_vu", "ngay_hoan_tat"
+09. Đầu tư
+    Các field cần trích xuất: "ten_to_chuc", "ten_cong_ty_dau_tu_vao", "ty_le_so_huu", "gia_tri_dau_tu", "muc_dich", "ngay_thuc_hien"
+10. Hợp đồng lớn
+    Các field cần trích xuất: "ten_to_chuc", "ten_doi_tac", "loai_hop_dong", "ten_du_an", "gia_tri_hop_dong", "ngay_ky"
+11. Vay vốn
+    Các field cần trích xuất: "ten_to_chuc", "ben_cho_vay", "tong_gia_tri_khoan_vay", "muc_dich", "ky_han", "ben_bao_lanh", "ngay_ky"
+12. Tổn thất tài sản nghiêm trọng
+    Các field cần trích xuất: "ten_to_chuc", "mo_ta_su_co", "gia_tri_ton_that", "ngay_cong_bo"
+13. Bồi thường lớn cho bên ngoài
+    Các field cần trích xuất: "ten_to_chuc", "ben_nhan_boi_thuong", "so_tien", "ly_do", "ngay_cong_bo"
+14. Vấn đề pháp lý
+    Các field cần trích xuất: "ten_to_chuc", "ca_nhan_chiu_trach_nhiem", "noi_dung_vi_pham", "co_quan_xu_ly", "hinh_thuc_xu_phat", "ngay_ra_quyet_dinh"
+15. Phá sản
+    Các field cần trích xuất: "ten_to_chuc", "loai_hanh_dong", "nganh_nghe", "toa_an_thu_ly", "ngay_cong_bo", "ngay_phan_quyet"
+
+Dưới đây là một vài ví dụ trích xuất sự kiện tài chính:
+
+NỘI DUNG BÀI BÁO CẦN TRÍCH XUẤT:
+Tiêu đề: Chia cổ tức \"khủng\" 330,000 đồng/cp, công ty con của KBC có gì?\nNội dung:Trong ngày cuối cùng của năm 2022 (31/12), Tổng Công ty Phát triển Đô thị Kinh Bắc - CTCP (HOSE: KBC) công bố thông tin về việc công ty con là CTCP Khu công nghiệp Sài Gòn – Hải Phòng (SHP) sẽ thực hiện chi trả cổ tức với tỷ lệ \"khủng\" 330%.\nVới mệnh giá 100,000 đồng/cp, tỷ lệ chia cổ tức 330%, mỗi cổ phần sở hữu, cổ đông SHP sẽ nhận được 330,000 đồng.\nSHP thành lập ngày 20/07/2006 tại Hải Phòng với vốn điều lệ 200 tỷ đồng, tổng số cổ phần 2 triệu cp, do 9 cổ đông góp vốn thành lập. Trong đó, KBC nắm sở hữu 18%. Đến nay, sau khi tăng vốn điều lệ lên 416 tỷ đồng, KBC nâng sở hữu lên 3.6 triệu cp, tỷ lệ biểu quyết cũng như tỷ lệ lợi ích tăng lên 86.54%. Theo đó, số tiền cổ tức KBC có thể nhận được ước tính khoảng 1,188 tỷ đồng.\nDự kiến tiền cổ tức sẽ được SHP chuyển khoản vào ngày 30/01/2023. Tuy nhiên, KBC hiện đang thế chấp 700,000 cp SHP tại CTCP Chứng khoán An Bình (ABS). Do đó, KBC vào ngày 30/01/2023 sẽ chỉ nhận được 957 tỷ đồng, phần còn lại sẽ được chuyển vào tài khoản phong tỏa liên quan.\nSHP hoạt động chính lĩnh vực bất động sản khu công nghiệp (KCN) và khu đô thị (KĐT), là chủ đầu tư dự án KCN và KĐT Tràng Duệ, KCN thuộc khu kinh tế Đình Vũ – Cát Hải - Hải Phòng.\nNăm 2019, hai KCN Tràng Duệ 1, Tràng Duệ 2 có tổng quy mô 402 ha đã được lấp đầy 100%, thu hút được 73 nhà đầu tư nước ngoài, một số nhà đầu tư lớn có thể kể đến như là LG Electronics, LG Display, Dongjin Techwin Vina,… Theo KBC, sau khi một số nhà đầu tư lớn không còn thời hạn miễn phí dịch vụ cơ sở hạ tầng sau 5 năm, tổng doanh thu dịch vụ theo đơn giá hiện hành mà dự án có thể thu được ước tính trên 100 tỷ đồng/năm.\nĐối với dự án KĐT Tràng Duệ, dự án có diện tích 42.08 ha, tương đương với 22.6 ha đất thương phẩm, đã được cấp sổ đỏ, đã xây 93 căn shophouse, hoàn thiện hạ tầng, tổng diện tích đất đã ghi nhận doanh thu là 10.46 ha (vào cuối năm 2021). Tính đến 31/12/2021, SHP đã đầu tư 869.19 tỷ đồng cho dự án KĐT Tràng Duệ, để hoàn thiện hạ tầng và nộp tiền sử dụng đất. Theo đó, dự án đã ghi nhận doanh thu cho năm 2021 là 370.9 tỷ đồng, tương ứng với 4.55 ha.\nVề kết quả kinh doanh, tổng doanh thu năm 2021 của SHP đạt 710 tỷ đồng, gấp đôi năm 2020 chủ yếu ghi nhận từ việc bán 4.55 ha đất KĐT và doanh thu từ cung cấp các dịch vụ nước, xử lý nước thải, đấu nối hạ tầng,… trong KCN. Lợi nhuận sau thuế gần 58 tỷ đồng, giảm 26%.\nKết quả kinh doanh của SHP giai đoạn 2011 - 2021\n\nNgoài dự án KCN và KĐT Tràng Duệ, trong năm 2021, SHP còn góp vốn vào 2 công ty con gồm CTCP Công viên Tâm linh Bảo Lạc (65 tỷ đồng) để xây dựng khu nghĩa trang 25 ha tại Bắc Ninh; CTCP TNHB Phát triển cơ sở Hạ tầng công nghiệp Tân Lập (220 tỷ đồng) để thực hiện dự án Cụm công nghiệp Tân Tập 71.2 ha tại Long An.\nVề dự án của công ty liên kết, SHP đã đầu tư 112.5 tỷ đồng vào KCN Nam Tân Tập do Công ty TNHH Saigontel – Long An làm chủ đầu tư; góp 583 tỷ đồng vào dự án KCN Lê Minh Xuân 2 với diện tích gần 320 ha.\nTại ngày 31/12/2021, tổng tài sản Công ty đạt gần 5,644 tỷ đồng, tăng gần 42% so với đầu năm. Trong khi đó, tổng dư nợ gốc các tổ chức tín dụng chỉ ghi nhận gần 142 tỷ đồng, giảm hơn 44%.\nVới số cổ tức nhận được từ SHP, kết quả kinh doanh quý 1/2023 của KBC dự kiến sẽ có sự tăng mạnh về lợi nhuận. Đây không phải lần đầu tiên kết quả BCTC của KBC chịu ảnh hưởng lớn từ các công ty con/liên kết.\nCụ thể, trong quý 2/2022, HĐQT KBC thông qua việc mua thêm 5.7 triệu cp của Đầu tư Sài Gòn - Đà Nẵng, nâng tỷ lệ sở hữu lên 48% (tương ứng 9.6 triệu cp) và chuyển đơn vị này thành công ty liên kết của KBC. Theo báo cáo, giá trị hợp lý của khoản đầu tư này gần 2.5 ngàn tỷ đồng, trong khi giá trị đầu tư tương ứng chỉ 96 tỷ đồng. Nói cách khác, khoản “đầu tư giá rẻ” này đã giúp KBC thu lãi tới gần 2.4 ngàn tỷ đồng. Dù gây tranh cãi trong nhiều tháng nhưng trong BCTC soát xét 9 tháng đầu năm, đơn vị kiểm toán đã đồng ý để KBC ghi nhận khoản lãi này.\nỞ diễn biến khác, vào giữa tháng 12/2022 vừa qua, HĐQT KBC đã thông qua 2 Nghị quyết liên quan đến việc vay vốn của 2 công ty con là SHP và CTCP Khu công nghiệp Sài Gòn - Bắc Giang. Trong đó, KBC sẽ bảo lãnh cho khoản vay 320 tỷ đồng của SHP tại Ngân hàng TMCP Công thương Việt Nam - chi nhánh Ngô Quyền. Mục đích khoản vay nhằm thanh toán các khoản chi phí đầu tư của dự án Đầu tư nhà xưởng tại KCN Quế Võ và KCN Quế Võ mở rộng nhằm cho thuê/bán thương mại. Thời hạn bảo lãnh tính từ ngày 15/12/2022 đến khi SHP hoàn tất nghĩa vụ thanh toán nợ cho phía ngân hàng.
+
+OUTPUT:
+[
+{"event_type": "Vay vốn", "ten_to_chuc": "CTCP Khu công nghiệp Sài Gòn – Hải Phòng (SHP)", "ben_cho_vay": "Ngân hàng TMCP Công thương Việt Nam - chi nhánh Ngô Quyền", "tong_gia_tri_khoan_vay": "320 tỷ đồng", "muc_dich": "thanh toán chi phí đầu tư dự án Đầu tư nhà xưởng tại KCN Quế Võ và KCN Quế Võ mở rộng", "ky_han": null, "ben_bao_lanh": "Tổng Công ty Phát triển Đô thị Kinh Bắc - CTCP (HOSE: KBC)", "ngay_ky": "15/12/2022", "confidence": "high"}
+]
+
+
+Bây giờ bắt đầu với văn bản gốc cần trích xuất! 
+Chỉ tập trung vào 15 loại sự kiện sau: [Chi trả cổ tức, Phát hành thêm cổ phiếu, Niêm yết, Hủy niêm yết, Phát hành trái phiếu, Cổ đông thay đổi tỷ lệ sở hữu, Thay đổi nhân sự chủ chốt, M&A, Đầu tư, Hợp đồng lớn, Vay vốn, Tổn thất tài sản nghiêm trọng, Bồi thường lớn cho bên ngoài, Vấn đề pháp lý, Phá sản].
+Lưu ý văn bản có thể chứa nhiều loại sự kiện trong các loại sự kiện cần trích xuất. Còn nếu không có sự kiện nào, hãy xuất ra danh sách rỗng.
+Nhắc lại: mỗi sự kiện trích xuất được PHẢI có đầy đủ trường "confidence" (high/medium/low) — đây là trường bắt buộc ở mọi sự kiện, không được bỏ sót.
+
+NỘI DUNG BÀI BÁO CẦN TRÍCH XUẤT:
