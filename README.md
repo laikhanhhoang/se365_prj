@@ -97,6 +97,10 @@ python data_pipelines/labelling/step03_auto_label_openai.py     # gán nhãn b�
 python data_pipelines/labelling/step04_postprocess.py           # parse + validate output
 ```
 
+## 3. Huấn luyện và inference các model
+Thực hiện chạy các file notebook đối với từng phương pháp trong [ml/approaches/](ml/approaches/).
+Trọng số của các model được lưu trữ trong các thư mục weights. Thời gian trung bình để chạy infer cho file test là 2 tiếng.
+
 
 # Tài liệu tham khảo
 - [DCFEE: A Document-level Chinese Financial Event Extraction System
